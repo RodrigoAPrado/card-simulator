@@ -1,3 +1,4 @@
 {
-	"name": "Ygo.Controller"
+	"name": "Ygo.Controller",
+	"references":[ "GUID:3b06f732a61924d45994dd19487fae56", "GUID:1718a14f40f22154481ea8bd944341a7" ]
 }

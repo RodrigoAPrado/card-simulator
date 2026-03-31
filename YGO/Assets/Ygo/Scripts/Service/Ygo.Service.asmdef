@@ -1,3 +1,16 @@
 {
-	"name": "Ygo.Service"
+    "name": "Ygo.Service",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3b06f732a61924d45994dd19487fae56"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
