@@ -1,16 +1,18 @@
 ﻿using UnityEngine;
+using Ygo.Scripts.Application;
 using Ygo.Service;
 
 namespace Ygo.Scripts.Controller
 {
     public class GameManager : MonoBehaviour
     {
-        private CardLoaderService Service { get; set; }
+        private GameApplication Application { get; set; }
+        
         public void Awake()
         {
-            Service = new CardLoaderService();
-            var data = Service.LoadCards();
-            
+            var service = new CardLoaderService();
+            var data = service.LoadCards();
+            Application = new GameApplication(data);
         }
     }
 }

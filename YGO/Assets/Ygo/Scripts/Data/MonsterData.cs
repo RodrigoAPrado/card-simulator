@@ -9,8 +9,6 @@ namespace Ygo.Scripts.Cards
     {
         [JsonProperty("attribute")]
         public MonsterAttribute Attribute { get; }
-        [JsonProperty("level")]
-        public int Level { get; }
         [JsonProperty("monster_type")]
         public MonsterType Type { get; }
         [JsonProperty("monster_kinds")]
@@ -19,6 +17,10 @@ namespace Ygo.Scripts.Cards
         public int Atk { get; }
         [JsonProperty("def")]
         public int Def { get; }
+        [JsonProperty("level")][CanBeNull]
+        public int? Level { get; }
+        [JsonProperty("rank")][CanBeNull]
+        public int? Rank { get; }
         [JsonProperty("pendulum_scale")][CanBeNull]
         public int? PendulumScale { get; }
         [JsonProperty("link_arrows")][CanBeNull]
@@ -30,22 +32,24 @@ namespace Ygo.Scripts.Cards
         
         public MonsterData(
             MonsterAttribute attribute,
-            int level,
             MonsterType type,
             List<MonsterKind> kinds,
             int atk,
             int def,
-            int pendulumScale,
+            int? level,
+            int? rank,
+            int? pendulumScale,
             List<int> linkArrows,
             List<int> effectIds,
             string flavorText)
         {
             Attribute = attribute;
-            Level = level;
             Type = type;
             Kinds = kinds;
             Atk = atk;
             Def = def;
+            Level = level;
+            Rank = rank;
             PendulumScale = pendulumScale;
             LinkArrows = linkArrows;
             EffectIds = effectIds;
