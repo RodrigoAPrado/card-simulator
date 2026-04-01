@@ -2,7 +2,8 @@
     "name": "Ygo.Service",
     "rootNamespace": "",
     "references": [
-        "GUID:3b06f732a61924d45994dd19487fae56"
+        "GUID:3b06f732a61924d45994dd19487fae56",
+        "GUID:34dc50c5dd4a4834b565cc7de3bfc5df"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

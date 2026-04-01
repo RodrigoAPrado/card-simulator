@@ -9,7 +9,8 @@ namespace Ygo.Scripts.Controller
         public void Awake()
         {
             Service = new CardLoaderService();
-            Service.LoadCards();
+            var data = Service.LoadCards();
+            
         }
     }
 }

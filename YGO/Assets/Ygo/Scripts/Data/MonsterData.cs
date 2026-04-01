@@ -1,46 +1,38 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using Unity.Plastic.Newtonsoft.Json;
 using Ygo.Scripts.Cards.Enums;
 
 namespace Ygo.Scripts.Cards
 {
-    public class MonsterCardData
+    public class MonsterData
     {
-        [JsonProperty("id")]
-        public int Id { get; }
-        [JsonProperty("card_type")]
-        public CardType CardType { get; }
-        [JsonProperty("name")]
-        public string Name { get; }
         [JsonProperty("attribute")]
         public MonsterAttribute Attribute { get; }
         [JsonProperty("level")]
         public int Level { get; }
         [JsonProperty("monster_type")]
-        public MonsterType MonsterType { get; }
+        public MonsterType Type { get; }
         [JsonProperty("monster_kinds")]
-        public IList<MonsterKind> MonsterKinds { get; }
+        public IList<MonsterKind> Kinds { get; }
         [JsonProperty("atk")]
         public int Atk { get; }
         [JsonProperty("def")]
         public int Def { get; }
-        [JsonProperty("pendulum_scale")]
-        public int PendulumScale { get; }
-        [JsonProperty("link_arrows")]
+        [JsonProperty("pendulum_scale")][CanBeNull]
+        public int? PendulumScale { get; }
+        [JsonProperty("link_arrows")][CanBeNull]
         public IList<int> LinkArrows { get; }
-        [JsonProperty("effect_ids")]
+        [JsonProperty("effect_ids")][CanBeNull]
         public IList<int> EffectIds { get; }
-        [JsonProperty("flavor_text")]
+        [JsonProperty("flavor_text")][CanBeNull]
         public string FlavorText { get; }
-
-        public MonsterCardData(
-            int id, 
-            CardType cardType, 
-            string name,
+        
+        public MonsterData(
             MonsterAttribute attribute,
             int level,
-            MonsterType monsterType,
-            List<MonsterKind> monsterKinds,
+            MonsterType type,
+            List<MonsterKind> kinds,
             int atk,
             int def,
             int pendulumScale,
@@ -48,13 +40,10 @@ namespace Ygo.Scripts.Cards
             List<int> effectIds,
             string flavorText)
         {
-            Id = id;
-            CardType = cardType;
-            Name = name;
             Attribute = attribute;
             Level = level;
-            MonsterType = monsterType;
-            MonsterKinds = monsterKinds;
+            Type = type;
+            Kinds = kinds;
             Atk = atk;
             Def = def;
             PendulumScale = pendulumScale;
