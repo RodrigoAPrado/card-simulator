@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 1153242780617317363}
   - component: {fileID: 8603520959550640356}
   m_Layer: 5
-  m_Name: CardPrefab
+  m_Name: CardController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -309,6 +309,22 @@ MonoBehaviour:
         - m_Target: {fileID: 3879001080578530147}
           m_TargetAssemblyTypeName: Ygo.Controller.Card.CardController, Ygo.Controller
           m_MethodName: Exit
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3879001080578530147}
+          m_TargetAssemblyTypeName: Ygo.Controller.Card.CardController, Ygo.Controller
+          m_MethodName: Click
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

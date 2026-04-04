@@ -1,5 +1,6 @@
 ﻿using System;
 using Ygo.Core.Abstract;
+using Ygo.Core.Response;
 
 namespace Ygo.Core.Phases.Abstract
 {
@@ -25,15 +26,12 @@ namespace Ygo.Core.Phases.Abstract
             return false;
         }
 
-        public virtual void ClickedOnCardInHand(ICardInstance card) { }
+        public virtual ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card)
+            => new ClickedOnCardHandResponse(true);
 
         protected void AdvancePhase()
         {
-            Clear();
             _advancePhase?.Invoke();
-            
         }
-
-        protected virtual void Clear() {}
     }
 }

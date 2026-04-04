@@ -1,4 +1,5 @@
 ﻿using Ygo.Core.Abstract;
+using Ygo.Core.Response;
 
 namespace Ygo.Core.Phases.Abstract
 {
@@ -9,7 +10,7 @@ namespace Ygo.Core.Phases.Abstract
         bool HasNextPhase { get; }
         void Init();
         bool DrawFromDeck();
-        void ClickedOnCardInHand(ICardInstance card);
+        ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card);
 
     }
 }

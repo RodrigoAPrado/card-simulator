@@ -14,12 +14,14 @@ namespace Ygo.Controller.Card
         [field: SerializeField] 
         private CardView view;
 
+        public ICardInstance CardInstance => _cardInstance;
+        
         private ICardInstance _cardInstance;
         private bool _zoomMode;
         private bool _handMode;
 
         private Action<ICardInstance> _onHover;
-        private Action<ICardInstance> _onClick;
+        private Action<CardController> _onClick;
         
         public bool Dirty { get; private set; }
         public bool Enabled { get; private set; }
@@ -27,7 +29,7 @@ namespace Ygo.Controller.Card
         public void Init(
             ICardInstance cardInstance, 
             Action<ICardInstance> onHover = null, 
-            Action<ICardInstance> onClick = null
+            Action<CardController> onClick = null
             )
         {
             _onHover = onHover;
@@ -200,7 +202,7 @@ namespace Ygo.Controller.Card
         {
             if (!Enabled)
                 return;
-            _onClick?.Invoke(_cardInstance);
+            _onClick?.Invoke(this);
         }
 
         public void SetDirty()

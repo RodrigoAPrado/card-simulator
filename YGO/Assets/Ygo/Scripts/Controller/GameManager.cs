@@ -4,6 +4,7 @@ using Ygo.Application;
 using Ygo.Controller.Card;
 using Ygo.Controller.Field;
 using Ygo.Core.Abstract;
+using Ygo.Scripts.Controller.Hand;
 using Ygo.Scripts.View;
 using Ygo.Service;
 
@@ -18,6 +19,8 @@ namespace Ygo.Scripts.Controller
         [Header("HandsArea")] 
         [field: SerializeField]
         private GameObject playerHandArea;
+        [field: SerializeField]
+        private HandController handController;
         
         [Header("ZoomCard")]
         [field: SerializeField]
@@ -48,6 +51,8 @@ namespace Ygo.Scripts.Controller
             mainDeckController.SubscribeToMainDeckClicked(DrawFromDeck);
             _application.SubscribeToPhaseChange(OnPhaseChange);
             PhaseText.SetText(_application.CurrentPhase.Name);
+            handController.Init(OnNormalSummon, OnSet, OnTributeSummon, OnTributeSet);
+            handController.HideAll();
         }
 
         public void ShuffleDeck()
@@ -109,14 +114,36 @@ namespace Ygo.Scripts.Controller
             mainDeckController.SetDeckSize(_application.Deck.Count);
         }
 
-        private void ClickedOnCardInHand(ICardInstance cardInstance)
+        private void ClickedOnCardInHand(CardController cardController)
         {
-            _application.CurrentPhase.ClickedOnCardInHand(cardInstance);
+            var response = _application.CurrentPhase.ClickedOnCardInHand(cardController.CardInstance);
+            handController.Show(response, cardController.transform.position.x);
         }
 
         private void OnPhaseChange()
         {
             PhaseText.SetText(_application.CurrentPhase.Name);
         }
+
+        private void OnNormalSummon()
+        {
+            
+        }
+
+        private void OnSet()
+        {
+            
+        }
+
+        private void OnTributeSummon()
+        {
+            
+        }
+
+        private void OnTributeSet()
+        {
+            
+        }
+        
     }
 }
