@@ -90,7 +90,7 @@ namespace Ygo.Scripts.Controller
         {
             var o = Instantiate(cardPrefab, playerHandArea.transform);
             o.SetHandMode();
-            o.Init(card, UpdateZoomCard);
+            o.Init(card, UpdateZoomCard, ClickedOnCardInHand);
             _playerHand.Add(o);
         }
 
@@ -107,6 +107,11 @@ namespace Ygo.Scripts.Controller
             
             UpdatePlayerHand();
             mainDeckController.SetDeckSize(_application.Deck.Count);
+        }
+
+        private void ClickedOnCardInHand(ICardInstance cardInstance)
+        {
+            _application.CurrentPhase.ClickedOnCardInHand(cardInstance);
         }
 
         private void OnPhaseChange()

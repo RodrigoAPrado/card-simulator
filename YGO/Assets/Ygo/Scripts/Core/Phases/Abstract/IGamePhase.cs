@@ -1,4 +1,6 @@
-﻿namespace Ygo.Core.Phases.Abstract
+﻿using Ygo.Core.Abstract;
+
+namespace Ygo.Core.Phases.Abstract
 {
     public interface IGamePhase
     {
@@ -7,6 +9,7 @@
         bool HasNextPhase { get; }
         void Init();
         bool DrawFromDeck();
+        void ClickedOnCardInHand(ICardInstance card);
 
     }
 }

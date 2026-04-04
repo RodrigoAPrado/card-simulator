@@ -18,14 +18,21 @@ namespace Ygo.Controller.Card
         private bool _zoomMode;
         private bool _handMode;
 
-        private Action<ICardInstance> _action;
+        private Action<ICardInstance> _onHover;
+        private Action<ICardInstance> _onClick;
         
         public bool Dirty { get; private set; }
+        public bool Enabled { get; private set; }
         
-        public void Init(ICardInstance cardInstance, Action<ICardInstance> action = null)
+        public void Init(
+            ICardInstance cardInstance, 
+            Action<ICardInstance> onHover = null, 
+            Action<ICardInstance> onClick = null
+            )
         {
-            _action = action;
-            
+            _onHover = onHover;
+            _onClick = onClick;
+            Enabled = true;
             UpdateCard(cardInstance);
         }
 
@@ -172,17 +179,28 @@ namespace Ygo.Controller.Card
 
         public void Hover()
         {
+            if (!Enabled)
+                return;
             if (_zoomMode)
                 return;
             view.ToggleHighlight(true);
-            _action.Invoke(_cardInstance);
+            _onHover.Invoke(_cardInstance);
         }
 
         public void Exit()
         {
+            if (!Enabled)
+                return;
             if (_zoomMode)
                 return;
             view.ToggleHighlight(false);
+        }
+
+        public void Click()
+        {
+            if (!Enabled)
+                return;
+            _onClick?.Invoke(_cardInstance);
         }
 
         public void SetDirty()
@@ -192,11 +210,13 @@ namespace Ygo.Controller.Card
 
         public void Enable()
         {
+            Enabled = true;
             gameObject.SetActive(true);
         }
 
         public void Disable()
         {
+            Enabled = false;
             _cardInstance = null;
             view.Clear();
             gameObject.SetActive(false);
