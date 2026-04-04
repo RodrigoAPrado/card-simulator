@@ -1,0 +1,20 @@
+{
+  "id": 7,
+  "card_type": 1,
+  "name": "Armored Starfish",
+  "monster_data": {
+    "attribute": 4,
+    "monster_type": 15,
+    "monster_kinds": [
+      1
+    ],
+    "atk": 850,
+    "def": 1400,
+    "level": 4,
+    "rank": null,
+    "pendulum_scale": null,
+    "link_arrows": [],
+    "effect_ids": [],
+    "flavor_text": "A bluish starfish with a solid hide capable of fending off attacks."
+  }
+}

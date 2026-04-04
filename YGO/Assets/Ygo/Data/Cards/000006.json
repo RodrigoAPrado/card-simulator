@@ -1,0 +1,21 @@
+{
+  "id": 6,
+  "card_type": 1,
+  "name": "Armed Ninja",
+  "monster_data": {
+    "attribute": 3,
+    "monster_type": 4,
+    "monster_kinds": [
+      12,
+      14
+    ],
+    "atk": 300,
+    "def": 300,
+    "level": 1,
+    "rank": null,
+    "pendulum_scale": null,
+    "link_arrows": [],
+    "effect_ids": [],
+    "flavor_text": "FLIP: Select 1 Spell Card on the field and destroy it. If the selected card is Set, pick up and see the card. If it is a Spell Card, it is destroyed. If it is a Trap Card, return it to its original position."
+  }
+}

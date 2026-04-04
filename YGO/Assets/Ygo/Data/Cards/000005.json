@@ -1,0 +1,20 @@
+{
+  "id": 5,
+  "card_type": 1,
+  "name": "Armaill",
+  "monster_data": {
+    "attribute": 3,
+    "monster_type": 4,
+    "monster_kinds": [
+      1
+    ],
+    "atk": 700,
+    "def": 1300,
+    "level": 3,
+    "rank": null,
+    "pendulum_scale": null,
+    "link_arrows": [],
+    "effect_ids": [],
+    "flavor_text": "A strange warrior who manipulates three deadly blades with both hands and his tail. "
+  }
+}

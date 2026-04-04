@@ -1,0 +1,20 @@
+{
+  "id": 8,
+  "card_type": 1,
+  "name": "Baron of the Fiend Sword",
+  "monster_data": {
+    "attribute": 1,
+    "monster_type": 8,
+    "monster_kinds": [
+      1
+    ],
+    "atk": 1550,
+    "def": 800,
+    "level": 4,
+    "rank": null,
+    "pendulum_scale": null,
+    "link_arrows": [],
+    "effect_ids": [],
+    "flavor_text": "An aristocrat who wields a sword possessed by a malicious spirit that preys on the weak."
+  }
+}
