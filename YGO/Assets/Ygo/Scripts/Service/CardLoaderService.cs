@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 using UnityEngine;
-using Ygo.Scripts.Cards;
-using Ygo.Scripts.Cards.Enums;
-using Ygo.Scripts.Core;
+using Ygo.Core.Abstract;
+using Ygo.Data;
 
 namespace Ygo.Service
 {

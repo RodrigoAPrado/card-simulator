@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using Unity.Plastic.Newtonsoft.Json;
-using Ygo.Scripts.Cards.Enums;
+using Newtonsoft.Json;
+using Ygo.Data.Enums;
 
-namespace Ygo.Scripts.Cards
+namespace Ygo.Data
 {
     public class MonsterData
     {

@@ -1,21 +1,23 @@
 ﻿using System.Collections.Generic;
-using Ygo.Scripts.Cards;
-using Ygo.Scripts.Core;
+using System.Linq;
+using Ygo.Core.Abstract;
+using Ygo.Data;
 
 namespace Ygo.Service
 {
     public sealed class CardRepository : ICardRepository
     {
-        private Dictionary<int, CardData> Cards { get; }
+        private readonly Dictionary<int, CardData> _cards;
+        public IList<int> IdsList => _cards.Keys.ToList().AsReadOnly();
 
         public CardRepository(Dictionary<int, CardData> cards)
         {
-            Cards = cards;
+            _cards = cards;
         }
-        
-        public CardData GetCardData(int id)
+
+        public CardData GetCardById(int id)
         {
-            return Cards[id];
+            return _cards[id];
         }
     }
 }

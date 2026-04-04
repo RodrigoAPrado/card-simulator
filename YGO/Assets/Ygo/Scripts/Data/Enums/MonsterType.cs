@@ -1,4 +1,4 @@
-﻿namespace Ygo.Scripts.Cards.Enums
+﻿namespace Ygo.Data.Enums
 {
     public enum MonsterType
     {
