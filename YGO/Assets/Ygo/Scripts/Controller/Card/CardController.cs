@@ -15,10 +15,14 @@ namespace Ygo.Controller.Card
         private CardView view;
 
         private ICardInstance _cardInstance;
+        private bool _zoomMode;
+
+        private Action<ICardInstance> _action;
         
-        public void Init(ICardInstance cardInstance)
+        public void Init(ICardInstance cardInstance, Action<ICardInstance> action = null)
         {
             _cardInstance = cardInstance;
+            _action = action;
             
             view.SetName(_cardInstance.Data.Name);
             view.SetFrame(GetCardFrameType());
@@ -27,6 +31,16 @@ namespace Ygo.Controller.Card
 
             if (_cardInstance.IsValidMonster)
                 InitMonster();
+        }
+
+        public void SetHandMode()
+        {
+            view.SetMonsterText("");
+        }
+
+        public void SetZoomMode()
+        {
+            _zoomMode = true;
         }
 
         public void OnDestroy()
@@ -120,7 +134,6 @@ namespace Ygo.Controller.Card
             }
 
             sb.Append(id);
-            sb.Append(".jpg");
             return sb.ToString();
         }
 
@@ -146,6 +159,21 @@ namespace Ygo.Controller.Card
             }
             sb.Append("]");
             return sb.ToString();
+        }
+
+        public void Hover()
+        {
+            if (_zoomMode)
+                return;
+            view.ToggleHighlight(true);
+            _action.Invoke(_cardInstance);
+        }
+
+        public void Exit()
+        {
+            if (_zoomMode)
+                return;
+            view.ToggleHighlight(false);
         }
     }
 }

@@ -1,0 +1,14 @@
+﻿{
+  "id":0,
+  "card_type":1,
+  "name":"Dark Magician",
+  "monster_data": {
+    "attribute":1,
+    "level":7,
+    "type":1,
+    "kinds":[1],
+    "atk":2500,
+    "def":2100,
+    "flavor_text":"The ultimate wizard in terms of attack and defence."
+    }
+  }

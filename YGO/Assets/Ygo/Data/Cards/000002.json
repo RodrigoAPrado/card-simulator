@@ -1,0 +1,14 @@
+﻿{
+  "id":2,
+  "card_type":1,
+  "name":"Ancient Elf",
+  "monster_data": {
+    "attribute":2,
+    "level":4,
+    "type":1,
+    "kinds":[1],
+    "atk":1450,
+    "def":1200,
+    "flavor_text":"This elf is rumored to have lived for thousands of years. He leads an army of spirits against his enemies."
+    }
+  }

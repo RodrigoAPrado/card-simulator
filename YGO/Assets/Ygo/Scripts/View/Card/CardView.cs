@@ -10,6 +10,9 @@ namespace Ygo.View.Card
         [Header("Frame")] 
         [field: SerializeField]
         private Image frameImage;
+
+        [field: SerializeField] 
+        private GameObject highlight;
         
         [field: SerializeField] 
         private CardFrameDatabase frameDatabase;
@@ -32,6 +35,9 @@ namespace Ygo.View.Card
         [Header("Illustration")] 
         [field: SerializeField]
         private Image illustration;
+
+        [field: SerializeField] 
+        private Sprite emptyIllustrationSprite;
 
         [Header("CardBox")] 
         [field: SerializeField]
@@ -87,8 +93,17 @@ namespace Ygo.View.Card
 
         public void SetIllustration(string value)
         {
-            var sprite = Resources.Load<Sprite>("Card/Illustrations/" + value);
-            illustration.sprite = sprite;
+            var path = "Card/Illustrations/" + value;
+            var sprite = Resources.Load<Sprite>(path);
+            if(sprite != null)
+                illustration.sprite = sprite;
+            else
+            {
+                Debug.LogWarning(path + " is not a valid illustration");
+                illustration.sprite = emptyIllustrationSprite;
+            }
+                
+            
         }
 
         public void SetMonsterType(string value)
@@ -109,6 +124,11 @@ namespace Ygo.View.Card
         public void SetMonsterDef(string value)
         {
             monsterDef.text = value;
+        }
+
+        public void ToggleHighlight(bool value)
+        {
+            highlight.SetActive(value);
         }
     }
 }
