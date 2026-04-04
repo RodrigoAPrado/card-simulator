@@ -7,5 +7,6 @@ namespace Ygo.Core.Abstract
     {
         IList<int> IdsList { get; }
         CardData GetCardById(int id);
+        CardData GetMainDeckCardById(int id);
     }
 }

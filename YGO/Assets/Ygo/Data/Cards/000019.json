@@ -1,0 +1,20 @@
+{
+  "id": 19,
+  "card_type": 1,
+  "name": "Dark King of the Abyss",
+  "monster_data": {
+    "attribute": 1,
+    "monster_type": 8,
+    "monster_kinds": [
+      1
+    ],
+    "atk": 1200,
+    "def": 800,
+    "level": 3,
+    "rank": null,
+    "pendulum_scale": null,
+    "link_arrows": [],
+    "effect_ids": [],
+    "flavor_text": "It's said that this King of the Netherworld once had the power to rule over the dark."
+  }
+}

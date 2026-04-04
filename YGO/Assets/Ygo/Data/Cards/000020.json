@@ -1,0 +1,20 @@
+{
+  "id": 20,
+  "card_type": 1,
+  "name": "Dark Titan of Terror",
+  "monster_data": {
+    "attribute": 1,
+    "monster_type": 8,
+    "monster_kinds": [
+      1
+    ],
+    "atk": 1300,
+    "def": 1100,
+    "level": 4,
+    "rank": null,
+    "pendulum_scale": null,
+    "link_arrows": [],
+    "effect_ids": [],
+    "flavor_text": "A fiend said to dwell in the world of dreams, it attacks enemies in their sleep."
+  }
+}

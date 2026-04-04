@@ -16,14 +16,22 @@ namespace Ygo.Controller.Card
 
         private ICardInstance _cardInstance;
         private bool _zoomMode;
+        private bool _handMode;
 
         private Action<ICardInstance> _action;
         
+        public bool Dirty { get; private set; }
+        
         public void Init(ICardInstance cardInstance, Action<ICardInstance> action = null)
         {
-            _cardInstance = cardInstance;
             _action = action;
             
+            UpdateCard(cardInstance);
+        }
+
+        public void UpdateCard(ICardInstance cardInstance)
+        {
+            _cardInstance = cardInstance;
             view.SetName(_cardInstance.Data.Name);
             view.SetFrame(GetCardFrameType());
             view.SetIcon(GetCardIconType());
@@ -31,11 +39,12 @@ namespace Ygo.Controller.Card
 
             if (_cardInstance.IsValidMonster)
                 InitMonster();
+            Dirty = false;
         }
 
         public void SetHandMode()
         {
-            view.SetMonsterText("");
+            _handMode = true;
         }
 
         public void SetZoomMode()
@@ -51,8 +60,8 @@ namespace Ygo.Controller.Card
         private void InitMonster()
         {
             view.SetLevel(_cardInstance.CurrentLevel.GetValueOrDefault());
+            view.SetMonsterText(_handMode ? "" : _cardInstance.CardText);
             view.SetMonsterType(GetMonsterType());
-            view.SetMonsterText(_cardInstance.CardText);
             view.SetMonsterAtk(_cardInstance.CurrentAtk.GetValueOrDefault().ToString());
             view.SetMonsterDef(_cardInstance.CurrentDef.GetValueOrDefault().ToString());
         }
@@ -174,6 +183,24 @@ namespace Ygo.Controller.Card
             if (_zoomMode)
                 return;
             view.ToggleHighlight(false);
+        }
+
+        public void SetDirty()
+        {
+            Dirty = true;
+        }
+
+        public void Enable()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Disable()
+        {
+            _cardInstance = null;
+            view.Clear();
+            gameObject.SetActive(false);
+            Dirty = false;
         }
     }
 }

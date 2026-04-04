@@ -99,11 +99,9 @@ namespace Ygo.View.Card
                 illustration.sprite = sprite;
             else
             {
-                Debug.LogWarning(path + " is not a valid illustration");
+                //Debug.LogWarning(path + " is not a valid illustration");
                 illustration.sprite = emptyIllustrationSprite;
             }
-                
-            
         }
 
         public void SetMonsterType(string value)
@@ -129,6 +127,11 @@ namespace Ygo.View.Card
         public void ToggleHighlight(bool value)
         {
             highlight.SetActive(value);
+        }
+
+        public void Clear()
+        {
+            //TODO: Rotina de Clear.
         }
     }
 }

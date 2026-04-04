@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Ygo.Application;
 using Ygo.Controller.Card;
+using Ygo.Controller.Field;
 using Ygo.Core.Abstract;
-using Ygo.Scripts.Application;
+using Ygo.Scripts.View;
 using Ygo.Service;
 
 namespace Ygo.Scripts.Controller
@@ -22,7 +24,15 @@ namespace Ygo.Scripts.Controller
         private CardController zoomCard;
 
         private GameApplication _application;
-        private List<CardController> _cards;
+        private List<CardController> _playerHand;
+ 
+        [Header("Field")]
+        [field: SerializeField]
+        private MainDeckController mainDeckController;
+
+        [Header("Phase")] 
+        [field: SerializeField]
+        private TextView PhaseText;
         
         public void Awake()
         {
@@ -31,35 +41,77 @@ namespace Ygo.Scripts.Controller
             _application = new GameApplication(data);
             _application.InitializeGame();
             zoomCard.SetZoomMode();
+            _application.DrawInitialHand();
+            _playerHand = new List<CardController>();
+            UpdatePlayerHand();
+            mainDeckController.SetDeckSize(_application.Deck.Count);
+            mainDeckController.SubscribeToMainDeckClicked(DrawFromDeck);
+            _application.SubscribeToPhaseChange(OnPhaseChange);
+            PhaseText.SetText(_application.CurrentPhase.Name);
         }
 
-        public void DrawCards()
+        public void ShuffleDeck()
         {
-            if (_cards != null)
+            _application.ShuffleDeck();
+        }
+
+        public void DrawCard()
+        {
+            _application.DrawCard();
+            UpdatePlayerHand();
+        }
+
+        private void UpdatePlayerHand()
+        {
+            foreach (var card in _playerHand)
             {
-                for (var i = _cards.Count-1; i >= 0; i--)
+                card.SetDirty();
+            }
+            
+            for (var i = 0; i < _application.PlayerHand.Count; i++)
+            {
+                if (_playerHand.Count <= i)
                 {
-                   Destroy(_cards[i].gameObject);
-                   _cards.RemoveAt(i);
+                    InstantiateCardController(_application.PlayerHand[i]);
+                    continue;
                 }
+                _playerHand[i].Enable();
+                _playerHand[i].UpdateCard(_application.PlayerHand[i]);
             }
-            else
+
+            foreach (var card in _playerHand)
             {
-                _cards = new List<CardController>();
+                if(card.Dirty)
+                    card.Disable();
             }
-            var drawnCards = _application.DrawCards();
-            foreach (var card in drawnCards)
-            {
-                var o = Instantiate(cardPrefab, playerHandArea.transform);
-                o.Init(card, UpdateZoomCard);
-                o.SetHandMode();
-                _cards.Add(o);
-            }
+        }
+
+        private void InstantiateCardController(ICardInstance card)
+        {
+            var o = Instantiate(cardPrefab, playerHandArea.transform);
+            o.SetHandMode();
+            o.Init(card, UpdateZoomCard);
+            _playerHand.Add(o);
         }
 
         private void UpdateZoomCard(ICardInstance card)
         {
             zoomCard.Init(card);
+        }
+
+        private void DrawFromDeck()
+        {
+            var drawn = _application.DrawFromDeck();
+            
+            if (!drawn) return;
+            
+            UpdatePlayerHand();
+            mainDeckController.SetDeckSize(_application.Deck.Count);
+        }
+
+        private void OnPhaseChange()
+        {
+            PhaseText.SetText(_application.CurrentPhase.Name);
         }
     }
 }
