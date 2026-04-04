@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef13e0004f0dc94280ca2f063afc5f2, type: 3}
+  m_Name: CardIconDatabase
+  m_EditorClassIdentifier: Ygo.View::CardIconDatabase
+  icons:
+  - type: 0
+    icon: {fileID: -6729511157232288408, guid: dc707d05facacfc479abfa95ef8a709c, type: 3}
+  - type: 1
+    icon: {fileID: 905024258411163469, guid: 5048172852976f446a2726906b976a7f, type: 3}
+  - type: 2
+    icon: {fileID: 8334651344603559088, guid: 4d4122c115180d74b8534c67ab12073a, type: 3}
+  - type: 3
+    icon: {fileID: 8605956544606621573, guid: 1a8889dbdf7a2324189e9d10fba322ef, type: 3}
+  - type: 4
+    icon: {fileID: 5757750083339748195, guid: c097772a97e35244b91a5fc51d834686, type: 3}
+  - type: 5
+    icon: {fileID: 8509550459451208454, guid: 58bf42f59b9216c42a1d540771a18f65, type: 3}
+  - type: 6
+    icon: {fileID: -8251331209248444001, guid: 0440f30070728a34c8554968bfef28a2, type: 3}
+  - type: 7
+    icon: {fileID: 553103467783823420, guid: 9e07fc83d8750ab4aa18b8fb922cee81, type: 3}
+  - type: 8
+    icon: {fileID: 5012091224111249662, guid: 582564ad1384d0f4db39197ba0c31418, type: 3}
