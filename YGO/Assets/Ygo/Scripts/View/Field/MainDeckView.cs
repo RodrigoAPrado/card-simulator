@@ -6,7 +6,7 @@ namespace Ygo.Scripts.View.Field
     public class MainDeckView : MonoBehaviour
     {
         [field: SerializeField] 
-        private TextMeshProUGUI label;
+        private TextMeshPro label;
         
         public void SetDeckSize(string deckSize)
         {

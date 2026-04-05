@@ -35,8 +35,12 @@ namespace Ygo.Core.Phases
             
             var response = new ClickedOnCardHandResponse(false);
             
-            var level = card.Data.MonsterData.Level;
             
+            response.NormalSummon = true;
+            response.NormalSet = true;
+            return response;
+            
+            var level = card.Data.MonsterData.Level;
             switch (level)
             {
                 case <= 4:
