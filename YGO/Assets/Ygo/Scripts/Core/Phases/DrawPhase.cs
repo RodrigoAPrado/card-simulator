@@ -6,14 +6,16 @@ namespace Ygo.Core.Phases
     public class DrawPhase : BaseGamePhase
     {
         public override string Name => "Draw Phase";
-        public DrawPhase(IGamePhase nextPhase, CardsHandler cardsHandler, Action advancePhase) 
-            : base(nextPhase, cardsHandler, advancePhase)
+        public DrawPhase(IGamePhase nextPhase, Action advancePhase) 
+            : base(nextPhase, advancePhase)
         {
         }
         
         public override bool DrawFromDeck()
         {
-            _cardsHandler.DrawCards(1);
+            var result = _context.CurrentTurnPlayer.DrawFromDeck();
+            if (!result)
+                throw new NotImplementedException();
             AdvancePhase();
             return true;
         }

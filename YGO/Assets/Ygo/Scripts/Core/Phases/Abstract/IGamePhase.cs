@@ -8,7 +8,7 @@ namespace Ygo.Core.Phases.Abstract
         string Name { get; }
         IGamePhase NextPhase { get; }
         bool HasNextPhase { get; }
-        void Init();
+        void Init(TurnContext context);
         bool DrawFromDeck();
         ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card);
 

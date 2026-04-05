@@ -8,11 +8,10 @@ namespace Ygo.Application
 {
     public class GameApplication
     {
-        public IList<ICardInstance> PlayerHand => _gameState.CardsHandler.CardsDrawn;
-        public IList<ICardInstance> Deck => _gameState.CardsHandler.Deck;
-        public IGamePhase CurrentPhase => _gameState.Phases.CurrentPhase;
+        public PlayerContext PointOfViewPlayer => _gameHandler.GameState.TurnContext.PointOfViewPlayer;
+        public IGamePhase CurrentPhase => _gameHandler.GameState.CurrentPhase;
         private readonly ICardRepository _cardRepository;
-        private GameState _gameState;
+        private GameHandler _gameHandler;
         
         public GameApplication(ICardRepository cardRepository)
         {
@@ -21,29 +20,9 @@ namespace Ygo.Application
 
         public void InitializeGame()
         {
-            _gameState = new GameState();
-            _gameState.Setup(_cardRepository);
-            _gameState.Init();
-        }
-
-        public void ShuffleDeck()
-        {
-            _gameState.ShuffleDeck();
-        }
-
-        public void DrawInitialHand()
-        {
-            DrawCard(5);
-        }
-        
-        public void DrawCard()
-        {
-            DrawCard(1);
-        }
-
-        private void DrawCard(int amount)
-        {
-            _gameState.DrawCard(amount);
+            _gameHandler = new GameHandler();
+            _gameHandler.Setup(_cardRepository);
+            _gameHandler.Init();
         }
 
         public bool DrawFromDeck()
@@ -53,12 +32,12 @@ namespace Ygo.Application
 
         public void SubscribeToPhaseChange(Action action)
         {
-            _gameState.Phases.SubscribeToPhaseChange(action);
+            _gameHandler.GameState.SubscribeToPhaseChange(action);
         }
 
         public void UnsubscribeToPhaseChange(Action action)
         {
-            _gameState.Phases.UnsubscribeToPhaseChange(action);
+            _gameHandler.GameState.UnsubscribeToPhaseChange(action);
         }
     }
 }

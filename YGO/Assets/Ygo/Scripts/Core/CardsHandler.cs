@@ -9,46 +9,42 @@ namespace Ygo.Core
 {
     public class CardsHandler
     {
-        public IList<ICardInstance> CardsDrawn => _cardsDrawn.AsReadOnly();
-        public IList<ICardInstance> Deck => _deck.AsReadOnly();
-        private List<ICardInstance> _cardsDrawn;
-        private List<ICardInstance> _deck;
+        public IList<ICardInstance> PlayerHand => _playerHand.AsReadOnly();
+        public IList<ICardInstance> MainDeck => _mainDeck.AsReadOnly();
+        private List<ICardInstance> _playerHand;
+        private List<ICardInstance> _mainDeck;
 
         public void Setup(ICardRepository repo)
         {
-            _cardsDrawn = new List<ICardInstance>();
-            _deck = CreateDeck(repo, 40);
+            _playerHand = new List<ICardInstance>();
+            _mainDeck = CreateDeck(repo, 40);
         }
         
          public void ShuffleDeck()
         {
             var rng = new Random();
 
-            for (var i = _deck.Count - 1; i > 0; i--)
+            for (var i = _mainDeck.Count - 1; i > 0; i--)
             {
                 var j = rng.Next(0, i + 1);
-                (_deck[i], _deck[j]) = (_deck[j], _deck[i]);
+                (_mainDeck[i], _mainDeck[j]) = (_mainDeck[j], _mainDeck[i]);
             }
 
-            foreach (var card in _deck)
+            foreach (var card in _mainDeck)
             {
                 Debug.Log(card.Data.Name);
             }
         }
         
-        public bool DrawCards(int amount)
+        public bool TryDrawFromDeck()
         {
-            for (var i = 0; i < amount; i++)
+            if (_mainDeck.Count <= 0)
             {
-                if (_deck.Count == 0)
-                {
-                    Debug.Log("OVERDECK!");
-                    return false;
-                }
-                var cardToDraw = _deck[0];
-                _cardsDrawn.Add(cardToDraw);
-                _deck.RemoveAt(0);
+                return false;
             }
+            var cardToDraw = _mainDeck[0];
+            _playerHand.Add(cardToDraw);
+            _mainDeck.RemoveAt(0);
             return true;
         }
 
@@ -59,7 +55,7 @@ namespace Ygo.Core
             var cardsIncluded = new Dictionary<int, int>();
             var availableIds = repo.IdsList;
             var rng = new Random();
-            _cardsDrawn = new List<ICardInstance>();
+            _playerHand = new List<ICardInstance>();
             for (var i = 0; i < deckSize; i++)
             {
                 CardData data = null;

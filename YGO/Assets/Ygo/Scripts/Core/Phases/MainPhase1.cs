@@ -9,23 +9,23 @@ namespace Ygo.Core.Phases
     {
         public override string Name => "Main Phase 1";
 
-        private bool _normalSummoned;
         private MainGameState _currentGameState;
+        private TurnContext _context;
         
-        public MainPhase1(IGamePhase nextPhase, CardsHandler cardsHandler, Action advancePhase) 
-            : base(nextPhase, cardsHandler, advancePhase)
+        public MainPhase1(IGamePhase nextPhase, Action advancePhase) 
+            : base(nextPhase, advancePhase)
         {
         }
 
-        public override void Init()
+        public override void Init(TurnContext context)
         {
-            _normalSummoned = false;
             _currentGameState = MainGameState.Open;
+            _context = context;
         }
 
         public override ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card)
         {
-            if (_normalSummoned || _currentGameState != MainGameState.Open)
+            if (_context.CurrentTurnPlayer.NormalSummonFlag || _currentGameState != MainGameState.Open)
             {
                 return new ClickedOnCardHandResponse(true);
             }

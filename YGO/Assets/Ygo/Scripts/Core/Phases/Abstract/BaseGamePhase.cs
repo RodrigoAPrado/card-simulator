@@ -10,16 +10,18 @@ namespace Ygo.Core.Phases.Abstract
         public IGamePhase NextPhase { get; }
         public bool HasNextPhase => NextPhase != null;
 
-        protected CardsHandler _cardsHandler;
         private Action _advancePhase;
-        protected BaseGamePhase(IGamePhase nextPhase, CardsHandler cardsHandler, Action advancePhase)
+        protected TurnContext _context;
+        protected BaseGamePhase(IGamePhase nextPhase, Action advancePhase)
         {
             NextPhase = nextPhase;
-            _cardsHandler = cardsHandler;
             _advancePhase = advancePhase;
         }
 
-        public virtual void Init() { }
+        public virtual void Init(TurnContext context)
+        {
+            _context = context;
+        }
 
         public virtual bool DrawFromDeck()
         {

@@ -1,39 +1,53 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Ygo.Core.Abstract;
-using Ygo.Data;
-using Random = System.Random;
+﻿using System;
+using Ygo.Core.Phases;
+using Ygo.Core.Phases.Abstract;
 
 namespace Ygo.Core
 {
     public class GameState
     {
-        public PhasesMachine Phases { get; private set; }
-        public CardsHandler CardsHandler { get; private set; }
+        public TurnContext TurnContext { get; private set; }
+        public IGamePhase CurrentPhase { get; private set; }
+        private IGamePhase _firstGamePhase;
+
+        public event Action PhaseChange;
         
-        public void Setup(ICardRepository repo)
+        public void Setup(TurnContext turnContext)
         {
-            CardsHandler = new CardsHandler();
-            CardsHandler.Setup(repo);
-            CardsHandler.ShuffleDeck();
-            Phases = new PhasesMachine();
-            Phases.Setup(CardsHandler);
+            TurnContext = turnContext;
+            _firstGamePhase = new EndPhase(null, AdvancePhase);
+            CurrentPhase = new MainPhase2(_firstGamePhase, AdvancePhase);
+            _firstGamePhase = CurrentPhase;
+            CurrentPhase = new BattlePhase(_firstGamePhase, AdvancePhase);
+            _firstGamePhase = CurrentPhase;
+            CurrentPhase = new MainPhase1(_firstGamePhase, AdvancePhase);
+            _firstGamePhase = CurrentPhase;
+            CurrentPhase = new StandbyPhase(_firstGamePhase, AdvancePhase);
+            _firstGamePhase = CurrentPhase;
+            CurrentPhase = new DrawPhase(_firstGamePhase, AdvancePhase);
+            _firstGamePhase = CurrentPhase;
         }
 
         public void Init()
         {
-            Phases.Init();
+            CurrentPhase.Init(TurnContext);
         }
 
-        public void ShuffleDeck()
+        public void SubscribeToPhaseChange(Action action)
         {
-            CardsHandler.ShuffleDeck();
+            PhaseChange += action;
         }
 
-        public void DrawCard(int amount)
+        public void UnsubscribeToPhaseChange(Action action)
         {
-            CardsHandler.DrawCards(amount);
+            PhaseChange -= action;
+        }
+
+        private void AdvancePhase()
+        {
+            CurrentPhase = CurrentPhase.NextPhase;
+            PhaseChange?.Invoke();
+            CurrentPhase.Init(TurnContext);
         }
     }
 }

@@ -44,26 +44,14 @@ namespace Ygo.Scripts.Controller
             _application = new GameApplication(data);
             _application.InitializeGame();
             zoomCard.SetZoomMode();
-            _application.DrawInitialHand();
             _playerHand = new List<CardController>();
             UpdatePlayerHand();
-            mainDeckController.SetDeckSize(_application.Deck.Count);
+            mainDeckController.SetDeckSize(_application.PointOfViewPlayer.CardsHandler.MainDeck.Count);
             mainDeckController.SubscribeToMainDeckClicked(DrawFromDeck);
             _application.SubscribeToPhaseChange(OnPhaseChange);
             PhaseText.SetText(_application.CurrentPhase.Name);
             handController.Init(OnNormalSummon, OnSet, OnTributeSummon, OnTributeSet);
             handController.HideAll();
-        }
-
-        public void ShuffleDeck()
-        {
-            _application.ShuffleDeck();
-        }
-
-        public void DrawCard()
-        {
-            _application.DrawCard();
-            UpdatePlayerHand();
         }
 
         private void UpdatePlayerHand()
@@ -73,15 +61,15 @@ namespace Ygo.Scripts.Controller
                 card.SetDirty();
             }
             
-            for (var i = 0; i < _application.PlayerHand.Count; i++)
+            for (var i = 0; i < _application.PointOfViewPlayer.CardsHandler.PlayerHand.Count; i++)
             {
                 if (_playerHand.Count <= i)
                 {
-                    InstantiateCardController(_application.PlayerHand[i]);
+                    InstantiateCardController(_application.PointOfViewPlayer.CardsHandler.PlayerHand[i]);
                     continue;
                 }
                 _playerHand[i].Enable();
-                _playerHand[i].UpdateCard(_application.PlayerHand[i]);
+                _playerHand[i].UpdateCard(_application.PointOfViewPlayer.CardsHandler.PlayerHand[i]);
             }
 
             foreach (var card in _playerHand)
@@ -111,7 +99,7 @@ namespace Ygo.Scripts.Controller
             if (!drawn) return;
             
             UpdatePlayerHand();
-            mainDeckController.SetDeckSize(_application.Deck.Count);
+            mainDeckController.SetDeckSize(_application.PointOfViewPlayer.CardsHandler.MainDeck.Count);
         }
 
         private void ClickedOnCardInHand(CardController cardController)
