@@ -4,9 +4,9 @@ using Ygo.Application;
 using Ygo.Controller.Card;
 using Ygo.Controller.Field;
 using Ygo.Core.Abstract;
-using Ygo.Scripts.Controller.Hand;
-using Ygo.Scripts.View;
+using Ygo.Controller.Hand;
 using Ygo.Service;
+using Ygo.View;
 
 namespace Ygo.Scripts.Controller
 {
@@ -35,7 +35,7 @@ namespace Ygo.Scripts.Controller
 
         [Header("Phase")] 
         [field: SerializeField]
-        private TextView PhaseText;
+        private TextViewUI PhaseText;
         
         public void Awake()
         {

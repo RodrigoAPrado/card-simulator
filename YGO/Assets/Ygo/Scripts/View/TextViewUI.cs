@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Ygo.View
 {
-    public class TextView : MonoBehaviour
+    public class TextViewUI : MonoBehaviour
     {
         [field: SerializeField] 
-        private TextMeshPro Text;
+        private TextMeshProUGUI Text;
 
         public void SetText(string text)
         {

@@ -2,7 +2,7 @@
 using UnityEngine;
 using Ygo.Core.Response;
 
-namespace Ygo.Scripts.Controller.Hand
+namespace Ygo.Controller.Hand
 {
     public class HandController : MonoBehaviour
     {

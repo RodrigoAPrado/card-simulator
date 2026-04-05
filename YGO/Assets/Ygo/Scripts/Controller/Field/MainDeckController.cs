@@ -1,14 +1,14 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Ygo.Scripts.View.Field;
+using Ygo.View;
 
 namespace Ygo.Controller.Field
 {
     public class MainDeckController : MonoBehaviour, IPointerClickHandler
     {
         [field: SerializeField] 
-        private MainDeckView view;
+        private TextView view;
         
         public event Action OnMainDeckClicked;
         
@@ -24,7 +24,7 @@ namespace Ygo.Controller.Field
 
         public void SetDeckSize(int deckSize)
         {
-            view.SetDeckSize(deckSize.ToString());
+            view.SetText(deckSize.ToString());
         }
         
         public void OnPointerClick(PointerEventData eventData)
