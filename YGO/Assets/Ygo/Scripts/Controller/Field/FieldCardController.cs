@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Ygo.Controller.Card;
 using Ygo.Core.Abstract;
 using Ygo.Data.Enums;
@@ -10,7 +11,7 @@ using Ygo.View.ScriptableObjects;
 
 namespace Ygo.Controller.Field
 {
-    public class FieldCardController : MonoBehaviour
+    public class FieldCardController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [field: SerializeField] 
         private FieldCardView view;
@@ -18,8 +19,6 @@ namespace Ygo.Controller.Field
         public ICardInstance CardInstance => _cardInstance;
         
         private ICardInstance _cardInstance;
-        private bool _zoomMode;
-        private bool _handMode;
 
         private Action<ICardInstance> _onHover;
         private Action<FieldCardController> _onClick;
@@ -37,6 +36,7 @@ namespace Ygo.Controller.Field
             _onClick = onClick;
             Enabled = true;
             UpdateCard(cardInstance);
+            view.AnimateFloating();
         }
 
         public void UpdateCard(ICardInstance cardInstance)
@@ -52,14 +52,9 @@ namespace Ygo.Controller.Field
             Dirty = false;
         }
 
-        public void SetHandMode()
+        public void SetDefense(bool value)
         {
-            _handMode = true;
-        }
-
-        public void SetZoomMode()
-        {
-            _zoomMode = true;
+            view.SetDefense(value);
         }
 
         public void OnDestroy()
@@ -70,8 +65,6 @@ namespace Ygo.Controller.Field
         private void InitMonster()
         {
             view.SetLevel(_cardInstance.CurrentLevel.GetValueOrDefault());
-            view.SetMonsterText(_handMode ? "" : _cardInstance.CardText);
-            view.SetMonsterType(GetMonsterType());
             view.SetMonsterAtk(_cardInstance.CurrentAtk.GetValueOrDefault().ToString());
             view.SetMonsterDef(_cardInstance.CurrentDef.GetValueOrDefault().ToString());
         }
@@ -180,32 +173,6 @@ namespace Ygo.Controller.Field
             return sb.ToString();
         }
 
-        public void Hover()
-        {
-            if (!Enabled)
-                return;
-            if (_zoomMode)
-                return;
-            view.ToggleHighlight(true);
-            _onHover.Invoke(_cardInstance);
-        }
-
-        public void Exit()
-        {
-            if (!Enabled)
-                return;
-            if (_zoomMode)
-                return;
-            view.ToggleHighlight(false);
-        }
-
-        public void Click()
-        {
-            if (!Enabled)
-                return;
-            _onClick?.Invoke(this);
-        }
-
         public void SetDirty()
         {
             Dirty = true;
@@ -224,6 +191,28 @@ namespace Ygo.Controller.Field
             view.Clear();
             gameObject.SetActive(false);
             Dirty = false;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!Enabled)
+                return;
+            _onClick?.Invoke(this);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (!Enabled)
+                return;
+            view.ToggleHighlight(true);
+            _onHover?.Invoke(_cardInstance);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!Enabled)
+                return;
+            view.ToggleHighlight(false);
         }
     }
 }

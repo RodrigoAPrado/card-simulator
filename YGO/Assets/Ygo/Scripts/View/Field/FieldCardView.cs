@@ -1,10 +1,11 @@
-﻿using TMPro;
+﻿using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using Ygo.View.ScriptableObjects;
 
 namespace Ygo.View.Field
 {
-    public class FieldCardView
+    public class FieldCardView : MonoBehaviour
     {
         [Header("Frame")] 
         [field: SerializeField]
@@ -40,16 +41,55 @@ namespace Ygo.View.Field
 
         [Header("CardBox")] 
         [field: SerializeField]
-        private TextMeshPro monsterType;
-        
-        [field: SerializeField]
-        private TextMeshPro monsterText;
-        
-        [field: SerializeField]
         private TextMeshPro monsterAtk;
-        
         [field: SerializeField]
         private TextMeshPro monsterDef;
+        [field: SerializeField]
+        private TextMeshPro monsterLevel;
+
+        [Header("CardMode")] 
+        [field: SerializeField]
+        private GameObject cardContent;
+        [field: SerializeField]
+        private GameObject cardFront;
+        [field: SerializeField]
+        private GameObject cardBack;
+        [field: SerializeField]
+        private RectTransform cardGraphics;
+        [field: SerializeField]
+        private RectTransform atkRect;
+        [field: SerializeField]
+        private RectTransform defRect;
+
+        public void SetDefense(bool value)
+        {
+            if (value)
+            {
+                cardGraphics.localRotation = Quaternion.Euler(0, 0, 90);
+                highlight.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                atkRect.localScale = new Vector3(0.8f, 0.8f, 1);
+                defRect.localScale = new Vector3(1.2f, 1.2f, 1);
+            }
+            else
+            {
+                cardGraphics.localRotation = Quaternion.Euler(0, 0, 0);
+                highlight.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                atkRect.localScale = new Vector3(1.2f, 1.2f, 1);
+                defRect.localScale = new Vector3(0.8f, 0.8f, 1);
+            }
+        }
+
+        public void AnimateFloating()
+        {
+            // 1. Garante que qualquer animação anterior no cardContent seja parada para não encavalar
+            cardContent.transform.DOKill();
+
+            // 2. Faz o movimento no eixo Z local
+            // Supondo que 0.1f seja a altura da flutuação
+            cardContent.transform.DOLocalMoveZ(-0.08f, 1.2f) 
+                .SetEase(Ease.InOutSine) // Movimento suave nas extremidades
+                .SetLoops(-1, LoopType.Yoyo); // -1 = Infinito, Yoyo = vai e volta
+        }
         
         public void SetFrame(CardFrameType type)
         {
@@ -84,6 +124,7 @@ namespace Ygo.View.Field
 
         public void SetLevel(int value)
         {
+            monsterLevel.text = value.ToString();
             for (var i = 0; i < levelsContainer.Length; i++)
             {
                 levelsContainer[i].SetActive(value > i);
@@ -101,16 +142,6 @@ namespace Ygo.View.Field
                 //Debug.LogWarning(path + " is not a valid illustration");
                 illustration.sprite = emptyIllustrationSprite;
             }
-        }
-
-        public void SetMonsterType(string value)
-        {
-            monsterType.text = value;
-        }
-
-        public void SetMonsterText(string value)
-        {
-            monsterText.text = value;
         }
 
         public void SetMonsterAtk(string value)

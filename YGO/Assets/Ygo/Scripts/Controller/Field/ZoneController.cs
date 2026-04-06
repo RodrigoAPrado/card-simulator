@@ -34,11 +34,20 @@ namespace Ygo.Controller.Field
         
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (!Zone.IsFree)
+            {
+                return;
+            }
             _onClick?.Invoke(this);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (!Zone.IsFree)
+            {
+                view.ToggleHover(false);
+                return;
+            }
             view.ToggleHover(true);
         }
 

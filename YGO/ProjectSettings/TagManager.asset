@@ -44,8 +44,29 @@ TagManager:
   - name: Card
     uniqueID: 1463036753
     locked: 0
-  - name: CardText
+  - name: CardElements
     uniqueID: 1775762013
+    locked: 0
+  - name: CardStatsBox
+    uniqueID: 1229551717
+    locked: 0
+  - name: CardBack
+    uniqueID: 1491753883
+    locked: 0
+  - name: Overlay
+    uniqueID: 987007659
+    locked: 0
+  - name: CardStatsIconShadow
+    uniqueID: 1027790387
+    locked: 0
+  - name: CardStatsIcon
+    uniqueID: 2499549125
+    locked: 0
+  - name: CardStatsShadow
+    uniqueID: 1824485305
+    locked: 0
+  - name: CardStats
+    uniqueID: 1589312119
     locked: 0
   m_RenderingLayers:
   - Default

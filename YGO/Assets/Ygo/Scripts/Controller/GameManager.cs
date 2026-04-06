@@ -19,6 +19,8 @@ namespace Ygo.Scripts.Controller
         [Header("CardPrefab")] 
         [field: SerializeField]
         private CardController cardPrefab;
+        [field: SerializeField]
+        private FieldCardController fieldCardPrefab;
 
         [Header("HandsArea")] 
         [field: SerializeField]
@@ -38,6 +40,10 @@ namespace Ygo.Scripts.Controller
         private MainDeckController mainDeckController;
         [field: SerializeField]
         private List<ZoneController> monsterZoneControllers;
+        [field: SerializeField]
+        private Transform monsterCardsParent;
+        private Dictionary<ZonePosition, FieldCardController> zoneCardControllers;
+        
 
         [Header("Phase")] 
         [field: SerializeField]
@@ -60,6 +66,7 @@ namespace Ygo.Scripts.Controller
             PhaseText.SetText(_application.CurrentPhase.Name);
             handController.Init(OnTryNormalSummon, OnTrySet, OnTryTributeSummon, OnTryTributeSet);
             handController.HideAll();
+            zoneCardControllers = new Dictionary<ZonePosition, FieldCardController>();
             foreach (var zoneController in monsterZoneControllers)
             {
                 var boardZone =  _application.PointOfViewPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
@@ -173,8 +180,23 @@ namespace Ygo.Scripts.Controller
                     {
                         zoneController.ToggleHighlight(false);
                     }
+                    SetupFieldCardController(boardZone);
                 }
             }
+        }
+
+        private void SetupFieldCardController(ZoneController boardZone)
+        {
+            if (zoneCardControllers.TryGetValue(boardZone.Zone.Position, out var fieldCardController))
+            {
+                fieldCardController.Init(boardZone.Zone.CardInZone);
+                return;
+            }
+            
+            var newFieldCardController = Instantiate(fieldCardPrefab, monsterCardsParent);
+            newFieldCardController.Init(boardZone.Zone.CardInZone, UpdateZoomCard);
+            newFieldCardController.transform.localPosition = new Vector3(boardZone.transform.localPosition.x, boardZone.transform.localPosition.y + 0.05f, 0);
+            newFieldCardController.SetDefense(false);
         }
     }
 }
