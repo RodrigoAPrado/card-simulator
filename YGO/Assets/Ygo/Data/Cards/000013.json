@@ -4,8 +4,8 @@
   "name": "Charubin the Fire Knight",
   "monster_data": {
     "attribute": 5,
-    "monster_type": 4,
-    "monster_kinds": [
+    "type": 4,
+    "kinds": [
       1,
       3
     ],

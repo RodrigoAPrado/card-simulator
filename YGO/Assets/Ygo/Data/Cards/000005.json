@@ -4,8 +4,8 @@
   "name": "Armaill",
   "monster_data": {
     "attribute": 3,
-    "monster_type": 4,
-    "monster_kinds": [
+    "type": 4,
+    "kinds": [
       1
     ],
     "atk": 700,

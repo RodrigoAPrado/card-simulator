@@ -4,8 +4,8 @@
   "name": "Dark Titan of Terror",
   "monster_data": {
     "attribute": 1,
-    "monster_type": 8,
-    "monster_kinds": [
+    "type": 8,
+    "kinds": [
       1
     ],
     "atk": 1300,

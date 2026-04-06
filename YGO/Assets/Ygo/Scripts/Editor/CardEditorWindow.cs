@@ -107,7 +107,7 @@ namespace Ygo.Editor
             );
 
             // Criação do objeto CardData
-            var cardData = new CardData(id, cardType, cardName, monsterData);
+            var cardData = new CardData(id, cardType, cardName, monsterData, null, null);
 
             // Serialização para JSON
             string json = JsonConvert.SerializeObject(cardData, Formatting.Indented);

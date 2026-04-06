@@ -4,8 +4,8 @@
   "name": "Basic Insect",
   "monster_data": {
     "attribute": 3,
-    "monster_type": 10,
-    "monster_kinds": [
+    "type": 10,
+    "kinds": [
       1
     ],
     "atk": 500,

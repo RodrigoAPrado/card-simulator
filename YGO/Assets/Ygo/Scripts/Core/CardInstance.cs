@@ -13,6 +13,7 @@ namespace Ygo.Core
         public int? CurrentAtk => Data.MonsterData?.Atk + AtkModifier;
         public int? CurrentDef => Data.MonsterData?.Def + DefModifier;
         public bool IsValidMonster => Data.CardType == CardType.Monster && Data.MonsterData != null;
+        public bool IsValidSpell => Data.CardType == CardType.Spell && Data.SpellData != null;
         public bool IsPendulum => Data.MonsterData?.Kinds?.Contains(MonsterKind.Pendulum) == true;
         public bool IsRitual => Data.MonsterData?.Kinds?.Contains(MonsterKind.Ritual) == true;
         public bool IsFusion => Data.MonsterData?.Kinds?.Contains(MonsterKind.Fusion) == true;
@@ -21,6 +22,10 @@ namespace Ygo.Core
         public bool IsLink => Data.MonsterData?.Kinds?.Contains(MonsterKind.Link) == true;
         public bool IsEffect => Data.MonsterData?.Kinds?.Contains(MonsterKind.Effect) == true;
         public string CardText => Data.MonsterData?.FlavorText;
+        public bool TreatedAsSpell { get; private set; }
+        public bool TreatedAsTrap { get; private set; }
+        public bool TreatedAsMonster { get; private set; }
+        public bool IsField => Data.CardType == CardType.Spell && Data.SpellData is { Type: SpellType.Field };
 
         private int LevelModifier { get; } = 0;
         private int AtkModifier { get; } = 0;

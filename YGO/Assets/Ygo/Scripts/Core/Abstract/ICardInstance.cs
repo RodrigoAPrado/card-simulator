@@ -12,6 +12,7 @@ namespace Ygo.Core.Abstract
         int? CurrentAtk { get; }
         int? CurrentDef { get; }
         bool IsValidMonster { get; }
+        bool IsValidSpell { get; }
         bool IsPendulum { get; }
         bool IsRitual { get; }
         bool IsFusion { get; }
@@ -20,5 +21,9 @@ namespace Ygo.Core.Abstract
         bool IsLink { get; }
         bool IsEffect { get; }
         string CardText { get; }
+        bool TreatedAsSpell { get; }
+        bool TreatedAsTrap { get; }
+        bool TreatedAsMonster { get; }
+        bool IsField { get; }
     }
 }

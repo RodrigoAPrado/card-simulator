@@ -4,8 +4,8 @@
   "name": "Destroyer Golem",
   "monster_data": {
     "attribute": 3,
-    "monster_type": 18,
-    "monster_kinds": [
+    "type": 18,
+    "kinds": [
       1
     ],
     "atk": 1500,

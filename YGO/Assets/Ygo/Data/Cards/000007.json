@@ -4,8 +4,8 @@
   "name": "Armored Starfish",
   "monster_data": {
     "attribute": 4,
-    "monster_type": 15,
-    "monster_kinds": [
+    "type": 15,
+    "kinds": [
       1
     ],
     "atk": 850,

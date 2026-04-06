@@ -4,8 +4,8 @@
   "name": "Dark Assailant",
   "monster_data": {
     "attribute": 1,
-    "monster_type": 3,
-    "monster_kinds": [
+    "type": 3,
+    "kinds": [
       1
     ],
     "atk": 1200,

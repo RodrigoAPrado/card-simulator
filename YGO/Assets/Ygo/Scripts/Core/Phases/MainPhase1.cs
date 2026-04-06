@@ -1,5 +1,6 @@
 ﻿using System;
 using Ygo.Core.Abstract;
+using Ygo.Core.Board.Abstract;
 using Ygo.Core.Phases.Abstract;
 using Ygo.Core.Response;
 
@@ -10,7 +11,6 @@ namespace Ygo.Core.Phases
         public override string Name => "Main Phase 1";
 
         private MainGameState _currentGameState;
-        private TurnContext _context;
         
         public MainPhase1(IGamePhase nextPhase, Action advancePhase) 
             : base(nextPhase, advancePhase)
@@ -25,7 +25,9 @@ namespace Ygo.Core.Phases
 
         public override ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card)
         {
-            if (_context.CurrentTurnPlayer.NormalSummonFlag || _currentGameState != MainGameState.Open)
+            if (_currentGameState != MainGameState.Open
+                || _context.CurrentTurnPlayer.NormalSummonFlag 
+                || !_context.CurrentTurnPlayer.BoardHandler.IsAnyFree(ZoneType.MainMonsterZone))
             {
                 return new ClickedOnCardHandResponse(true);
             }
@@ -33,33 +35,11 @@ namespace Ygo.Core.Phases
             if (!card.IsValidMonster)
                 throw new InvalidOperationException($"Card is not a valid monster");
             
-            var response = new ClickedOnCardHandResponse(false);
-            
-            
-            response.NormalSummon = true;
-            response.NormalSet = true;
-            return response;
-            
-            var level = card.Data.MonsterData.Level;
-            switch (level)
+            return new ClickedOnCardHandResponse(false)
             {
-                case <= 4:
-                    response.NormalSummon = true;
-                    response.NormalSet = true;
-                    break;
-                case <= 6:
-                    response.TributeAmount = 1;
-                    response.TributeSummon = true;
-                    response.TributeSet = true;
-                    break;
-                default:
-                    response.TributeAmount = 2;
-                    response.TributeSummon = true;
-                    response.TributeSet = true;
-                    break;
-            }
-
-            return response;
+                NormalSummon = true,
+                NormalSet = true
+            };
         }
     }
 

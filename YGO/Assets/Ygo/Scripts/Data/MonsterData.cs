@@ -9,9 +9,9 @@ namespace Ygo.Data
     {
         [JsonProperty("attribute")]
         public MonsterAttribute Attribute { get; }
-        [JsonProperty("monster_type")]
+        [JsonProperty("type")]
         public MonsterType Type { get; }
-        [JsonProperty("monster_kinds")]
+        [JsonProperty("kinds")]
         public IList<MonsterKind> Kinds { get; }
         [JsonProperty("atk")]
         public int Atk { get; }

@@ -4,8 +4,8 @@
   "name": "Curse of Dragon",
   "monster_data": {
     "attribute": 1,
-    "monster_type": 2,
-    "monster_kinds": [
+    "type": 2,
+    "kinds": [
       1
     ],
     "atk": 2000,

@@ -2,6 +2,9 @@
 using System.Linq;
 using UnityEngine;
 using Ygo.Core.Abstract;
+using Ygo.Core.Board;
+using Ygo.Core.Board.Abstract;
+using Ygo.Core.Board.Validator;
 using Ygo.Data;
 using Random = System.Random;
 
@@ -14,10 +17,12 @@ namespace Ygo.Core
         private const int StartingLifePoints = 8000;
 
         public GameState GameState { get; private set; }
+        private IDictionary<ZoneType, IPutCardInZoneValidator> _validators;
         
         public void Setup(ICardRepository repo)
         {
             GameState = new GameState();
+            _validators = BuildZoneValidators();
 
             var turnContext = new TurnContext(new List<PlayerContext>()
             {
@@ -41,8 +46,21 @@ namespace Ygo.Core
             cardsHandler.Setup(repo);
             cardsHandler.ShuffleDeck();
 
-            var player = new PlayerContext(cardsHandler, StartingLifePoints, true);
+            var boardHandler = new BoardHandler();
+            boardHandler.Setup(_validators);
+
+            var player = new PlayerContext(cardsHandler, boardHandler, StartingLifePoints, true);
             return player;
+        }
+
+        private Dictionary<ZoneType, IPutCardInZoneValidator> BuildZoneValidators()
+        {
+            return new Dictionary<ZoneType, IPutCardInZoneValidator>
+            {
+                { ZoneType.FieldZone, new PutFieldSpellInZoneValidator() },
+                { ZoneType.MainMonsterZone, new PutMonsterInZoneValidator() },
+                { ZoneType.SpellTrapZone, new PutSpellTrapInZoneValidator() }
+            };
         }
     }
 }

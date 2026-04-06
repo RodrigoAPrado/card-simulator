@@ -11,6 +11,6 @@ namespace Ygo.Core.Phases.Abstract
         void Init(TurnContext context);
         bool DrawFromDeck();
         ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card);
-
+        
     }
 }

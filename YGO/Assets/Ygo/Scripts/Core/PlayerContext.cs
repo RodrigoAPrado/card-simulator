@@ -1,4 +1,5 @@
 ﻿using System;
+using Ygo.Core.Board;
 
 namespace Ygo.Core
 {
@@ -6,6 +7,7 @@ namespace Ygo.Core
     {
         public Guid Id { get; }
         public CardsHandler CardsHandler { get; private set; }
+        public BoardHandler BoardHandler { get; private set; }
         public int CurrentLifePoints { get; private set; }
         public int PreviousLifePoints  { get; private set; }
         
@@ -15,10 +17,11 @@ namespace Ygo.Core
         
         private bool _overDeck;
 
-        public PlayerContext(CardsHandler cardsHandler, int startingLifePoints, bool showViewPoint)
+        public PlayerContext(CardsHandler cardsHandler, BoardHandler boardHandler, int startingLifePoints, bool showViewPoint)
         {
             Id = new Guid();
             CardsHandler = cardsHandler;
+            BoardHandler = boardHandler;
             CurrentLifePoints = startingLifePoints;
             PreviousLifePoints = CurrentLifePoints;
             ShowViewPoint = showViewPoint;
