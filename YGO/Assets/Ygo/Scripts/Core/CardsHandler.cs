@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using Ygo.Core.Abstract;
+using Ygo.Core.Enums;
 using Ygo.Data;
 using Random = System.Random;
 
@@ -9,6 +10,7 @@ namespace Ygo.Core
 {
     public class CardsHandler
     {
+        public ICardInstance[] PlayerCards { get; private set; }
         public IList<ICardInstance> PlayerHand => _playerHand.AsReadOnly();
         public IList<ICardInstance> MainDeck => _mainDeck.AsReadOnly();
         private List<ICardInstance> _playerHand;
@@ -18,6 +20,11 @@ namespace Ygo.Core
         {
             _playerHand = new List<ICardInstance>();
             _mainDeck = CreateDeck(repo, 40);
+            PlayerCards = new ICardInstance[_mainDeck.Count];
+            for (var i = 0; i < PlayerCards.Length; i++)
+            {
+                PlayerCards[i] = _mainDeck[i];
+            }
         }
         
          public void ShuffleDeck()
@@ -45,7 +52,13 @@ namespace Ygo.Core
             var cardToDraw = _mainDeck[0];
             _playerHand.Add(cardToDraw);
             _mainDeck.RemoveAt(0);
+            cardToDraw.SetLocation(CardLocation.Hand);
             return true;
+        }
+
+        public void RemoveCardFromHand(ICardInstance cardInstance)
+        {
+            _playerHand.Remove(cardInstance);
         }
 
         private List<ICardInstance> CreateDeck(ICardRepository repo, int deckSize)
@@ -81,8 +94,10 @@ namespace Ygo.Core
                         }
                     }
                 } while (data == null);
-                
-                deck.Add(new CardInstance(data));
+
+                var instance = new CardInstance(data);
+                instance.SetLocation(CardLocation.MainDeck);
+                deck.Add(instance);
             }
 
             return deck.OrderBy(x => x.Data.Id).ToList();

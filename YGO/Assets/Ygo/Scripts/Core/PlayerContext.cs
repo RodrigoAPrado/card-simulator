@@ -1,4 +1,5 @@
 ﻿using System;
+using Ygo.Core.Abstract;
 using Ygo.Core.Board;
 
 namespace Ygo.Core

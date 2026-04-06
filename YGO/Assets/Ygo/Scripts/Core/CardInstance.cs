@@ -1,5 +1,6 @@
 ﻿using System;
 using Ygo.Core.Abstract;
+using Ygo.Core.Enums;
 using Ygo.Data;
 using Ygo.Data.Enums;
 
@@ -9,6 +10,7 @@ namespace Ygo.Core
     {
         public Guid Id { get; }
         public CardData Data { get; }
+        public CardLocation Location { get; private set; }
         public int? CurrentLevel => Data.MonsterData?.Level + LevelModifier;
         public int? CurrentAtk => Data.MonsterData?.Atk + AtkModifier;
         public int? CurrentDef => Data.MonsterData?.Def + DefModifier;
@@ -26,7 +28,6 @@ namespace Ygo.Core
         public bool TreatedAsTrap { get; private set; }
         public bool TreatedAsMonster { get; private set; }
         public bool IsField => Data.CardType == CardType.Spell && Data.SpellData is { Type: SpellType.Field };
-
         private int LevelModifier { get; } = 0;
         private int AtkModifier { get; } = 0;
         private int DefModifier { get; } = 0;
@@ -35,6 +36,11 @@ namespace Ygo.Core
         {
             Id = Guid.NewGuid();
             Data = data;
+        }
+        
+        public void SetLocation(CardLocation location)
+        {
+            Location = location;
         }
     }
 }

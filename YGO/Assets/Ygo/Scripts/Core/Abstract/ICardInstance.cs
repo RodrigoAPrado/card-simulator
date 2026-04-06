@@ -1,4 +1,5 @@
 ﻿using System;
+using Ygo.Core.Enums;
 using Ygo.Data;
 using Ygo.Data.Enums;
 
@@ -8,6 +9,7 @@ namespace Ygo.Core.Abstract
     {
         Guid Id { get; }
         CardData Data { get; }
+        CardLocation Location { get; }
         int? CurrentLevel { get; }
         int? CurrentAtk { get; }
         int? CurrentDef { get; }
@@ -25,5 +27,6 @@ namespace Ygo.Core.Abstract
         bool TreatedAsTrap { get; }
         bool TreatedAsMonster { get; }
         bool IsField { get; }
+        void SetLocation(CardLocation location);
     }
 }

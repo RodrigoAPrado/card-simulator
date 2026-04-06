@@ -1,24 +1,50 @@
-﻿using UnityEngine;
-using Ygo.Controller.Card;
+﻿using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
 using Ygo.Core.Abstract;
+using Ygo.Core.Board.Abstract;
+using Ygo.View.Field;
 
 namespace Ygo.Controller.Field
 {
-    public class ZoneController : MonoBehaviour
+    public class ZoneController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        [Header("Config")]
-        [field: SerializeField]
-        private ZoneType zoneType;
-        [field: SerializeField]
-        private int zoneId;
+        [field: SerializeField] 
+        public ZonePosition Position { get; private set; }
+        [field: SerializeField] 
+        private ZoneView view;
         
-        private ICardInstance _cardInstance;
+        public IBoardZone Zone { get; private set; }
         
-        public bool Occupied => _cardInstance != null;
-
-        public void OnClick()
+        private Action<ZoneController> _onClick;
+        
+        
+        public void Init(IBoardZone zone, Action<ZoneController> onClick)
         {
-            Debug.Log("Click");
+            Zone = zone;
+            _onClick = onClick;
+            view.ToggleHover(false);
+            view.ToggleHighlight(false);
+        }
+
+        public void ToggleHighlight(bool value)
+        {
+            view.ToggleHighlight(value);
+        }
+        
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            _onClick?.Invoke(this);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            view.ToggleHover(true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            view.ToggleHover(false);
         }
     }
 

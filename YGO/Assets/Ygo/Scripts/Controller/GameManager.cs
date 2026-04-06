@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Ygo.Application;
 using Ygo.Controller.Card;
 using Ygo.Controller.Field;
 using Ygo.Core.Abstract;
 using Ygo.Controller.Hand;
+using Ygo.Core.Board.Abstract;
+using Ygo.Core.Enums;
 using Ygo.Service;
 using Ygo.View;
 
@@ -32,10 +36,14 @@ namespace Ygo.Scripts.Controller
         [Header("Field")]
         [field: SerializeField]
         private MainDeckController mainDeckController;
+        [field: SerializeField]
+        private List<ZoneController> monsterZoneControllers;
 
         [Header("Phase")] 
         [field: SerializeField]
         private TextViewUI PhaseText;
+        
+        private CardController _currentSelectedCardInHand;
         
         public void Awake()
         {
@@ -46,12 +54,18 @@ namespace Ygo.Scripts.Controller
             zoomCard.SetZoomMode();
             _playerHand = new List<CardController>();
             UpdatePlayerHand();
+            mainDeckController.Init(DrawFromDeck);
             mainDeckController.SetDeckSize(_application.PointOfViewPlayer.CardsHandler.MainDeck.Count);
-            mainDeckController.SubscribeToMainDeckClicked(DrawFromDeck);
             _application.SubscribeToPhaseChange(OnPhaseChange);
             PhaseText.SetText(_application.CurrentPhase.Name);
-            handController.Init(OnNormalSummon, OnSet, OnTributeSummon, OnTributeSet);
+            handController.Init(OnTryNormalSummon, OnTrySet, OnTryTributeSummon, OnTryTributeSet);
             handController.HideAll();
+            foreach (var zoneController in monsterZoneControllers)
+            {
+                var boardZone =  _application.PointOfViewPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
+                    x.Position == zoneController.Position);
+                zoneController.Init(boardZone, OnClickMonsterZone);
+            }
         }
 
         private void UpdatePlayerHand()
@@ -106,6 +120,7 @@ namespace Ygo.Scripts.Controller
         {
             var response = _application.CurrentPhase.ClickedOnCardInHand(cardController.CardInstance);
             handController.Show(response, cardController.transform.position.x);
+            _currentSelectedCardInHand = cardController;
         }
 
         private void OnPhaseChange()
@@ -113,25 +128,53 @@ namespace Ygo.Scripts.Controller
             PhaseText.SetText(_application.CurrentPhase.Name);
         }
 
-        private void OnNormalSummon()
+        private void OnTryNormalSummon()
         {
-            
+            var response = _application.CurrentPhase.CheckWhereToSummonMonster(_currentSelectedCardInHand.CardInstance);
+            if (response.CanSummon)
+            {
+                handController.HideAll();
+                foreach (var zoneController in monsterZoneControllers)
+                {
+                    if (zoneController.Zone.IsFree)
+                    {
+                        zoneController.ToggleHighlight(true);
+                    }
+                }
+            }
         }
 
-        private void OnSet()
+        private void OnTrySet()
         {
-            
+            throw new NotImplementedException();
         }
 
-        private void OnTributeSummon()
+        private void OnTryTributeSummon()
         {
-            
+            throw new NotImplementedException();
         }
 
-        private void OnTributeSet()
+        private void OnTryTributeSet()
         {
-            
+            throw new NotImplementedException();
         }
-        
+
+        private void OnClickMonsterZone(ZoneController boardZone)
+        {
+            if (_application.CurrentPhase.CurrentStep == GameStep.SelectingZoneToSummonMonster)
+            { 
+                var result = _application.CurrentPhase
+                    .SummonCardOnSelectedZone(_currentSelectedCardInHand.CardInstance, boardZone.Zone);
+                
+                if (result)
+                {
+                    UpdatePlayerHand();
+                    foreach (var zoneController in monsterZoneControllers)
+                    {
+                        zoneController.ToggleHighlight(false);
+                    }
+                }
+            }
+        }
     }
 }

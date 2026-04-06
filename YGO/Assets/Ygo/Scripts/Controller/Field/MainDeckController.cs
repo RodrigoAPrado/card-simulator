@@ -9,19 +9,14 @@ namespace Ygo.Controller.Field
     {
         [field: SerializeField] 
         private TextView view;
-        
-        public event Action OnMainDeckClicked;
-        
-        public void SubscribeToMainDeckClicked(Action action)
-        {
-            OnMainDeckClicked += action;
-        }
 
-        public void UnsubscribeFromMainDeckClicked(Action action)
+        private Action _onClick;
+        
+        public void Init(Action onClick)
         {
-            OnMainDeckClicked -= action;
+            _onClick = onClick;
         }
-
+        
         public void SetDeckSize(int deckSize)
         {
             view.SetText(deckSize.ToString());
@@ -29,7 +24,7 @@ namespace Ygo.Controller.Field
         
         public void OnPointerClick(PointerEventData eventData)
         {
-            OnMainDeckClicked?.Invoke();
+            _onClick?.Invoke();
         }
     }
 }
