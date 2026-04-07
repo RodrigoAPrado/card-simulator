@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
 using Ygo.Core.Abstract;
 using Ygo.Core.Board;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Board.Validator;
-using Ygo.Data;
-using Random = System.Random;
 
 namespace Ygo.Core
 {
@@ -18,26 +15,32 @@ namespace Ygo.Core
 
         public GameState GameState { get; private set; }
         private IDictionary<ZoneType, IPutCardInZoneValidator> _validators;
+        private TurnContext _turnContext;
         
         public void Setup(ICardRepository repo)
         {
             GameState = new GameState();
             _validators = BuildZoneValidators();
 
-            var turnContext = new TurnContext(new List<PlayerContext>()
+            _turnContext = new TurnContext(new List<PlayerContext>()
             {
                 CreatePlayer(repo),
                 CreatePlayer(repo)
             });
             
-            turnContext.Init(StartingPLayerIndex, StartingPlayerHand);
+            _turnContext.Init(StartingPLayerIndex, StartingPlayerHand);
             
-            GameState.Setup(turnContext);
+            GameState.Setup(_turnContext);
         }
 
         public void Init()
         {
             GameState.Init();
+        }
+
+        public void SubscribeToPointOfViewChange(Action action)
+        {
+            _turnContext.SubscribeToPointOfViewChanged(action);
         }
 
         private PlayerContext CreatePlayer(ICardRepository repo)

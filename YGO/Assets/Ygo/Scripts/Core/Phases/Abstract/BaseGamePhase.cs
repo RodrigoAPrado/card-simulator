@@ -11,20 +11,19 @@ namespace Ygo.Core.Phases.Abstract
         public abstract string Name { get; }
         public IGamePhase NextPhase { get; }
         public bool HasNextPhase => NextPhase != null;
-        public virtual GameStep CurrentStep => GameStep.None;
-
-        private Action _advancePhase;
+        public GameStep CurrentStep => _currentStep;
+        
         protected TurnContext _context;
-        protected BaseGamePhase(IGamePhase nextPhase, Action advancePhase)
-        {
-            NextPhase = nextPhase;
-            _advancePhase = advancePhase;
-        }
-
-        public virtual void Init(TurnContext context)
+        private GameStep _currentStep;
+        private Action _onGameStepChanged;
+        
+        protected BaseGamePhase(TurnContext context, Action onGameStepChanged)
         {
             _context = context;
+            _onGameStepChanged = onGameStepChanged;
         }
+
+        public abstract void Init();
 
         public virtual bool DrawFromDeck()
         {
@@ -39,10 +38,12 @@ namespace Ygo.Core.Phases.Abstract
 
         public virtual bool SummonCardOnSelectedZone(ICardInstance card, IBoardZone zone) => false;
         public virtual void ToOpenGameStep() { }
+        public virtual void GoToNextPhase() { }
 
-        protected void AdvancePhase()
+        protected void ChangeStep(GameStep step)
         {
-            _advancePhase?.Invoke();
+            _currentStep = step;
+            _onGameStepChanged?.Invoke();
         }
     }
 }

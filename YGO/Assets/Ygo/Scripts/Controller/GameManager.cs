@@ -60,9 +60,17 @@ namespace Ygo.Scripts.Controller
             mainDeckController.Init(DrawFromDeck);
             mainDeckController.SetDeckSize(_application.PointOfViewPlayer.CardsHandler.MainDeck.Count);
             _application.SubscribeToPhaseChange(OnPhaseChange);
+            _application.SubscribeToTurnChange(OnTurnChange);
             PhaseText.SetText(_application.CurrentPhase.Name);
-            handController.Init(OnTryNormalSummon, OnTrySet, OnTryTributeSummon, OnTryTributeSet);
+            handController.Init(OnTryNormalSummon, OnTrySet, OnTryTributeSummon, OnTryTributeSet, OnCancel);
             handController.HideAll();
+            _application.SubscribeToPointOfViewChange(OnPointOfViewChange);
+            SetupVisuals();
+        }
+
+        private void SetupVisuals()
+        {
+            zoomCard.Init();
             foreach (var zoneController in monsterZoneControllers)
             {
                 var boardZone =  _application.PointOfViewPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
@@ -70,6 +78,10 @@ namespace Ygo.Scripts.Controller
                 zoneController.Init(boardZone, OnClickMonsterZone);
             }
             UpdatePlayerHand();
+            foreach (var monsterOnField in monsterOnFieldControllers)
+            {
+                monsterOnField.Init(UpdateZoomCard, ClickedOnCardOnField);
+            }
             UpdatePlayerField();
         }
 
@@ -111,7 +123,7 @@ namespace Ygo.Scripts.Controller
                     continue;
                 var card = monsterOnFieldControllers.FirstOrDefault(x => x.ZonePosition == zone.Position);
                 card?.Enable();
-                card?.Init(zone.Zone.CardInZone, UpdateZoomCard, ClickedOnCardOnField);
+                card?.UpdateCard(zone.Zone.CardInZone);
             }
             
             foreach (var card in monsterOnFieldControllers.Where(card => card.Dirty))
@@ -123,13 +135,15 @@ namespace Ygo.Scripts.Controller
         private void InstantiateCardController(ICardInstance card)
         {
             var o = Instantiate(cardPrefab, playerHandArea.transform);
-            o.Init(card, UpdateZoomCard, ClickedOnCardInHand);
+            o.Init(UpdateZoomCard, ClickedOnCardInHand);
+            o.Enable();
+            o.UpdateCard(card);
             _playerHand.Add(o);
         }
 
         private void UpdateZoomCard(ICardInstance card)
         {
-            zoomCard.Init(card);
+            zoomCard.UpdateCard(card);
         }
 
         private void DrawFromDeck()
@@ -157,6 +171,25 @@ namespace Ygo.Scripts.Controller
         private void OnPhaseChange()
         {
             PhaseText.SetText(_application.CurrentPhase.Name);
+        }
+        
+        private void OnTurnChange()
+        {
+            PhaseText.SetText(_application.CurrentPhase.Name); 
+        }
+
+        private void OnPointOfViewChange()
+        {
+            foreach (var zoneController in monsterZoneControllers)
+            {
+                var boardZone =  _application.PointOfViewPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
+                    x.Position == zoneController.Position);
+                zoneController.UpdateZone(boardZone);
+            }
+            
+            mainDeckController.SetDeckSize(_application.PointOfViewPlayer.CardsHandler.MainDeck.Count);
+            UpdatePlayerHand();
+            UpdatePlayerField();
         }
 
         private void OnTryNormalSummon()
@@ -190,6 +223,12 @@ namespace Ygo.Scripts.Controller
             throw new NotImplementedException();
         }
 
+        private void OnCancel()
+        {
+            _currentSelectedCardInHand = null;
+            handController.HideAll();
+        }
+
         private void OnClickMonsterZone(ZoneController boardZone)
         {
             if (_application.CurrentPhase.CurrentStep == GameStep.SelectingZoneToSummonMonster)
@@ -207,6 +246,11 @@ namespace Ygo.Scripts.Controller
                     }
                 }
             }
+        }
+
+        public void OnClickNextPhase()
+        {
+            _application.CurrentPhase.GoToNextPhase();
         }
     }
 }

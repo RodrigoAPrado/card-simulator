@@ -31,24 +31,18 @@ namespace Ygo.Controller.Card
         public bool Dirty { get; private set; }
         public bool Enabled { get; private set; }
         
-        public void Init(
-            ICardInstance cardInstance, 
-            Action<ICardInstance> onHover = null, 
-            Action<CardController> onClick = null
-            )
+        public void Init(Action<ICardInstance> onHover = null, Action<CardController> onClick = null)
         {
             _onHover = onHover;
             _onClick = onClick;
-            Enabled = true;
-            view.SetHidden(false);
             view.ToggleField(cardMode == CardControllerMode.Field);
-            view.ToggleDefenseMode(false);
-            UpdateCard(cardInstance);
         }
 
         public void UpdateCard(ICardInstance cardInstance)
         {
             _cardInstance = cardInstance;
+            view.ToggleDefenseMode(false);
+            view.SetHidden(false);
             view.SetName(_cardInstance.Data.Name);
             view.SetFrame(GetCardFrameType());
             view.SetIcon(GetCardIconType());
@@ -57,6 +51,7 @@ namespace Ygo.Controller.Card
             if (_cardInstance.IsValidMonster)
                 InitMonster();
             Dirty = false;
+            view.Animate();
         }
 
         public void OnDestroy()

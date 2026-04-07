@@ -10,25 +10,21 @@ namespace Ygo.Core.Phases
 {
     public class MainPhase1 : BaseGamePhase
     {
+
         public override string Name => "Main Phase 1";
         
-        public override GameStep CurrentStep => _currentGameStep;
-        private GameStep _currentGameStep;
-
-        public MainPhase1(IGamePhase nextPhase, Action advancePhase) 
-            : base(nextPhase, advancePhase)
+        public MainPhase1(TurnContext context, Action onGameStepChanged) : base(context, onGameStepChanged)
         {
         }
 
-        public override void Init(TurnContext context)
+        public override void Init()
         {
-            base.Init(context);
-            _currentGameStep = GameStep.Open;
+            ChangeStep(GameStep.Open);
         }
 
         public override ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card)
         {
-            if (_currentGameStep != GameStep.Open
+            if (CurrentStep != GameStep.Open
                 || _context.CurrentTurnPlayer.NormalSummonFlag 
                 || !_context.CurrentTurnPlayer.BoardHandler.IsAnyFree(ZoneType.MainMonsterZone))
             {
@@ -54,7 +50,7 @@ namespace Ygo.Core.Phases
 
             if (availableZones is { Count: > 0 })
             {
-                _currentGameStep = GameStep.SelectingZoneToSummonMonster;
+                ChangeStep(GameStep.SelectingZoneToSummonMonster);
             }
             
             return new WhereToSummonMonsterResponse(availableZones);
@@ -62,10 +58,10 @@ namespace Ygo.Core.Phases
 
         public override void CancelSummoning()
         {
-            if(_currentGameStep != GameStep.SelectingZoneToSummonMonster)
+            if(CurrentStep != GameStep.SelectingZoneToSummonMonster)
                 throw new InvalidOperationException("Can't cancel the summoning while not selecting zone");
-
-            _currentGameStep = GameStep.Open;
+            
+            ChangeStep(GameStep.Open);
         }
 
         public override bool SummonCardOnSelectedZone(ICardInstance card, IBoardZone zone)
@@ -77,13 +73,21 @@ namespace Ygo.Core.Phases
             _context.CurrentTurnPlayer.SetNormalSummoned();
             _context.CurrentTurnPlayer.CardsHandler.RemoveCardFromHand(card);
             card.SetLocation(zone.Position.ToMonsterCardLocation());
-            _currentGameStep = GameStep.OnMonsterSummoned;
+            ChangeStep(GameStep.OnMonsterSummoned);
             return true;
         }
 
         public override void ToOpenGameStep()
         {
-            _currentGameStep = GameStep.Open;
+            ChangeStep(GameStep.Open);
+        }
+
+        public override void GoToNextPhase()
+        {
+            if (CurrentStep != GameStep.Open)
+                return;
+            
+            ChangeStep(GameStep.ProceedToNextPhase);
         }
     }
 }

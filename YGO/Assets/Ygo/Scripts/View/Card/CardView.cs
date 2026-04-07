@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Ygo.View.ScriptableObjects;
@@ -193,7 +194,25 @@ namespace Ygo.View.Card
         
         public void Clear()
         {
-            //TODO: Rotina de Clear.
+            cardContent.DOKill();
+        }
+
+        public void Animate()
+        {
+            if(_fieldEnabled)
+                AnimateFloating();
+        }
+        
+        private void AnimateFloating()
+        {
+            // 1. Garante que qualquer animação anterior no cardContent seja parada para não encavalar
+            cardContent.DOKill();
+
+            // 2. Faz o movimento no eixo Z local
+            // Supondo que 0.1f seja a altura da flutuação
+            cardContent.DOLocalMoveZ(-0.08f, 1.2f) 
+                .SetEase(Ease.InOutSine) // Movimento suave nas extremidades
+                .SetLoops(-1, LoopType.Yoyo); // -1 = Infinito, Yoyo = vai e volta
         }
     }
 }

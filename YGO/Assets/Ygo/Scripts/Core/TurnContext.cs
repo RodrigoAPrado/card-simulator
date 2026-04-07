@@ -13,6 +13,8 @@ namespace Ygo.Core
         private int _currentTurn;
         
         private int _currentTurnPlayerIndex;
+        
+        public event Action PointOfViewChanged;
 
         public TurnContext(IList<PlayerContext> players)
         {
@@ -52,7 +54,12 @@ namespace Ygo.Core
             {
                 if (CurrentTurnPlayer.ShowViewPoint)
                 {
+                    var previousPointOfView = PointOfViewPlayer;
                     PointOfViewPlayer = CurrentTurnPlayer;
+                    if (previousPointOfView != null && previousPointOfView != PointOfViewPlayer)
+                    {
+                        PointOfViewChanged?.Invoke();
+                    }
                     return;
                 }
 
@@ -67,6 +74,16 @@ namespace Ygo.Core
             {
                 throw new NotImplementedException("Massive multiplayer not implemented");
             }
+        }
+
+        public void SubscribeToPointOfViewChanged(Action action)
+        {
+            PointOfViewChanged += action;
+        }
+        
+        public void UnsubscribeToPointOfViewChanged(Action action)
+        {
+            PointOfViewChanged -= action;
         }
     }
 }

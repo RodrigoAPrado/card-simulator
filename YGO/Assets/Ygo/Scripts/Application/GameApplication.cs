@@ -34,10 +34,15 @@ namespace Ygo.Application
         {
             _gameHandler.GameState.SubscribeToPhaseChange(action);
         }
-
-        public void UnsubscribeToPhaseChange(Action action)
+        
+        public void SubscribeToTurnChange(Action action)
         {
-            _gameHandler.GameState.UnsubscribeToPhaseChange(action);
+            _gameHandler.GameState.SubscribeToTurnChange(action);
+        }
+
+        public void SubscribeToPointOfViewChange(Action action)
+        {
+            _gameHandler.SubscribeToPointOfViewChange(action);
         }
     }
 }

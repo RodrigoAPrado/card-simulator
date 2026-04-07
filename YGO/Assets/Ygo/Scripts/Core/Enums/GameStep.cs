@@ -3,8 +3,10 @@
     public enum GameStep
     {
         None = 0,
-        Open = 1,
-        SelectingZoneToSummonMonster = 2,
-        OnMonsterSummoned = 3,
+        WaitingDraw = 1,
+        Open = 2,
+        SelectingZoneToSummonMonster = 3,
+        OnMonsterSummoned = 4,
+        ProceedToNextPhase = 99,
     }
 }

@@ -26,6 +26,11 @@ namespace Ygo.Controller.Field
             view.Init();
         }
 
+        public void UpdateZone(IBoardZone zone)
+        {
+            Zone = zone;
+        }
+
         public void ToggleHighlight(bool value)
         {
             view.ToggleHighlight(value);
