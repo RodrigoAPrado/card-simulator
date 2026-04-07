@@ -1,14 +1,19 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using Ygo.View;
+using Ygo.View.Field;
 
 namespace Ygo.Controller.Field
 {
-    public class MainDeckController : MonoBehaviour, IPointerClickHandler
+    public class MainDeckController : MonoBehaviour
     {
+        [FormerlySerializedAs("view")] [field: SerializeField] 
+        private TextViewUI textView;
+
         [field: SerializeField] 
-        private TextView view;
+        private ZoneView zoneView;
 
         private Action _onClick;
         
@@ -19,12 +24,22 @@ namespace Ygo.Controller.Field
         
         public void SetDeckSize(int deckSize)
         {
-            view.SetText(deckSize.ToString());
+            textView.SetText(deckSize.ToString());
         }
         
-        public void OnPointerClick(PointerEventData eventData)
+        public void OnClick()
         {
             _onClick?.Invoke();
+        }
+
+        public void OnEnter()
+        {
+            zoneView.ToggleHover(true);
+        }
+
+        public void OnExit()
+        {
+            zoneView.ToggleHover(false);
         }
     }
 }

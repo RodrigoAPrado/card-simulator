@@ -51,6 +51,39 @@ namespace Ygo.View.Card
         
         [field: SerializeField]
         private TextMeshProUGUI monsterDef;
+
+        [Header("Field")] 
+        [field: SerializeField]
+        private GameObject fieldBox;
+        [field: SerializeField]
+        private TextMeshProUGUI fieldLevelText;
+        [field: SerializeField]
+        private Transform cardContent;
+        [field: SerializeField]
+        private Transform fieldAtkParent;
+        [field: SerializeField]
+        private Transform fieldDefParent;
+        [field: SerializeField]
+        private TextMeshProUGUI fieldAtkText;
+        [field: SerializeField]
+        private TextMeshProUGUI fieldDefText;
+
+        [Header("CardBack")]
+        [field: SerializeField]
+        private GameObject cardBack;
+        [field: SerializeField]
+        private GameObject cardFront;
+        
+        private bool _fieldEnabled;
+        private bool _isHidden;
+
+        public void SetHidden(bool value)
+        {
+            _isHidden = value;
+            cardBack.SetActive(_isHidden);
+            cardFront.SetActive(!_isHidden);
+            fieldBox.SetActive(_fieldEnabled && !_isHidden);
+        }
         
         public void SetFrame(CardFrameType type)
         {
@@ -89,6 +122,11 @@ namespace Ygo.View.Card
             {
                 levelsContainer[i].SetActive(value > i);
             }
+
+            if (_fieldEnabled)
+            {
+                fieldLevelText.text = value.ToString();
+            }
         }
 
         public void SetIllustration(string value)
@@ -99,7 +137,6 @@ namespace Ygo.View.Card
                 illustration.sprite = sprite;
             else
             {
-                //Debug.LogWarning(path + " is not a valid illustration");
                 illustration.sprite = emptyIllustrationSprite;
             }
         }
@@ -117,11 +154,21 @@ namespace Ygo.View.Card
         public void SetMonsterAtk(string value)
         {
             monsterAtk.text = value;
+            
+            if (_fieldEnabled)
+            {
+                fieldAtkText.text = value;
+            }
         }
 
         public void SetMonsterDef(string value)
         {
             monsterDef.text = value;
+            
+            if (_fieldEnabled)
+            {
+                fieldDefText.text = value;
+            }
         }
 
         public void ToggleHighlight(bool value)
@@ -129,6 +176,21 @@ namespace Ygo.View.Card
             highlight.SetActive(value);
         }
 
+        public void ToggleField(bool value)
+        {
+            _fieldEnabled = value;
+            fieldBox.SetActive(_fieldEnabled && !_isHidden);
+        }
+
+        public void ToggleDefenseMode(bool value)
+        {
+            if (!_fieldEnabled)
+                return;
+            cardContent.localRotation = Quaternion.Euler(0f, 0f, value ? 90f : 0f);
+            fieldAtkParent.localScale = new Vector3(value ? 0.7f : 1.1f, value ? 0.7f : 1.1f, 1f);
+            fieldDefParent.localScale = new Vector3(value ? 1.1f : 0.7f, value ? 1.1f : 0.7f, 1f);
+        }
+        
         public void Clear()
         {
             //TODO: Rotina de Clear.

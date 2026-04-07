@@ -3,6 +3,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 using Ygo.Core.Abstract;
+using Ygo.Core.Board.Abstract;
 using Ygo.Data.Enums;
 using Ygo.View.Card;
 using Ygo.View.ScriptableObjects;
@@ -12,13 +13,17 @@ namespace Ygo.Controller.Card
     public class CardController : MonoBehaviour
     {
         [field: SerializeField] 
+        public ZonePosition ZonePosition { get; private set; }
+        
+        [field: SerializeField] 
         private CardView view;
+        
+        [field: SerializeField]
+        private CardControllerMode cardMode;
 
         public ICardInstance CardInstance => _cardInstance;
         
         private ICardInstance _cardInstance;
-        private bool _zoomMode;
-        private bool _handMode;
 
         private Action<ICardInstance> _onHover;
         private Action<CardController> _onClick;
@@ -35,6 +40,9 @@ namespace Ygo.Controller.Card
             _onHover = onHover;
             _onClick = onClick;
             Enabled = true;
+            view.SetHidden(false);
+            view.ToggleField(cardMode == CardControllerMode.Field);
+            view.ToggleDefenseMode(false);
             UpdateCard(cardInstance);
         }
 
@@ -51,16 +59,6 @@ namespace Ygo.Controller.Card
             Dirty = false;
         }
 
-        public void SetHandMode()
-        {
-            _handMode = true;
-        }
-
-        public void SetZoomMode()
-        {
-            _zoomMode = true;
-        }
-
         public void OnDestroy()
         {
             _cardInstance = null;
@@ -69,7 +67,7 @@ namespace Ygo.Controller.Card
         private void InitMonster()
         {
             view.SetLevel(_cardInstance.CurrentLevel.GetValueOrDefault());
-            view.SetMonsterText(_handMode ? "" : _cardInstance.CardText);
+            view.SetMonsterText(cardMode == CardControllerMode.Zoom ? _cardInstance.CardText : "");
             view.SetMonsterType(GetMonsterType());
             view.SetMonsterAtk(_cardInstance.CurrentAtk.GetValueOrDefault().ToString());
             view.SetMonsterDef(_cardInstance.CurrentDef.GetValueOrDefault().ToString());
@@ -183,7 +181,7 @@ namespace Ygo.Controller.Card
         {
             if (!Enabled)
                 return;
-            if (_zoomMode)
+            if (cardMode == CardControllerMode.Zoom) 
                 return;
             view.ToggleHighlight(true);
             _onHover.Invoke(_cardInstance);
@@ -193,7 +191,7 @@ namespace Ygo.Controller.Card
         {
             if (!Enabled)
                 return;
-            if (_zoomMode)
+            if (cardMode == CardControllerMode.Zoom) 
                 return;
             view.ToggleHighlight(false);
         }

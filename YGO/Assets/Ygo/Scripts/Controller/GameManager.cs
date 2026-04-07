@@ -41,8 +41,7 @@ namespace Ygo.Scripts.Controller
         [field: SerializeField]
         private List<ZoneController> monsterZoneControllers;
         [field: SerializeField]
-        private Transform monsterCardsParent;
-        private Dictionary<ZonePosition, FieldCardController> zoneCardControllers;
+        private List<CardController> monsterOnFieldControllers;
         
 
         [Header("Phase")] 
@@ -57,22 +56,21 @@ namespace Ygo.Scripts.Controller
             var data = service.LoadCards();
             _application = new GameApplication(data);
             _application.InitializeGame();
-            zoomCard.SetZoomMode();
             _playerHand = new List<CardController>();
-            UpdatePlayerHand();
             mainDeckController.Init(DrawFromDeck);
             mainDeckController.SetDeckSize(_application.PointOfViewPlayer.CardsHandler.MainDeck.Count);
             _application.SubscribeToPhaseChange(OnPhaseChange);
             PhaseText.SetText(_application.CurrentPhase.Name);
             handController.Init(OnTryNormalSummon, OnTrySet, OnTryTributeSummon, OnTryTributeSet);
             handController.HideAll();
-            zoneCardControllers = new Dictionary<ZonePosition, FieldCardController>();
             foreach (var zoneController in monsterZoneControllers)
             {
                 var boardZone =  _application.PointOfViewPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
                     x.Position == zoneController.Position);
                 zoneController.Init(boardZone, OnClickMonsterZone);
             }
+            UpdatePlayerHand();
+            UpdatePlayerField();
         }
 
         private void UpdatePlayerHand()
@@ -100,10 +98,31 @@ namespace Ygo.Scripts.Controller
             }
         }
 
+        private void UpdatePlayerField()
+        {
+            foreach (var card in monsterOnFieldControllers)
+            {
+                card.SetDirty();
+            }
+            
+            foreach (var zone in monsterZoneControllers)
+            {
+                if (zone.Zone.IsFree)
+                    continue;
+                var card = monsterOnFieldControllers.FirstOrDefault(x => x.ZonePosition == zone.Position);
+                card?.Enable();
+                card?.Init(zone.Zone.CardInZone, UpdateZoomCard, ClickedOnCardOnField);
+            }
+            
+            foreach (var card in monsterOnFieldControllers.Where(card => card.Dirty))
+            {
+                card.Disable();
+            }
+        }
+
         private void InstantiateCardController(ICardInstance card)
         {
             var o = Instantiate(cardPrefab, playerHandArea.transform);
-            o.SetHandMode();
             o.Init(card, UpdateZoomCard, ClickedOnCardInHand);
             _playerHand.Add(o);
         }
@@ -128,6 +147,11 @@ namespace Ygo.Scripts.Controller
             var response = _application.CurrentPhase.ClickedOnCardInHand(cardController.CardInstance);
             handController.Show(response, cardController.transform.position.x);
             _currentSelectedCardInHand = cardController;
+        }
+
+        private void ClickedOnCardOnField(CardController cardController)
+        {
+            
         }
 
         private void OnPhaseChange()
@@ -176,27 +200,13 @@ namespace Ygo.Scripts.Controller
                 if (result)
                 {
                     UpdatePlayerHand();
+                    UpdatePlayerField();
                     foreach (var zoneController in monsterZoneControllers)
                     {
                         zoneController.ToggleHighlight(false);
                     }
-                    SetupFieldCardController(boardZone);
                 }
             }
-        }
-
-        private void SetupFieldCardController(ZoneController boardZone)
-        {
-            if (zoneCardControllers.TryGetValue(boardZone.Zone.Position, out var fieldCardController))
-            {
-                fieldCardController.Init(boardZone.Zone.CardInZone);
-                return;
-            }
-            
-            var newFieldCardController = Instantiate(fieldCardPrefab, monsterCardsParent);
-            newFieldCardController.Init(boardZone.Zone.CardInZone, UpdateZoomCard);
-            newFieldCardController.transform.localPosition = new Vector3(boardZone.transform.localPosition.x, boardZone.transform.localPosition.y + 0.05f, 0);
-            newFieldCardController.SetDefense(false);
         }
     }
 }

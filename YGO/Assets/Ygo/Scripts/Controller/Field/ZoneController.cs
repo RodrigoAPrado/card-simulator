@@ -7,7 +7,7 @@ using Ygo.View.Field;
 
 namespace Ygo.Controller.Field
 {
-    public class ZoneController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class ZoneController : MonoBehaviour
     {
         [field: SerializeField] 
         public ZonePosition Position { get; private set; }
@@ -23,8 +23,7 @@ namespace Ygo.Controller.Field
         {
             Zone = zone;
             _onClick = onClick;
-            view.ToggleHover(false);
-            view.ToggleHighlight(false);
+            view.Init();
         }
 
         public void ToggleHighlight(bool value)
@@ -32,7 +31,7 @@ namespace Ygo.Controller.Field
             view.ToggleHighlight(value);
         }
         
-        public void OnPointerClick(PointerEventData eventData)
+        public void OnClick()
         {
             if (!Zone.IsFree)
             {
@@ -41,7 +40,7 @@ namespace Ygo.Controller.Field
             _onClick?.Invoke(this);
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public void OnEnter()
         {
             if (!Zone.IsFree)
             {
@@ -51,19 +50,9 @@ namespace Ygo.Controller.Field
             view.ToggleHover(true);
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public void OnExit()
         {
             view.ToggleHover(false);
         }
-    }
-
-    public enum ZoneType
-    {
-        MonsterZone = 0,
-        SpellTrapZone = 1,
-        FieldZone = 2,
-        Graveyard = 3,
-        MainDeck = 4,
-        ExtraDeck = 5,
     }
 }
