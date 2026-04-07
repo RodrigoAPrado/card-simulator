@@ -24,8 +24,8 @@ namespace Ygo.Core
 
             _turnContext = new TurnContext(new List<PlayerContext>()
             {
-                CreatePlayer(repo),
-                CreatePlayer(repo)
+                CreatePlayer(repo, "Player1"),
+                CreatePlayer(repo, "Player2"),
             });
             
             _turnContext.Init(StartingPLayerIndex, StartingPlayerHand);
@@ -43,7 +43,7 @@ namespace Ygo.Core
             _turnContext.SubscribeToPointOfViewChanged(action);
         }
 
-        private PlayerContext CreatePlayer(ICardRepository repo)
+        private PlayerContext CreatePlayer(ICardRepository repo, string playerName)
         {
             var cardsHandler = new CardsHandler();
             cardsHandler.Setup(repo);
@@ -52,7 +52,7 @@ namespace Ygo.Core
             var boardHandler = new BoardHandler();
             boardHandler.Setup(_validators);
 
-            var player = new PlayerContext(cardsHandler, boardHandler, StartingLifePoints, true);
+            var player = new PlayerContext(playerName, cardsHandler, boardHandler, StartingLifePoints, true);
             return player;
         }
 

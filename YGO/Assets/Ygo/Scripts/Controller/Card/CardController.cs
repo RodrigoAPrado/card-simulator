@@ -38,11 +38,17 @@ namespace Ygo.Controller.Card
             view.ToggleField(cardMode == CardControllerMode.Field);
         }
 
-        public void UpdateCard(ICardInstance cardInstance)
+        public void UpdateCard(ICardInstance cardInstance, bool hidden = false)
         {
             _cardInstance = cardInstance;
+            Dirty = false;
+            view.SetHidden(hidden);
             view.ToggleDefenseMode(false);
-            view.SetHidden(false);
+            view.Animate();
+
+            if (hidden)
+                return;
+            
             view.SetName(_cardInstance.Data.Name);
             view.SetFrame(GetCardFrameType());
             view.SetIcon(GetCardIconType());
@@ -50,8 +56,6 @@ namespace Ygo.Controller.Card
 
             if (_cardInstance.IsValidMonster)
                 InitMonster();
-            Dirty = false;
-            view.Animate();
         }
 
         public void OnDestroy()

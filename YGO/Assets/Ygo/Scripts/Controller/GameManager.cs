@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Ygo.Application;
 using Ygo.Controller.Card;
 using Ygo.Controller.Field;
@@ -26,6 +27,8 @@ namespace Ygo.Scripts.Controller
         [field: SerializeField]
         private GameObject playerHandArea;
         [field: SerializeField]
+        private GameObject opponentHandArea;
+        [field: SerializeField]
         private HandController handController;
         
         [Header("ZoomCard")]
@@ -34,8 +37,9 @@ namespace Ygo.Scripts.Controller
 
         private GameApplication _application;
         private List<CardController> _playerHand;
+        private List<CardController> _opponentHand;
  
-        [Header("Field")]
+        [Header("PoVPlayerField")]
         [field: SerializeField]
         private MainDeckController mainDeckController;
         [field: SerializeField]
@@ -43,10 +47,22 @@ namespace Ygo.Scripts.Controller
         [field: SerializeField]
         private List<CardController> monsterOnFieldControllers;
         
-
-        [Header("Phase")] 
+        [Header("OpponentField")]
         [field: SerializeField]
-        private TextViewUI PhaseText;
+        private MainDeckController opponentMainDeckController;
+        [field: SerializeField]
+        private List<ZoneController> opponentMonsterZoneControllers;
+        [field: SerializeField]
+        private List<CardController> opponentMonsterOnFieldControllers;
+        
+
+        [Header("Texts")] 
+        [field: SerializeField]
+        private TextViewUI PhaseText; 
+        [field: SerializeField]
+        private TextViewUI TurnText;
+        [field: SerializeField]
+        private TextViewUI PoVPlayerText;
         
         private CardController _currentSelectedCardInHand;
         
@@ -57,8 +73,10 @@ namespace Ygo.Scripts.Controller
             _application = new GameApplication(data);
             _application.InitializeGame();
             _playerHand = new List<CardController>();
+            _opponentHand = new List<CardController>();
             mainDeckController.Init(DrawFromDeck);
             mainDeckController.SetDeckSize(_application.PointOfViewPlayer.CardsHandler.MainDeck.Count);
+            opponentMainDeckController.SetDeckSize(_application.OpponentPlayer.CardsHandler.MainDeck.Count);
             _application.SubscribeToPhaseChange(OnPhaseChange);
             _application.SubscribeToTurnChange(OnTurnChange);
             PhaseText.SetText(_application.CurrentPhase.Name);
@@ -71,6 +89,14 @@ namespace Ygo.Scripts.Controller
         private void SetupVisuals()
         {
             zoomCard.Init();
+            SetupPointOfView();
+            SetupOpponent();
+            PoVPlayerText.SetText(_application.PointOfViewPlayer.PlayerName);
+            TurnText.SetText($"Turn: {_application.CurrentTurn}");
+        }
+
+        private void SetupPointOfView()
+        {
             foreach (var zoneController in monsterZoneControllers)
             {
                 var boardZone =  _application.PointOfViewPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
@@ -85,6 +111,22 @@ namespace Ygo.Scripts.Controller
             UpdatePlayerField();
         }
 
+        private void SetupOpponent()
+        {
+            foreach (var zoneController in opponentMonsterZoneControllers)
+            {
+                var boardZone =  _application.OpponentPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
+                    x.Position == zoneController.Position);
+                zoneController.Init(boardZone, OnClickOpponentMonsterZone);
+            }
+            UpdateOpponentHand();
+            foreach (var monsterOnField in opponentMonsterOnFieldControllers)
+            {
+                monsterOnField.Init(UpdateZoomCard, ClickedOnOpponentCardOnField);
+            }
+            UpdateOpponentField();
+        }
+
         private void UpdatePlayerHand()
         {
             foreach (var card in _playerHand)
@@ -96,7 +138,7 @@ namespace Ygo.Scripts.Controller
             {
                 if (_playerHand.Count <= i)
                 {
-                    InstantiateCardController(_application.PointOfViewPlayer.CardsHandler.PlayerHand[i]);
+                    InstantiatePlayerHandCardController(_application.PointOfViewPlayer.CardsHandler.PlayerHand[i]);
                     continue;
                 }
                 _playerHand[i].Enable();
@@ -132,13 +174,70 @@ namespace Ygo.Scripts.Controller
             }
         }
 
-        private void InstantiateCardController(ICardInstance card)
+        private void UpdateOpponentHand()
+        {
+            foreach (var card in _opponentHand)
+            {
+                card.SetDirty();
+            }
+            
+            for (var i = 0; i < _application.OpponentPlayer.CardsHandler.PlayerHand.Count; i++)
+            {
+                if (_opponentHand.Count <= i)
+                {
+                    InstantiateOpponentHandCardController(_application.OpponentPlayer.CardsHandler.PlayerHand[i]);
+                    continue;
+                }
+                _opponentHand[i].Enable();
+                _opponentHand[i].UpdateCard(_application.OpponentPlayer.CardsHandler.PlayerHand[i], true);
+            }
+
+            foreach (var card in _opponentHand)
+            {
+                if(card.Dirty)
+                    card.Disable();
+            }
+        }
+
+        private void UpdateOpponentField()
+        {
+            foreach (var card in opponentMonsterOnFieldControllers)
+            {
+                card.SetDirty();
+            }
+            
+            foreach (var zone in opponentMonsterZoneControllers)
+            {
+                if (zone.Zone.IsFree)
+                    continue;
+                var card = opponentMonsterOnFieldControllers.FirstOrDefault(x => x.ZonePosition == zone.Position);
+                card?.Enable();
+                card?.UpdateCard(zone.Zone.CardInZone);
+            }
+            
+            foreach (var card in opponentMonsterOnFieldControllers.Where(card => card.Dirty))
+            {
+                card.Disable();
+            }
+        }
+
+        private void InstantiatePlayerHandCardController(ICardInstance card)
         {
             var o = Instantiate(cardPrefab, playerHandArea.transform);
             o.Init(UpdateZoomCard, ClickedOnCardInHand);
             o.Enable();
             o.UpdateCard(card);
             _playerHand.Add(o);
+        }
+
+        private void InstantiateOpponentHandCardController(ICardInstance card)
+        {
+            var o = Instantiate(cardPrefab, opponentHandArea.transform);
+            o.Init(UpdateZoomCard);
+            o.Enable();
+            o.UpdateCard(card, true);
+            o.GetComponent<LayoutElement>().preferredWidth = 90;
+            _opponentHand.Add(o);
         }
 
         private void UpdateZoomCard(ICardInstance card)
@@ -167,6 +266,11 @@ namespace Ygo.Scripts.Controller
         {
             
         }
+        
+        private void ClickedOnOpponentCardOnField(CardController cardController)
+        {
+            
+        }
 
         private void OnPhaseChange()
         {
@@ -176,20 +280,31 @@ namespace Ygo.Scripts.Controller
         private void OnTurnChange()
         {
             PhaseText.SetText(_application.CurrentPhase.Name); 
+            TurnText.SetText($"Turn: {_application.CurrentTurn}"); 
         }
 
         private void OnPointOfViewChange()
         {
+            PoVPlayerText.SetText(_application.PointOfViewPlayer.PlayerName);
             foreach (var zoneController in monsterZoneControllers)
             {
                 var boardZone =  _application.PointOfViewPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
                     x.Position == zoneController.Position);
                 zoneController.UpdateZone(boardZone);
             }
-            
             mainDeckController.SetDeckSize(_application.PointOfViewPlayer.CardsHandler.MainDeck.Count);
             UpdatePlayerHand();
             UpdatePlayerField();
+            
+            foreach (var zoneController in opponentMonsterZoneControllers)
+            {
+                var boardZone =  _application.OpponentPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
+                    x.Position == zoneController.Position);
+                zoneController.UpdateZone(boardZone);
+            }
+            opponentMainDeckController.SetDeckSize(_application.OpponentPlayer.CardsHandler.MainDeck.Count);
+            UpdateOpponentHand();
+            UpdateOpponentField();
         }
 
         private void OnTryNormalSummon()
@@ -227,6 +342,11 @@ namespace Ygo.Scripts.Controller
         {
             _currentSelectedCardInHand = null;
             handController.HideAll();
+        }
+
+        private void OnClickOpponentMonsterZone(ZoneController boardZone)
+        {
+            
         }
 
         private void OnClickMonsterZone(ZoneController boardZone)

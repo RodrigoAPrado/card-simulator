@@ -9,7 +9,9 @@ namespace Ygo.Application
     public class GameApplication
     {
         public PlayerContext PointOfViewPlayer => _gameHandler.GameState.TurnContext.PointOfViewPlayer;
+        public PlayerContext OpponentPlayer => _gameHandler.GameState.TurnContext.OpponentPlayer;
         public IGamePhase CurrentPhase => _gameHandler.GameState.CurrentPhase;
+        public int CurrentTurn => _gameHandler.GameState.TurnContext.CurrentTurn;
         private readonly ICardRepository _cardRepository;
         private GameHandler _gameHandler;
         

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ygo.Core
 {
@@ -8,6 +9,7 @@ namespace Ygo.Core
         public IList<PlayerContext> Players { get; }
         public PlayerContext CurrentTurnPlayer => Players[_currentTurnPlayerIndex];
         public PlayerContext PointOfViewPlayer { get; private set; }
+        public PlayerContext OpponentPlayer => Players.FirstOrDefault(x => x != PointOfViewPlayer);
         
         public int CurrentTurn => _currentTurn;
         private int _currentTurn;
