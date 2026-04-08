@@ -55,7 +55,7 @@ namespace Ygo.Core
             CurrentLifePoints += value;
         }
 
-        public void SetTurnPlayer()
+        public void ClearFlags()
         {
             NormalSummonFlag = false;
         }

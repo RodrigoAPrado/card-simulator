@@ -72,7 +72,7 @@ namespace Ygo.Core.Phases
             
             _context.CurrentTurnPlayer.SetNormalSummoned();
             _context.CurrentTurnPlayer.CardsHandler.RemoveCardFromHand(card);
-            card.Summon(zone.Position);
+            card.Summon(zone);
             ChangeStep(GameStep.OnMonsterSummoned);
             return true;
         }

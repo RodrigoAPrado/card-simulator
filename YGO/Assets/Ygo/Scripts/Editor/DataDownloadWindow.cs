@@ -1,6 +1,8 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -46,15 +48,22 @@ namespace Ygo.Editor
 
         private static async Task DownloadCards()
         {
-            UnityWebRequest www = UnityWebRequest.Get("https://db.ygoprodeck.com/api/v7/cardinfo.php?&startdate=2000-01-01&enddate=2002-08-23&dateregion=tcg&type=Normal%20Monster");
-            await www.SendWebRequest();
+            UnityWebRequest request = UnityWebRequest.Get("https://db.ygoprodeck.com/api/v7/cardinfo.php?&startdate=2000-01-01&enddate=2002-08-23&dateregion=tcg&type=Normal%20Monster");
+            await request.SendWebRequest();
             
-            if (www.result != UnityWebRequest.Result.Success) {
-                Debug.Log(www.error);
+            while (!request.isDone)
+                await Task.Yield();
+            
+            if (request.result != UnityWebRequest.Result.Success) {
+                Debug.Log(request.error);
                 return;
             }
-            var result = JsonConvert.DeserializeObject<CardDataModel>(www.downloadHandler.text);
-            var cardDatas = new List<CardData>();
+            
+            var result = JsonConvert.DeserializeObject<CardDataModel>(request.downloadHandler.text);
+            var imgToDownload = new Dictionary<string, string>();
+
+            ClearDataFiles();
+            
             foreach (var model in result.Data)
             {
                 var cardData = new CardData();
@@ -81,11 +90,74 @@ namespace Ygo.Editor
 
                 cardData.MonsterData = monsterData;
                 cardData.Validate();
-                
-                cardDatas.Add(cardData);
+                SaveCardData(cardData);
+                imgToDownload.Add(id, model.CardImages.FirstOrDefault()?.ImageUrlCropped);
             }
             
-            Debug.Log("success");
+            ClearImages();
+            DownloadCardImages(imgToDownload);
+        }
+
+        private static async Task DownloadCardImages(Dictionary<string, string> urlDictionary)
+        {
+            var path = Application.dataPath + "/Resources/Card/Illustrations/";
+
+            float index = 0;
+            foreach (var value in urlDictionary)
+            {
+                using (UnityWebRequest request = UnityWebRequest.Get(value.Value))
+                {
+                    var operation = request.SendWebRequest();
+
+                    while (!operation.isDone)
+                        await Task.Yield();
+                    
+                    if (request.result != UnityWebRequest.Result.Success)
+                    {
+                        Debug.LogError($"Erro ao baixar: {value.Value} -> {request.error}");
+                        continue;
+                    }
+                    
+                    var data = request.downloadHandler.data;
+
+                    var fileName = value.Key + ".jpg";
+
+                    var fullPath = Path.Combine(path, fileName);
+
+                    await File.WriteAllBytesAsync(fullPath, data);
+                    index++;
+                    var percent = index / (urlDictionary.Count) * 100;
+                    percent = Mathf.Floor(percent * 100f) / 100f;
+                    Debug.Log($"Baixado: {fileName} - Total: {percent}%");
+                }
+            }
+        }
+        
+        
+        private static void ClearImages()
+        {
+            var files = Directory.GetFiles(Application.dataPath + "/Resources/Card/Illustrations/");
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
+        }
+
+        private static void ClearDataFiles()
+        {
+            var files = Directory.GetFiles(Application.dataPath + "/Ygo/Data/Cards/");
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
+        }
+
+        private static void SaveCardData(CardData cardData)
+        {
+            var json = JsonConvert.SerializeObject(cardData, Formatting.Indented);
+            var fileName = $"{cardData.Id}.json";
+            var fullPath = Path.Combine(Application.dataPath + "/Ygo/Data/Cards/", fileName);
+            File.WriteAllText(fullPath, json);
         }
 
         private static MonsterData GetMonsterData(CardModel model)
@@ -128,3 +200,4 @@ namespace Ygo.Editor
         }
     }
 }
+#endif

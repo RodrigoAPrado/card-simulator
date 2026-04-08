@@ -46,5 +46,10 @@ namespace Ygo.Application
         {
             _gameHandler.SubscribeToPointOfViewChange(action);
         }
+
+        public void SubscribeToBattleUpdate(Action action)
+        {
+            _gameHandler.GameState.SubscribeToBattleUpdate(action);
+        }
     }
 }

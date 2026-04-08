@@ -183,7 +183,7 @@ namespace Ygo.Controller.Card
             if (cardMode == CardControllerMode.Zoom) 
                 return;
             view.ToggleHighlight(true);
-            _onHover.Invoke(_cardInstance);
+            _onHover?.Invoke(_cardInstance);
         }
 
         public void Exit()

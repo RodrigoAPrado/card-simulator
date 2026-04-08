@@ -20,6 +20,6 @@ namespace Ygo.Core.Phases.Abstract
         ClickedOnCardResponse ClickedOnCardInField(ICardInstance card);
         CheckAttackTargetsResponse CheckAttackTargets(ICardInstance card);
         BattleResponse DeclareAttack(ICardInstance attacker, ICardInstance target);
-        BattleResponse ContinueTheDamageStep();
+        void ContinueTheDamageStep();
     }
 }

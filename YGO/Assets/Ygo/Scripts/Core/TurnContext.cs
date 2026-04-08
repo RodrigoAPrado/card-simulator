@@ -51,6 +51,7 @@ namespace Ygo.Core
 
             foreach (var player in Players)
             {
+                player.ClearFlags();
                 foreach (var card in player.CardsHandler.PlayerCards)
                 {
                     card.PassTurn();

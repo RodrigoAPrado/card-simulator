@@ -74,6 +74,7 @@ namespace Ygo.Scripts.Controller
         private Transform actionMenuPoVFrontRowPosition;
         
         private CardController _currentSelectedCard;
+        private List<CardController> _attackTargets;
         
         public void Awake()
         {
@@ -92,6 +93,7 @@ namespace Ygo.Scripts.Controller
             actionController.Init(OnTryNormalSummon, OnTrySet, OnTryTributeSummon, OnTryTributeSet, OnCancel, OnAttack);
             actionController.HideAll();
             _application.SubscribeToPointOfViewChange(OnPointOfViewChange);
+            _application.SubscribeToBattleUpdate(OnBattleUpdate);
             SetupVisuals();
         }
 
@@ -268,6 +270,8 @@ namespace Ygo.Scripts.Controller
         private void ClickedOnCardInHand(CardController cardController)
         {
             var response = _application.CurrentPhase.ClickedOnCardInHand(cardController.CardInstance);
+            if (response.DoNothing)
+                return;
             actionController.Show(response, cardController.transform.position.x, actionMenuHandPosition.position.y);
             _currentSelectedCard = cardController;
         }
@@ -275,14 +279,26 @@ namespace Ygo.Scripts.Controller
         private void ClickedOnCardOnField(CardController cardController)
         {
             var response = _application.CurrentPhase.ClickedOnCardInField(cardController.CardInstance);
+            if (response.DoNothing)
+                return;
             var position = Camera.main.WorldToScreenPoint(cardController.transform.position).x;
-            actionController.Show(response, position, actionMenuHandPosition.position.y);
+            actionController.Show(response, position, actionMenuPoVFrontRowPosition.position.y);
             _currentSelectedCard = cardController;
         }
         
         private void ClickedOnOpponentCardOnField(CardController cardController)
         {
-            
+            if (_attackTargets != null)
+            {
+                foreach (var target in _attackTargets)
+                {
+                    if (target == cardController)
+                    {
+                        _application.CurrentPhase.DeclareAttack(_currentSelectedCard.CardInstance,
+                            cardController.CardInstance);
+                    }
+                }
+            }
         }
 
         private void OnPhaseChange()
@@ -322,6 +338,14 @@ namespace Ygo.Scripts.Controller
             opponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
         }
 
+        private void OnBattleUpdate()
+        {
+            UpdatePlayerField();
+            UpdateOpponentField();
+            poVPlayerText.SetText($"{_application.PointOfViewPlayer.PlayerName}\n{_application.PointOfViewPlayer.CurrentLifePoints}");
+            opponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
+        }
+
         private void OnTryNormalSummon()
         {
             var response = _application.CurrentPhase.CheckWhereToSummonMonster(_currentSelectedCard.CardInstance);
@@ -355,7 +379,27 @@ namespace Ygo.Scripts.Controller
 
         private void OnAttack()
         {
-            throw new NotImplementedException();
+            var response = _application.CurrentPhase.CheckAttackTargets(_currentSelectedCard.CardInstance);
+            if (response.DirectAttack)
+            {
+                _application.CurrentPhase.DeclareAttack(_currentSelectedCard.CardInstance,null);
+                actionController.HideAll();
+                return;
+            }
+            var targets = response.Targets;
+            _attackTargets = new List<CardController>();
+            foreach (var controller in opponentMonsterOnFieldControllers)
+            {
+                foreach (var target in targets)
+                {
+                    if (controller.CardInstance != null && controller.CardInstance == target)
+                    {
+                        _attackTargets.Add(controller);
+                        break;
+                    }
+                }
+            }
+            actionController.HideAll();
         }
 
         private void OnCancel()

@@ -66,14 +66,14 @@ namespace Ygo.Core.Phases
             {
                 throw new InvalidOperationException("Attacker is null");
             }
-            ChangeStep(GameStep.AttackingDeclaration);
             
             _context.SetBattleContext(attacker, target);
             
+            ChangeStep(GameStep.AttackingDeclaration);
             return new BattleResponse(attacker, target);
         }
         
-        public override BattleResponse ContinueTheDamageStep()
+        public override void ContinueTheDamageStep()
         {
             switch (CurrentStep)
             {
@@ -102,7 +102,6 @@ namespace Ygo.Core.Phases
                 default:
                     throw new InvalidOperationException("Invalid GameStep");
             }
-            return new BattleResponse(_context.BattleContext);
         }
 
         private void BeforeDamageCalculation()
@@ -182,6 +181,14 @@ namespace Ygo.Core.Phases
             _context.BattleContext.Attacker.ClearDestroyed();
             _context.BattleContext.Target?.ClearDestroyed();
             _context.ClearBattleContext();
+        }
+        
+        public override void GoToNextPhase()
+        {
+            if (CurrentStep != GameStep.Battle)
+                return;
+            
+            ChangeStep(GameStep.ProceedToNextPhase);
         }
     }
 }

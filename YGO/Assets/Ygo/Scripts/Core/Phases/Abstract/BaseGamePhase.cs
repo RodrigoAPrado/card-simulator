@@ -47,7 +47,7 @@ namespace Ygo.Core.Phases.Abstract
             => new CheckAttackTargetsResponse(null, new List<ICardInstance>());
         public virtual BattleResponse DeclareAttack(ICardInstance attacker, ICardInstance target) 
             => new BattleResponse(null, null);
-        public virtual BattleResponse ContinueTheDamageStep() => new BattleResponse(null, null);
+        public virtual void ContinueTheDamageStep() { }
         
         protected void ChangeStep(GameStep step)
         {

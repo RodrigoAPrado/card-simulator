@@ -12,6 +12,7 @@ namespace Ygo.Core
         public Guid Id { get; }
         public CardData Data { get; }
         public CardLocation Location { get; private set; }
+        public IBoardZone Zone { get; private set; }
         public int? CurrentLevel => Data.MonsterData?.Level + LevelModifier;
         public int? CurrentAtk => Data.MonsterData?.Atk + AtkModifier;
         public int? CurrentDef => Data.MonsterData?.Def + DefModifier;
@@ -37,6 +38,7 @@ namespace Ygo.Core
         public bool IsDestroyed => IsDestroyedByBattle || IsDestroyedByCardEffect;
         public bool IsDestroyedByBattle { get; private set; }
         public bool IsDestroyedByCardEffect { get; private set; }
+
         private int LevelModifier;
         private int AtkModifier;
         private int DefModifier;
@@ -51,24 +53,26 @@ namespace Ygo.Core
             Data = data;
         }
 
-        public void Summon(ZonePosition zonePosition)
+        public void Summon(IBoardZone zone)
         {
+            Zone = zone;
             _isSummoned = true;
             _hasChangedPosition = true;
             _hasAttacked = false;
             IsFaceDown = false;
             _isInDefense = false;
-            Location = zonePosition.ToMonsterCardLocation();
+            Location = zone.Position.ToMonsterCardLocation();
         }
 
-        public void Set(ZonePosition zonePosition)
+        public void Set(IBoardZone zone)
         {
+            Zone = zone;
             _isSummoned = false;
             _hasChangedPosition = true;
             _hasAttacked = false;
             IsFaceDown = true;
             _isInDefense = true;
-            Location = zonePosition.ToMonsterCardLocation();
+            Location = zone.Position.ToMonsterCardLocation();
         }
 
         public void AddToHand()
@@ -140,6 +144,7 @@ namespace Ygo.Core
         public void SendToGraveyard()
         {
             Location = CardLocation.Graveyard;
+            Zone = null;
             _isSummoned = false;
             _hasChangedPosition = false;
             _hasAttacked = false;

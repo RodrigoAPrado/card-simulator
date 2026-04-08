@@ -11,6 +11,7 @@ namespace Ygo.Core.Abstract
         Guid Id { get; }
         CardData Data { get; }
         CardLocation Location { get; }
+        IBoardZone Zone { get; }
         int? CurrentLevel { get; }
         int? CurrentAtk { get; }
         int? CurrentDef { get; }
@@ -36,8 +37,8 @@ namespace Ygo.Core.Abstract
         bool IsDestroyed { get; }
         bool IsDestroyedByBattle { get; }
         bool IsDestroyedByCardEffect { get; }
-        void Summon(ZonePosition zonePosition);
-        void Set(ZonePosition zonePosition);
+        void Summon(IBoardZone zone);
+        void Set(IBoardZone zone);
         void AddToHand();
         void AddToMainDeck();
         void SetAttacked();
