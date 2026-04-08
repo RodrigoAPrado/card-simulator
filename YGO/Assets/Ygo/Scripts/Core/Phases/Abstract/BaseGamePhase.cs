@@ -31,8 +31,8 @@ namespace Ygo.Core.Phases.Abstract
             return false;
         }
 
-        public virtual ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card)
-            => new ClickedOnCardHandResponse(null);
+        public virtual ClickedOnCardResponse ClickedOnCardInHand(ICardInstance card)
+            => new ClickedOnCardResponse(null);
 
         public virtual WhereToSummonMonsterResponse CheckWhereToSummonMonster(ICardInstance card) => null;
         public virtual void CancelSummoning() { }
@@ -41,8 +41,8 @@ namespace Ygo.Core.Phases.Abstract
         public virtual void ToOpenGameStep() { }
         public virtual void GoToNextPhase() { }
 
-        public virtual ClickedOnCardFieldResponse ClickedOnCardInField(ICardInstance card) 
-            => new ClickedOnCardFieldResponse(null);
+        public virtual ClickedOnCardResponse ClickedOnCardInField(ICardInstance card) 
+            => new ClickedOnCardResponse(null);
         public virtual CheckAttackTargetsResponse CheckAttackTargets(ICardInstance card)
             => new CheckAttackTargetsResponse(null, new List<ICardInstance>());
         public virtual BattleResponse DeclareAttack(ICardInstance attacker, ICardInstance target) 

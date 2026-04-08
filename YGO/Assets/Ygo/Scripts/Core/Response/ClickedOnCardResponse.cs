@@ -2,7 +2,7 @@
 
 namespace Ygo.Core.Response
 {
-    public class ClickedOnCardHandResponse
+    public class ClickedOnCardResponse
     {
         public bool DoNothing => Card == null;
         public bool NormalSummon { get; set; }
@@ -10,10 +10,11 @@ namespace Ygo.Core.Response
         public bool TributeSummon { get; set; }
         public bool TributeSet { get; set; }
         public int TributeAmount { get; set; }
-        private bool ActivateEffect { get; set; }
+        public bool ActivateEffect { get; set; }
+        public bool Attack { get; set; }
         public ICardInstance Card { get; }
 
-        public ClickedOnCardHandResponse(ICardInstance card)
+        public ClickedOnCardResponse(ICardInstance card)
         {
             Card = card;
         }

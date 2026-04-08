@@ -11,11 +11,15 @@ namespace Ygo.Core.Phases.Abstract
         GameStep CurrentStep { get; }
         void Init();
         bool DrawFromDeck();
-        ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card);
+        ClickedOnCardResponse ClickedOnCardInHand(ICardInstance card);
         WhereToSummonMonsterResponse CheckWhereToSummonMonster(ICardInstance card);
         void CancelSummoning();
         bool SummonCardOnSelectedZone(ICardInstance card, IBoardZone zone);
         void ToOpenGameStep();
         void GoToNextPhase();
+        ClickedOnCardResponse ClickedOnCardInField(ICardInstance card);
+        CheckAttackTargetsResponse CheckAttackTargets(ICardInstance card);
+        BattleResponse DeclareAttack(ICardInstance attacker, ICardInstance target);
+        BattleResponse ContinueTheDamageStep();
     }
 }

@@ -22,19 +22,19 @@ namespace Ygo.Core.Phases
             ChangeStep(GameStep.Open);
         }
 
-        public override ClickedOnCardHandResponse ClickedOnCardInHand(ICardInstance card)
+        public override ClickedOnCardResponse ClickedOnCardInHand(ICardInstance card)
         {
             if (CurrentStep != GameStep.Open
                 || _context.CurrentTurnPlayer.NormalSummonFlag 
                 || !_context.CurrentTurnPlayer.BoardHandler.IsAnyFree(ZoneType.MainMonsterZone))
             {
-                return new ClickedOnCardHandResponse(null);
+                return new ClickedOnCardResponse(null);
             }
 
             if (!card.IsValidMonster)
                 throw new InvalidOperationException($"Card is not a valid monster");
             
-            return new ClickedOnCardHandResponse(card)
+            return new ClickedOnCardResponse(card)
             {
                 NormalSummon = true
             };

@@ -29,7 +29,7 @@ namespace Ygo.Core
         public bool TreatedAsTrap { get; private set; }
         public bool TreatedAsMonster { get; private set; }
         public bool IsField => Data.CardType == CardType.Spell && Data.SpellData is { Type: SpellType.Field };
-        public bool CanAttack => !_hasAttacked && IsValidMonster && IsInDefense;
+        public bool CanAttack => !_hasAttacked && IsValidMonster && !IsInDefense;
         public bool IsSummoned => _isSummoned;
         public bool IsFaceDown { get; private set; }
         public bool CanChangePosition => _isSummoned && !_hasChangedPosition;

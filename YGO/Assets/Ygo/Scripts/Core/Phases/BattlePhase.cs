@@ -25,17 +25,17 @@ namespace Ygo.Core.Phases
             ChangeStep(GameStep.Battle);
         }
 
-        public override ClickedOnCardFieldResponse ClickedOnCardInField(ICardInstance card)
+        public override ClickedOnCardResponse ClickedOnCardInField(ICardInstance card)
         {
             if (CurrentStep != GameStep.Battle)
             {
-                return new ClickedOnCardFieldResponse(null);
+                return new ClickedOnCardResponse(null);
             }
             
             if (!card.IsValidMonster)
                 throw new InvalidOperationException($"Card is not a valid monster");
             
-            return new ClickedOnCardFieldResponse(card)
+            return new ClickedOnCardResponse(card)
             {
                 Attack = card.CanAttack
             };

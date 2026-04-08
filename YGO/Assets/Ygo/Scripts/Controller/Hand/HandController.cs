@@ -16,21 +16,31 @@ namespace Ygo.Controller.Hand
         [field: SerializeField]
         private GameObject tributeSetButton;
         [field: SerializeField]
+        private GameObject attackButton;
+        [field: SerializeField]
         private GameObject cancelButton;
 
         private Action _normalSummonAction;
         private Action _setAction;
         private Action _tributeSummonAction;
         private Action _tributeSetAction;
+        private Action _attackAction;
         private Action _cancelAction;
         
-        public void Init(Action normalSummonAction, Action setAction, Action tributeSummonAction, Action tributeSetAction, Action cancelAction)
+        public void Init(
+            Action normalSummonAction, 
+            Action setAction, 
+            Action tributeSummonAction, 
+            Action tributeSetAction, 
+            Action cancelAction,
+            Action attackAction)
         {
             _normalSummonAction = normalSummonAction;
             _setAction = setAction;
             _tributeSummonAction = tributeSummonAction;
             _tributeSetAction = tributeSetAction;
             _cancelAction = cancelAction;
+            _attackAction = attackAction;
         }
 
         public void HideAll()
@@ -39,16 +49,18 @@ namespace Ygo.Controller.Hand
             setButton.SetActive(false);
             tributeSummonButton.SetActive(false);
             tributeSetButton.SetActive(false);
+            attackButton.SetActive(false);
             cancelButton.SetActive(false);
         }
 
-        public void Show(ClickedOnCardHandResponse response, float xPosition)
+        public void Show(ClickedOnCardResponse response, float xPosition, float yPosition)
         {
-            transform.position = new Vector2(xPosition, transform.position.y);
+            transform.position = new Vector2(xPosition, yPosition);
             normalSummonButton.SetActive(response.NormalSummon);
             setButton.SetActive(response.NormalSet);
             tributeSummonButton.SetActive(response.TributeSummon);
             tributeSetButton.SetActive(response.TributeSet);
+            attackButton.SetActive(response.Attack);
             cancelButton.SetActive(true);
         }
 
@@ -70,6 +82,11 @@ namespace Ygo.Controller.Hand
         public void OnTributeSet()
         {
             _tributeSetAction?.Invoke();
+        }
+        
+        public void OnAttack()
+        {
+            _attackAction.Invoke();
         }
         
         public void OnCancel()

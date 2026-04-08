@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Ygo.Application;
 using Ygo.Controller.Card;
@@ -29,7 +30,7 @@ namespace Ygo.Scripts.Controller
         [field: SerializeField]
         private GameObject opponentHandArea;
         [field: SerializeField]
-        private HandController handController;
+        private HandController actionController;
         
         [Header("ZoomCard")]
         [field: SerializeField]
@@ -58,15 +59,21 @@ namespace Ygo.Scripts.Controller
 
         [Header("Texts")] 
         [field: SerializeField]
-        private TextViewUI PhaseText; 
+        private TextViewUI phaseText; 
         [field: SerializeField]
-        private TextViewUI TurnText;
+        private TextViewUI turnText;
         [field: SerializeField]
-        private TextViewUI PoVPlayerText;
+        private TextViewUI poVPlayerText;
         [field: SerializeField]
-        private TextViewUI OpponentPlayerText;
+        private TextViewUI opponentPlayerText;
         
-        private CardController _currentSelectedCardInHand;
+        [Header("ActionMenuPositions")]
+        [field: SerializeField]
+        private Transform actionMenuHandPosition; 
+        [field: SerializeField]
+        private Transform actionMenuPoVFrontRowPosition;
+        
+        private CardController _currentSelectedCard;
         
         public void Awake()
         {
@@ -81,9 +88,9 @@ namespace Ygo.Scripts.Controller
             opponentMainDeckController.SetDeckSize(_application.OpponentPlayer.CardsHandler.MainDeck.Count);
             _application.SubscribeToPhaseChange(OnPhaseChange);
             _application.SubscribeToTurnChange(OnTurnChange);
-            PhaseText.SetText(_application.CurrentPhase.Name);
-            handController.Init(OnTryNormalSummon, OnTrySet, OnTryTributeSummon, OnTryTributeSet, OnCancel);
-            handController.HideAll();
+            phaseText.SetText(_application.CurrentPhase.Name);
+            actionController.Init(OnTryNormalSummon, OnTrySet, OnTryTributeSummon, OnTryTributeSet, OnCancel, OnAttack);
+            actionController.HideAll();
             _application.SubscribeToPointOfViewChange(OnPointOfViewChange);
             SetupVisuals();
         }
@@ -93,9 +100,9 @@ namespace Ygo.Scripts.Controller
             zoomCard.Init();
             SetupPointOfView();
             SetupOpponent();
-            PoVPlayerText.SetText($"{_application.PointOfViewPlayer.PlayerName}\n{_application.PointOfViewPlayer.CurrentLifePoints}");
-            OpponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
-            TurnText.SetText($"Turn: {_application.CurrentTurn}");
+            poVPlayerText.SetText($"{_application.PointOfViewPlayer.PlayerName}\n{_application.PointOfViewPlayer.CurrentLifePoints}");
+            opponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
+            turnText.SetText($"Turn: {_application.CurrentTurn}");
         }
 
         private void SetupPointOfView()
@@ -236,7 +243,7 @@ namespace Ygo.Scripts.Controller
         private void InstantiateOpponentHandCardController(ICardInstance card)
         {
             var o = Instantiate(cardPrefab, opponentHandArea.transform);
-            o.Init(UpdateZoomCard);
+            o.Init();
             o.Enable();
             o.UpdateCard(card, true);
             o.GetComponent<LayoutElement>().preferredWidth = 90;
@@ -261,13 +268,16 @@ namespace Ygo.Scripts.Controller
         private void ClickedOnCardInHand(CardController cardController)
         {
             var response = _application.CurrentPhase.ClickedOnCardInHand(cardController.CardInstance);
-            handController.Show(response, cardController.transform.position.x);
-            _currentSelectedCardInHand = cardController;
+            actionController.Show(response, cardController.transform.position.x, actionMenuHandPosition.position.y);
+            _currentSelectedCard = cardController;
         }
 
         private void ClickedOnCardOnField(CardController cardController)
         {
-            
+            var response = _application.CurrentPhase.ClickedOnCardInField(cardController.CardInstance);
+            var position = Camera.main.WorldToScreenPoint(cardController.transform.position).x;
+            actionController.Show(response, position, actionMenuHandPosition.position.y);
+            _currentSelectedCard = cardController;
         }
         
         private void ClickedOnOpponentCardOnField(CardController cardController)
@@ -277,13 +287,13 @@ namespace Ygo.Scripts.Controller
 
         private void OnPhaseChange()
         {
-            PhaseText.SetText(_application.CurrentPhase.Name);
+            phaseText.SetText(_application.CurrentPhase.Name);
         }
         
         private void OnTurnChange()
         {
-            PhaseText.SetText(_application.CurrentPhase.Name); 
-            TurnText.SetText($"Turn: {_application.CurrentTurn}"); 
+            phaseText.SetText(_application.CurrentPhase.Name); 
+            turnText.SetText($"Turn: {_application.CurrentTurn}"); 
         }
 
         private void OnPointOfViewChange()
@@ -308,16 +318,16 @@ namespace Ygo.Scripts.Controller
             UpdateOpponentHand();
             UpdateOpponentField();
             
-            PoVPlayerText.SetText($"{_application.PointOfViewPlayer.PlayerName}\n{_application.PointOfViewPlayer.CurrentLifePoints}");
-            OpponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
+            poVPlayerText.SetText($"{_application.PointOfViewPlayer.PlayerName}\n{_application.PointOfViewPlayer.CurrentLifePoints}");
+            opponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
         }
 
         private void OnTryNormalSummon()
         {
-            var response = _application.CurrentPhase.CheckWhereToSummonMonster(_currentSelectedCardInHand.CardInstance);
+            var response = _application.CurrentPhase.CheckWhereToSummonMonster(_currentSelectedCard.CardInstance);
             if (response.CanSummon)
             {
-                handController.HideAll();
+                actionController.HideAll();
                 foreach (var zoneController in monsterZoneControllers)
                 {
                     if (zoneController.Zone.IsFree)
@@ -343,10 +353,15 @@ namespace Ygo.Scripts.Controller
             throw new NotImplementedException();
         }
 
+        private void OnAttack()
+        {
+            throw new NotImplementedException();
+        }
+
         private void OnCancel()
         {
-            _currentSelectedCardInHand = null;
-            handController.HideAll();
+            _currentSelectedCard = null;
+            actionController.HideAll();
         }
 
         private void OnClickOpponentMonsterZone(ZoneController boardZone)
@@ -359,7 +374,7 @@ namespace Ygo.Scripts.Controller
             if (_application.CurrentPhase.CurrentStep == GameStep.SelectingZoneToSummonMonster)
             { 
                 var result = _application.CurrentPhase
-                    .SummonCardOnSelectedZone(_currentSelectedCardInHand.CardInstance, boardZone.Zone);
+                    .SummonCardOnSelectedZone(_currentSelectedCard.CardInstance, boardZone.Zone);
                 
                 if (result)
                 {
