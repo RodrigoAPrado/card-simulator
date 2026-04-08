@@ -63,6 +63,8 @@ namespace Ygo.Scripts.Controller
         private TextViewUI TurnText;
         [field: SerializeField]
         private TextViewUI PoVPlayerText;
+        [field: SerializeField]
+        private TextViewUI OpponentPlayerText;
         
         private CardController _currentSelectedCardInHand;
         
@@ -91,7 +93,8 @@ namespace Ygo.Scripts.Controller
             zoomCard.Init();
             SetupPointOfView();
             SetupOpponent();
-            PoVPlayerText.SetText(_application.PointOfViewPlayer.PlayerName);
+            PoVPlayerText.SetText($"{_application.PointOfViewPlayer.PlayerName}\n{_application.PointOfViewPlayer.CurrentLifePoints}");
+            OpponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
             TurnText.SetText($"Turn: {_application.CurrentTurn}");
         }
 
@@ -285,7 +288,6 @@ namespace Ygo.Scripts.Controller
 
         private void OnPointOfViewChange()
         {
-            PoVPlayerText.SetText(_application.PointOfViewPlayer.PlayerName);
             foreach (var zoneController in monsterZoneControllers)
             {
                 var boardZone =  _application.PointOfViewPlayer.BoardHandler.MonsterZones.FirstOrDefault(x =>
@@ -305,6 +307,9 @@ namespace Ygo.Scripts.Controller
             opponentMainDeckController.SetDeckSize(_application.OpponentPlayer.CardsHandler.MainDeck.Count);
             UpdateOpponentHand();
             UpdateOpponentField();
+            
+            PoVPlayerText.SetText($"{_application.PointOfViewPlayer.PlayerName}\n{_application.PointOfViewPlayer.CurrentLifePoints}");
+            OpponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
         }
 
         private void OnTryNormalSummon()

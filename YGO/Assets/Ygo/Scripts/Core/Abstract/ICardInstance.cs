@@ -1,4 +1,5 @@
 ﻿using System;
+using Ygo.Core.Board.Abstract;
 using Ygo.Core.Enums;
 using Ygo.Data;
 using Ygo.Data.Enums;
@@ -27,6 +28,25 @@ namespace Ygo.Core.Abstract
         bool TreatedAsTrap { get; }
         bool TreatedAsMonster { get; }
         bool IsField { get; }
-        void SetLocation(CardLocation location);
+        bool CanAttack { get; }
+        bool IsSummoned { get; }
+        bool IsFaceDown { get; }
+        bool CanChangePosition { get; }
+        bool IsInDefense { get; }
+        bool IsDestroyed { get; }
+        bool IsDestroyedByBattle { get; }
+        bool IsDestroyedByCardEffect { get; }
+        void Summon(ZonePosition zonePosition);
+        void Set(ZonePosition zonePosition);
+        void AddToHand();
+        void AddToMainDeck();
+        void SetAttacked();
+        void Flip();
+        void PassTurn();
+        void ChangePosition(bool defense);
+        void DestroyByBattle();
+        void DestroyByCardEffect();
+        void SendToGraveyard();
+        void ClearDestroyed();
     }
 }

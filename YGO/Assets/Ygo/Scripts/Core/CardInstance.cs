@@ -1,5 +1,6 @@
 ﻿using System;
 using Ygo.Core.Abstract;
+using Ygo.Core.Board.Abstract;
 using Ygo.Core.Enums;
 using Ygo.Data;
 using Ygo.Data.Enums;
@@ -28,19 +29,128 @@ namespace Ygo.Core
         public bool TreatedAsTrap { get; private set; }
         public bool TreatedAsMonster { get; private set; }
         public bool IsField => Data.CardType == CardType.Spell && Data.SpellData is { Type: SpellType.Field };
-        private int LevelModifier { get; } = 0;
-        private int AtkModifier { get; } = 0;
-        private int DefModifier { get; } = 0;
+        public bool CanAttack => !_hasAttacked && IsValidMonster && IsInDefense;
+        public bool IsSummoned => _isSummoned;
+        public bool IsFaceDown { get; private set; }
+        public bool CanChangePosition => _isSummoned && !_hasChangedPosition;
+        public bool IsInDefense => IsFaceDown || _isInDefense;
+        public bool IsDestroyed => IsDestroyedByBattle || IsDestroyedByCardEffect;
+        public bool IsDestroyedByBattle { get; private set; }
+        public bool IsDestroyedByCardEffect { get; private set; }
+        private int LevelModifier;
+        private int AtkModifier;
+        private int DefModifier;
+        private bool _isInDefense;
+        private bool _hasChangedPosition;
+        private bool _isSummoned;
+        private bool _hasAttacked;
 
         public CardInstance(CardData data)
         {
             Id = Guid.NewGuid();
             Data = data;
         }
-        
-        public void SetLocation(CardLocation location)
+
+        public void Summon(ZonePosition zonePosition)
         {
-            Location = location;
+            _isSummoned = true;
+            _hasChangedPosition = true;
+            _hasAttacked = false;
+            IsFaceDown = false;
+            _isInDefense = false;
+            Location = zonePosition.ToMonsterCardLocation();
+        }
+
+        public void Set(ZonePosition zonePosition)
+        {
+            _isSummoned = false;
+            _hasChangedPosition = true;
+            _hasAttacked = false;
+            IsFaceDown = true;
+            _isInDefense = true;
+            Location = zonePosition.ToMonsterCardLocation();
+        }
+
+        public void AddToHand()
+        {
+            Location = CardLocation.Hand;
+            _isSummoned = false;
+            _hasChangedPosition = false;
+            _hasAttacked = false;
+            IsFaceDown = false;
+            _isInDefense = false;
+            IsDestroyedByBattle = false;
+            IsDestroyedByCardEffect = false;
+        }
+
+        public void AddToMainDeck()
+        {
+            Location = CardLocation.MainDeck;
+            _isSummoned = false;
+            _hasChangedPosition = false;
+            _hasAttacked = false;
+            IsFaceDown = false;
+            _isInDefense = false;
+            IsDestroyedByBattle = false;
+            IsDestroyedByCardEffect = false;
+        }
+
+        public void SetAttacked()
+        {
+            _hasAttacked = true;
+        }
+
+        public void Flip()
+        {
+            if (!_isInDefense || !IsFaceDown)
+            {
+                throw new InvalidOperationException($"Cannot flip card because of FaceDown:{IsFaceDown} or Defense:{IsInDefense}");
+            }
+            _isSummoned = true;
+            _hasChangedPosition = true;
+            _hasAttacked = false;
+            IsFaceDown = false;
+        }
+
+        public void PassTurn()
+        {
+            _hasAttacked = false;
+            _hasChangedPosition = false;
+        }
+
+        public void ChangePosition(bool defense)
+        {
+            if(_hasChangedPosition)
+                throw new InvalidOperationException("Cannot change position.");
+            
+            _isInDefense = defense;
+            _hasChangedPosition = true;
+        }
+
+        public void DestroyByBattle()
+        {
+            IsDestroyedByBattle = true;
+        }
+
+        public void DestroyByCardEffect()
+        {
+            IsDestroyedByCardEffect = true;
+        }
+
+        public void SendToGraveyard()
+        {
+            Location = CardLocation.Graveyard;
+            _isSummoned = false;
+            _hasChangedPosition = false;
+            _hasAttacked = false;
+            IsFaceDown = false;
+            _isInDefense = false;
+        }
+
+        public void ClearDestroyed()
+        {
+            IsDestroyedByBattle = false;
+            IsDestroyedByCardEffect = false;
         }
     }
 }

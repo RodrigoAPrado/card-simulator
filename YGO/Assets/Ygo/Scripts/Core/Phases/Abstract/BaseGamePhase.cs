@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Ygo.Core.Abstract;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Enums;
@@ -40,6 +41,14 @@ namespace Ygo.Core.Phases.Abstract
         public virtual void ToOpenGameStep() { }
         public virtual void GoToNextPhase() { }
 
+        public virtual ClickedOnCardFieldResponse ClickedOnCardInField(ICardInstance card) 
+            => new ClickedOnCardFieldResponse(null);
+        public virtual CheckAttackTargetsResponse CheckAttackTargets(ICardInstance card)
+            => new CheckAttackTargetsResponse(null, new List<ICardInstance>());
+        public virtual BattleResponse DeclareAttack(ICardInstance attacker, ICardInstance target) 
+            => new BattleResponse(null, null);
+        public virtual BattleResponse ContinueTheDamageStep() => new BattleResponse(null, null);
+        
         protected void ChangeStep(GameStep step)
         {
             _currentStep = step;

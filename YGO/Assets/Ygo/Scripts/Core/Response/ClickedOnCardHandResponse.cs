@@ -4,7 +4,7 @@ namespace Ygo.Core.Response
 {
     public class ClickedOnCardHandResponse
     {
-        public bool DoNothing => Card != null;
+        public bool DoNothing => Card == null;
         public bool NormalSummon { get; set; }
         public bool NormalSet { get; set; }
         public bool TributeSummon { get; set; }

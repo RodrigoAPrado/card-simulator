@@ -52,7 +52,7 @@ namespace Ygo.Core
             var cardToDraw = _mainDeck[0];
             _playerHand.Add(cardToDraw);
             _mainDeck.RemoveAt(0);
-            cardToDraw.SetLocation(CardLocation.Hand);
+            cardToDraw.AddToHand();
             return true;
         }
 
@@ -96,7 +96,7 @@ namespace Ygo.Core
                 } while (data == null);
 
                 var instance = new CardInstance(data);
-                instance.SetLocation(CardLocation.MainDeck);
+                instance.AddToMainDeck();
                 deck.Add(instance);
             }
 
