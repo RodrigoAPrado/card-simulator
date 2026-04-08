@@ -35,7 +35,5 @@ namespace Ygo.Editor.Model
         public List<CardSetCardModel> CardSets { get; set; }
         [JsonProperty("card_images")]
         public List<CardImageCardModel> CardImages { get; set; }
-        
-        
     }
 }

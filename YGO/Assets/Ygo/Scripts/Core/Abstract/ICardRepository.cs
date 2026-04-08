@@ -5,8 +5,8 @@ namespace Ygo.Core.Abstract
 {
     public interface ICardRepository
     {
-        IList<int> IdsList { get; }
-        CardData GetCardById(int id);
-        CardData GetMainDeckCardById(int id);
+        IList<string> IdsList { get; }
+        CardData GetCardById(string id);
+        CardData GetMainDeckCardById(string id);
     }
 }

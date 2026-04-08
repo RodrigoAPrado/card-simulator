@@ -9,20 +9,20 @@ namespace Ygo.Service
 {
     public sealed class CardRepository : ICardRepository
     {
-        private readonly Dictionary<int, CardData> _cards;
-        public IList<int> IdsList => _cards.Keys.ToList().AsReadOnly();
+        private readonly Dictionary<string, CardData> _cards;
+        public IList<string> IdsList => _cards.Keys.ToList().AsReadOnly();
 
-        public CardRepository(Dictionary<int, CardData> cards)
+        public CardRepository(Dictionary<string, CardData> cards)
         {
             _cards = cards;
         }
 
-        public CardData GetCardById(int id)
+        public CardData GetCardById(string id)
         {
             return _cards[id];
         }
 
-        public CardData GetMainDeckCardById(int id)
+        public CardData GetMainDeckCardById(string id)
         {
             var card = _cards[id];
             if (card.CardType != CardType.Monster)

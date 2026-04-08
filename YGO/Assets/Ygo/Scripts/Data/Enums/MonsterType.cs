@@ -13,7 +13,7 @@
         Fiend = 8,
         Fairy = 9,
         Insect = 10,
-        Dinossaur = 11,
+        Dinosaur = 11,
         Reptile = 12,
         Fish = 13,
         SeaSerpent = 14,

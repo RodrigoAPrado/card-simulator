@@ -15,7 +15,7 @@ namespace Ygo.Service
         public ICardRepository LoadCards()
         {
             var files = Directory.GetFiles(CardDataPath);
-            var cardDictionary = new Dictionary<int, CardData>();
+            var cardDictionary = new Dictionary<string, CardData>();
             
             foreach (var file in files)
             {

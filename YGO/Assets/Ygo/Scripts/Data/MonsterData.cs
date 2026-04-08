@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Ygo.Data.Enums;
@@ -8,52 +9,34 @@ namespace Ygo.Data
     public class MonsterData
     {
         [JsonProperty("attribute")]
-        public MonsterAttribute Attribute { get; }
+        public MonsterAttribute Attribute { get; set; }
         [JsonProperty("type")]
-        public MonsterType Type { get; }
+        public MonsterType Type { get; set; }
         [JsonProperty("kinds")]
-        public IList<MonsterKind> Kinds { get; }
+        public IList<MonsterKind> Kinds { get; set; }
         [JsonProperty("atk")]
-        public int Atk { get; }
+        public int Atk { get; set; }
         [JsonProperty("def")]
-        public int Def { get; }
+        public int Def { get; set; }
         [JsonProperty("level")][CanBeNull]
-        public int? Level { get; }
+        public int? Level { get; set; }
         [JsonProperty("rank")][CanBeNull]
-        public int? Rank { get; }
+        public int? Rank { get; set; }
         [JsonProperty("pendulum_scale")][CanBeNull]
-        public int? PendulumScale { get; }
+        public int? PendulumScale { get; set; }
         [JsonProperty("link_arrows")][CanBeNull]
-        public IList<int> LinkArrows { get; }
+        public IList<int> LinkArrows { get; set; }
         [JsonProperty("effect_ids")][CanBeNull]
-        public IList<int> EffectIds { get; }
+        public IList<int> EffectIds { get; set; }
         [JsonProperty("flavor_text")][CanBeNull]
-        public string FlavorText { get; }
-        
-        public MonsterData(
-            MonsterAttribute attribute,
-            MonsterType type,
-            List<MonsterKind> kinds,
-            int atk,
-            int def,
-            int? level,
-            int? rank,
-            int? pendulumScale,
-            List<int> linkArrows,
-            List<int> effectIds,
-            string flavorText)
+        public string FlavorText { get; set; }
+
+        public void Validate()
         {
-            Attribute = attribute;
-            Type = type;
-            Kinds = kinds;
-            Atk = atk;
-            Def = def;
-            Level = level;
-            Rank = rank;
-            PendulumScale = pendulumScale;
-            LinkArrows = linkArrows;
-            EffectIds = effectIds;
-            FlavorText = flavorText;
+            if(Attribute == MonsterAttribute.Unknown)
+                throw new InvalidOperationException("Attribute is unknown");
+            if(Type == MonsterType.Unknown)
+                throw new InvalidOperationException("Type is unknown");
         }
     }
 }

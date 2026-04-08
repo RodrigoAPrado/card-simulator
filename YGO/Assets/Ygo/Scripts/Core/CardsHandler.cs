@@ -65,7 +65,7 @@ namespace Ygo.Core
         {
             var deck = new List<ICardInstance>();
 
-            var cardsIncluded = new Dictionary<int, int>();
+            var cardsIncluded = new Dictionary<string, int>();
             var availableIds = repo.IdsList;
             var rng = new Random();
             _playerHand = new List<ICardInstance>();
