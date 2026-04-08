@@ -8,7 +8,7 @@ namespace Ygo.Data
     public class CardData
     {
         [JsonProperty("id")]
-        public int Id { get; }
+        public string Id { get; }
         [JsonProperty("card_type")]
         public CardType CardType { get; }
         [JsonProperty("name")]
@@ -19,23 +19,6 @@ namespace Ygo.Data
         public SpellData SpellData { get; }
         [JsonProperty("trap_data")][CanBeNull]
         public SpellData TrapData { get; }
-       
-
-        public CardData(
-            int id, 
-            CardType cardType, 
-            string name,
-            MonsterData monsterData,
-            SpellData spellData,
-            TrapData trapData)
-        {
-            Id = id;
-            CardType = cardType;
-            Name = name;
-            MonsterData = monsterData;
-            SpellData = spellData;
-            Validate();
-        }
 
         private void Validate()
         {
