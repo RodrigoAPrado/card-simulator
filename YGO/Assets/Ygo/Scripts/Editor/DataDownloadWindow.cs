@@ -145,7 +145,10 @@ namespace Ygo.Editor
 
         private static void ClearDataFiles()
         {
-            var files = Directory.GetFiles(Application.dataPath + "/Ygo/Data/Cards/");
+            if (!Directory.Exists(Application.streamingAssetsPath))
+                return;
+            
+            var files = Directory.GetFiles(Application.streamingAssetsPath + "/Ygo/Data/Cards/");
             foreach (var file in files)
             {
                 File.Delete(file);
@@ -154,9 +157,16 @@ namespace Ygo.Editor
 
         private static void SaveCardData(CardData cardData)
         {
+            if (!Directory.Exists(Application.streamingAssetsPath))
+            {
+                Directory.CreateDirectory(Application.streamingAssetsPath);
+                Directory.CreateDirectory(Application.streamingAssetsPath + "/Ygo/");
+                Directory.CreateDirectory(Application.streamingAssetsPath + "/Ygo/Data/");
+                Directory.CreateDirectory(Application.streamingAssetsPath + "/Ygo/Data/Cards/");
+            }
             var json = JsonConvert.SerializeObject(cardData, Formatting.Indented);
             var fileName = $"{cardData.Id}.json";
-            var fullPath = Path.Combine(Application.dataPath + "/Ygo/Data/Cards/", fileName);
+            var fullPath = Path.Combine(Application.streamingAssetsPath + "/Ygo/Data/Cards/", fileName);
             File.WriteAllText(fullPath, json);
         }
 

@@ -10,7 +10,7 @@ namespace Ygo.Service
     public class CardLoaderService
     {
         private static readonly string CardDataPath 
-            = Application.dataPath + "/Ygo/Data/Cards/";
+            = Application.streamingAssetsPath + "/Ygo/Data/Cards/";
 
         public ICardRepository LoadCards()
         {
