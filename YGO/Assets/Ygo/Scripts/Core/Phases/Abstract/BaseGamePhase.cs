@@ -17,12 +17,10 @@ namespace Ygo.Core.Phases.Abstract
         
         protected TurnContext _context;
         private GameStep _currentStep;
-        private Action _onGameStepChanged;
         
-        protected BaseGamePhase(TurnContext context, Action onGameStepChanged)
+        protected BaseGamePhase(TurnContext context)
         {
             _context = context;
-            _onGameStepChanged = onGameStepChanged;
         }
 
         public abstract void Init();

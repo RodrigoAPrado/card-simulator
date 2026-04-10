@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ygo.Core.Enums;
+using Ygo.Core.Events;
 using Ygo.Core.Phases;
 using Ygo.Core.Phases.Abstract;
 using Ygo.Core.Response;
@@ -14,24 +15,26 @@ namespace Ygo.Core
         public IGamePhase CurrentPhase => _phases[_currentPhaseIndex];
         private List<IGamePhase> _phases;
         private int _currentPhaseIndex;
-        private GameHandler _gameHandler;
-
-        public GameState(GameHandler gameHandler)
-        {
-            _gameHandler = gameHandler;
-        }
+        private EffectPriorityContext _effectPriorityContext;
+        private List<PlayerEffects> _effectPriority;
+        private PlayerEffects _currentEffects;
+        private int _currentPlayerEffectIndex;
+        private GameEventBus _gameEventBus;
         
-        public void Setup(TurnContext turnContext)
+        public void Setup(TurnContext turnContext, GameEventBus gameEventBus)
         {
             TurnContext = turnContext;
+            _gameEventBus = gameEventBus;
+            _effectPriorityContext = new EffectPriorityContext(TurnContext);
+            _effectPriority = new List<PlayerEffects>();
             _phases = new List<IGamePhase>
             {
-                new DrawPhase(TurnContext, OnGameStepChanged),
-                new StandbyPhase(TurnContext, OnGameStepChanged),
-                new MainPhase1(TurnContext, OnGameStepChanged),
-                new BattlePhase(TurnContext, OnGameStepChanged),
-                new MainPhase2(TurnContext, OnGameStepChanged),
-                new EndPhase(TurnContext, OnGameStepChanged)
+                new DrawPhase(TurnContext),
+                new StandbyPhase(TurnContext),
+                new MainPhase1(TurnContext),
+                new BattlePhase(TurnContext),
+                new MainPhase2(TurnContext),
+                new EndPhase(TurnContext)
             };
             _currentPhaseIndex = 0;
         }
@@ -53,88 +56,51 @@ namespace Ygo.Core
             {
                 throw new InvalidOperationException("DrawFromDeck failed");
             }
-            
-            if(CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
-                AdvancePhase();
 
+            if (CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
+            {
+                _effectPriority.AddRange(_effectPriorityContext.GetEffects());
+                _currentPlayerEffectIndex = 0;
+                HandleAdvancePhaseEffectPriority();
+                DoStandbyPhase();
+            }
+            
             return new DrawFromDeckResponse(GameStateResult.Success);
         }
 
-        private void OnGameStepChanged()
+        private void DoStandbyPhase()
         {
-            switch (CurrentPhase.CurrentStep)
+            if (CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
             {
-                case GameStep.ProceedToNextPhase when CurrentPhase is EndPhase:
-                    TurnChange();
-                    return;
-                case GameStep.AttackingDeclaration when CurrentPhase is BattlePhase:
-                    CurrentPhase.ContinueTheDamageStep();
-                    return;
-                case GameStep.StartOfDamageStep when CurrentPhase is BattlePhase:
-                    CurrentPhase.ContinueTheDamageStep();
-                    return;
-                case GameStep.BeforeDamageCalculation when CurrentPhase is BattlePhase:
-                    CurrentPhase.ContinueTheDamageStep();
-                    return;
-                case GameStep.DamageCalculation when CurrentPhase is BattlePhase:
-                    CurrentPhase.ContinueTheDamageStep();
-                    return;
-                case GameStep.AfterDamageCalculation when CurrentPhase is BattlePhase:
-                    CurrentPhase.ContinueTheDamageStep();
-                    return;
-                case GameStep.EndOfDamageStep when CurrentPhase is BattlePhase:
-                    CheckSendToGraveyard();
-                    CurrentPhase.ContinueTheDamageStep();
-                    return;
-                case GameStep.ProceedToNextPhase:
-                    AdvancePhase();
-                    return;
-                case GameStep.OnMonsterSummoned when CurrentPhase is MainPhase1 or MainPhase2:
-                    CurrentPhase.ToOpenGameStep();
-                    break;
+                _effectPriority.AddRange(_effectPriorityContext.GetEffects());
+                _currentPlayerEffectIndex = 0;
+                HandleAdvancePhaseEffectPriority();
             }
         }
 
-        private void CheckSendToGraveyard()
+        private void HandleAdvancePhaseEffectPriority()
         {
-            if (TurnContext.BattleContext.DirectAttack)
-                return;
-            if (TurnContext.BattleContext.Target.IsDestroyed)
+            foreach (var playerEffect in _effectPriority)
             {
-                var response = TurnContext.BattleContext.Target.Zone.TryRemoveCard();
-                if (response.Fail || response.CardRemoved != TurnContext.BattleContext.Target)
-                    throw new InvalidOperationException("Target is not in correct zone.");
-                TurnContext.BattleContext.Target.SendToGraveyard();
+                //Loop through Effects
             }
 
-            if (TurnContext.BattleContext.Attacker.IsDestroyed)
+            if (_currentEffects == null)
             {
-                var response = TurnContext.BattleContext.Attacker.Zone.TryRemoveCard();
-                if (response.Fail || response.CardRemoved != TurnContext.BattleContext.Attacker)
-                    throw new InvalidOperationException("Attacker is not in correct zone.");
-                TurnContext.BattleContext.Attacker.SendToGraveyard();
+                AdvancePhase();
             }
         }
 
         private void AdvancePhase()
         {
-            while (true)
+            if (CurrentPhase.Phase == GamePhase.EndPhase)
             {
-                _currentPhaseIndex++;
-                CurrentPhase.Init();
-                if (CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
-                {
-                    if (CurrentPhase.Phase == GamePhase.EndPhase)
-                    {
-                        TurnChange();
-                        return;
-                    }
-
-                    continue;
-                }
-
-                break;
+                TurnChange();
+                return;
             }
+            _currentPhaseIndex++;
+            CurrentPhase.Init();
+            _gameEventBus.Publish(new PhaseChangeEvent(CurrentPhase.Phase));
         }
 
         private void TurnChange()

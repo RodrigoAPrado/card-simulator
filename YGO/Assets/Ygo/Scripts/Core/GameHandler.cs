@@ -25,7 +25,7 @@ namespace Ygo.Core
         {
             GameCommandBus = new GameCommandBus();
             GameEventBus = new GameEventBus();
-            GameState = new GameState(this);
+            GameState = new GameState();
             _validators = BuildZoneValidators();
 
             _turnContext = new TurnContext(new List<PlayerContext>()
@@ -36,7 +36,7 @@ namespace Ygo.Core
             
             _turnContext.Init(StartingPLayerIndex, StartingPlayerHand);
             
-            GameState.Setup(_turnContext);
+            GameState.Setup(_turnContext, GameEventBus);
             RegisterHandlers();
         }
 
@@ -111,13 +111,6 @@ namespace Ygo.Core
                 GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.GameStateResult));
                 return;
             }
-            
-            GameEventBus.Publish(new PlayerDeckUpdateEvent(
-                _turnContext.CurrentTurnPlayer.CardsHandler.MainDeck, 
-                _turnContext.CurrentTurnPlayer.Id));
-            GameEventBus.Publish(new PlayerHandUpdateEvent(
-                _turnContext.CurrentTurnPlayer.CardsHandler.PlayerHand, 
-                _turnContext.CurrentTurnPlayer.Id));
         }
     }
 }

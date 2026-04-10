@@ -12,7 +12,7 @@ namespace Ygo.Core.Phases
     {
 
         
-        public MainPhase1(TurnContext context, Action onGameStepChanged) : base(context, onGameStepChanged)
+        public MainPhase1(TurnContext context) : base(context)
         {
         }
 

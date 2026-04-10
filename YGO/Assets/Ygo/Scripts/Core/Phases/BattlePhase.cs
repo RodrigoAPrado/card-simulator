@@ -10,7 +10,7 @@ namespace Ygo.Core.Phases
 {
     public class BattlePhase : BaseGamePhase
     {
-        public BattlePhase(TurnContext context, Action onGameStepChanged) : base(context, onGameStepChanged)
+        public BattlePhase(TurnContext context) : base(context)
         {
         }
 

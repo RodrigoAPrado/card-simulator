@@ -7,7 +7,7 @@ namespace Ygo.Core.Phases
     public class DrawPhase : BaseGamePhase
     {
         
-        public DrawPhase(TurnContext context, Action onGameStepChanged) : base(context, onGameStepChanged)
+        public DrawPhase(TurnContext context) : base(context)
         {
         }
 
