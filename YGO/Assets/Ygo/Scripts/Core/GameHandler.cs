@@ -3,7 +3,9 @@ using Ygo.Core.Abstract;
 using Ygo.Core.Board;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Board.Validator;
+using Ygo.Core.Commands;
 using Ygo.Core.Events;
+using Ygo.Core.Phases;
 
 namespace Ygo.Core
 {
@@ -35,6 +37,12 @@ namespace Ygo.Core
             _turnContext.Init(StartingPLayerIndex, StartingPlayerHand);
             
             GameState.Setup(_turnContext);
+            RegisterHandlers();
+        }
+
+        private void RegisterHandlers()
+        {
+            GameCommandBus.RegisterHandler<MainDeckClickCommand>(MainDeckClickHandler);
         }
 
         public void Init()
@@ -53,7 +61,6 @@ namespace Ygo.Core
             GameEventBus.Publish(new TurnChangeEvent(GameState.TurnContext.CurrentTurn));
             GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.MainDeck, true));
             GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.MainDeck, false));
-            GameEventBus.Publish(new PlayerShouldDrawEvent());
         }
 
         private PlayerContext CreatePlayer(ICardRepository repo, string playerName)
@@ -77,6 +84,27 @@ namespace Ygo.Core
                 { ZoneType.MainMonsterZone, new PutMonsterInZoneValidator() },
                 { ZoneType.SpellTrapZone, new PutSpellTrapInZoneValidator() }
             };
+        }
+
+        private void MainDeckClickHandler(MainDeckClickCommand c)
+        {
+            if (GameState.CurrentPhase is not DrawPhase)
+            {
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, DenialReason.NotInDrawPhase));
+                return;
+            }
+
+            GameState.CurrentPhase.DrawFromDeck();
+            if (c.PoV)
+            {
+                GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.MainDeck, true));
+                GameEventBus.Publish(new PlayerHandUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.PlayerHand, true));
+            }
+            else
+            {
+                GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.MainDeck, false));
+                GameEventBus.Publish(new PlayerHandUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.PlayerHand, false));
+            }
         }
     }
 }

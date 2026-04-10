@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using Ygo.Controller.Component;
 using Ygo.Core;
+using Ygo.Core.Commands;
 using Ygo.Core.Events;
 using Ygo.View;
 using Ygo.View.Field;
@@ -20,6 +21,8 @@ namespace Ygo.Controller.Field
         private TextViewUI textView;
         [field: SerializeField] 
         private bool poVPlayer;
+
+        private Action _onClick;
         
         public void Init(GameCommandBus commandBus, GameEventBus eventBus)
         {
@@ -27,6 +30,11 @@ namespace Ygo.Controller.Field
             highlightController.Init();
             eventBus.Subscribe<PlayerDeckUpdateEvent>(OnUpdate);
             eventBus.Subscribe<PlayerShouldDrawEvent>(OnShouldDraw);
+            
+            _onClick = () =>
+            {
+                commandBus.Send(new MainDeckClickCommand(poVPlayer));
+            };
         }
         
         private void OnUpdate(PlayerDeckUpdateEvent e)
@@ -47,6 +55,7 @@ namespace Ygo.Controller.Field
         
         public void OnClick()
         {
+            _onClick?.Invoke();
         }
 
         public void OnEnter()
