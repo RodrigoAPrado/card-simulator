@@ -42,6 +42,7 @@ namespace Ygo.Core
         public void Init()
         {
             CurrentPhase.Init();
+            _gameEventBus.Publish(new PhaseBeginEvent(CurrentPhase.Phase));
         }
 
         public DrawFromDeckResponse TryDrawFromDeck(Guid playerId)
@@ -59,32 +60,14 @@ namespace Ygo.Core
 
             if (CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
             {
-                _effectPriority.AddRange(_effectPriorityContext.GetEffects());
-                _currentPlayerEffectIndex = 0;
                 HandleAdvancePhaseEffectPriority();
-                DoStandbyPhase();
             }
             
             return new DrawFromDeckResponse(GameStateResult.Success);
         }
-
-        private void DoStandbyPhase()
-        {
-            if (CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
-            {
-                _effectPriority.AddRange(_effectPriorityContext.GetEffects());
-                _currentPlayerEffectIndex = 0;
-                HandleAdvancePhaseEffectPriority();
-            }
-        }
-
         private void HandleAdvancePhaseEffectPriority()
         {
-            foreach (var playerEffect in _effectPriority)
-            {
-                //Loop through Effects
-            }
-
+            //Do Effects
             if (_currentEffects == null)
             {
                 AdvancePhase();
@@ -93,19 +76,27 @@ namespace Ygo.Core
 
         private void AdvancePhase()
         {
-            if (CurrentPhase.Phase == GamePhase.EndPhase)
+            while (true)
             {
-                TurnChange();
-                return;
+                if (CurrentPhase.Phase == GamePhase.EndPhase)
+                {
+                    _gameEventBus.Publish(new PhaseEndEvent(CurrentPhase.Phase));
+                    TurnChange();
+                    return;
+                }
+                _gameEventBus.Publish(new PhaseEndEvent(CurrentPhase.Phase));
+                _currentPhaseIndex++;
+                _gameEventBus.Publish(new PhaseBeginEvent(CurrentPhase.Phase));
+                CurrentPhase.Init();
+                if (CurrentPhase.CurrentStep != GameStep.ProceedToNextPhase)
+                    break;
             }
-            _currentPhaseIndex++;
-            CurrentPhase.Init();
-            _gameEventBus.Publish(new PhaseChangeEvent(CurrentPhase.Phase));
         }
 
         private void TurnChange()
         {
             TurnContext.AdvanceTurn();
+            _gameEventBus.Publish(new TurnChangeEvent(TurnContext.CurrentTurn));
             _currentPhaseIndex = 0;
             Init();
         }

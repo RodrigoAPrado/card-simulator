@@ -3,10 +3,10 @@ using Ygo.Core.Events.Abstract;
 
 namespace Ygo.Core.Events
 {
-    public class PhaseChangeEvent : IGameEvent
+    public class PhaseEndEvent : IGameEvent
     {
         public GamePhase Phase { get; }
-        public PhaseChangeEvent(GamePhase phase)
+        public PhaseEndEvent(GamePhase phase)
         {
             Phase = phase;
         }
