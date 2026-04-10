@@ -48,15 +48,8 @@ namespace Ygo.Core
 
         public void Init()
         {
-            GameState.Init();
             GameEventBus.Publish(new PointOfViewUpdateEvent(
                 _turnContext.PointOfViewPlayer.Id, 
-                _turnContext.OpponentPlayer.Id));
-            GameEventBus.Publish(new PlayerHandUpdateEvent(
-                _turnContext.PointOfViewPlayer.CardsHandler.PlayerHand, 
-                _turnContext.PointOfViewPlayer.Id));
-            GameEventBus.Publish(new PlayerHandUpdateEvent(
-                _turnContext.OpponentPlayer.CardsHandler.PlayerHand, 
                 _turnContext.OpponentPlayer.Id));
             GameEventBus.Publish(new PlayerFieldUpdateEvent(
                 _turnContext.PointOfViewPlayer.BoardHandler.MonsterZones, 
@@ -69,14 +62,8 @@ namespace Ygo.Core
                 GameState.TurnContext.PointOfViewPlayer.CurrentLifePoints,
                 GameState.TurnContext.OpponentPlayer.PlayerName, 
                 GameState.TurnContext.OpponentPlayer.CurrentLifePoints));
-            GameEventBus.Publish(new TurnChangeEvent(GameState.TurnContext.CurrentTurn));
-            GameEventBus.Publish(new PlayerDeckUpdateEvent(
-                _turnContext.PointOfViewPlayer.CardsHandler.MainDeck, 
-                _turnContext.PointOfViewPlayer.Id));
-            GameEventBus.Publish(new PlayerDeckUpdateEvent(
-                _turnContext.OpponentPlayer.CardsHandler.MainDeck, 
-                _turnContext.OpponentPlayer.Id));
-            GameEventBus.Publish(new PlayerShouldDrawEvent(_turnContext.CurrentTurnPlayer.Id));
+            GameEventBus.Publish(new CardDrawnEvent(_turnContext.PointOfViewPlayer.Id));
+            GameState.InitGame();
         }
 
         private PlayerContext CreatePlayer(ICardRepository repo, string playerName)
@@ -105,11 +92,11 @@ namespace Ygo.Core
 
         private void MainDeckClickHandler(MainDeckClickCommand c)
         {
-            var response = GameState.TryDrawFromDeck(c.PlayerId);
+            var response = GameState.ClickedOnMainDeck(c.PlayerId);
 
             if (response.Fail)
             {
-                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.GameStateResult));
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.ActionState));
             }
         }
 
@@ -118,7 +105,7 @@ namespace Ygo.Core
             var response = GameState.ClickCardInHand(c.Card);
             if (response.Fail)
             {
-                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.GameStateResult));
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.ActionState));
             }
         }
     }

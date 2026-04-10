@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Ygo.Application;
 using Ygo.Controller.Card;
@@ -17,20 +18,28 @@ namespace Ygo.Controller
         [field: SerializeField] 
         private PointOfView pointOfView;
         private Guid PlayerId { get; set; }
+        private TurnContext _context;
         private Action<ICardInstance> _onClick;
+        private CardsHandler _cardsHandler;
 
-        public void Init(GameCommandBus commandBus, GameEventBus eventBus, Action<ICardInstance> onEnter)
+        public void Init(
+            GameCommandBus commandBus, 
+            GameEventBus eventBus, 
+            TurnContext context,
+            Action<ICardInstance> onEnter
+            )
         {
             foreach (var cardController in cardControllers)
             {
                 cardController.Init(onEnter, ClickCard);
             }
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
-            eventBus.Subscribe<PlayerHandUpdateEvent>(OnUpdate);
+            eventBus.Subscribe<CardDrawnEvent>(OnCardDrawn);
             _onClick = card =>
             {
                 commandBus.Send(new CardInHandClickCommand(card));
             };
+            _context = context;
         }
 
         private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
@@ -38,9 +47,19 @@ namespace Ygo.Controller
             if (pointOfView == PointOfView.Top)
             {
                 PlayerId = e.OpponentId;
+                SetCardsHandler();
                 return;
             }
             PlayerId = e.PointOfViewId;
+            SetCardsHandler();
+        }
+
+        private void SetCardsHandler()
+        {
+            var player = _context.Players.FirstOrDefault(x => x.Id == PlayerId);
+            if(player == null)
+                throw new InvalidOperationException("Player not found");
+            _cardsHandler = player.CardsHandler;
         }
 
         private void ClickCard(ICardInstance card)
@@ -48,12 +67,12 @@ namespace Ygo.Controller
             _onClick?.Invoke(card);
         }
         
-        private void OnUpdate(PlayerHandUpdateEvent e)
+        private void OnCardDrawn(CardDrawnEvent e)
         {
             if (e.PlayerId != PlayerId)
                 return;
-            
-            var cards = e.Hand;
+
+            var cards = _cardsHandler.PlayerHand;
             foreach (var card in cardControllers)
             {
                 card.SetDirty();

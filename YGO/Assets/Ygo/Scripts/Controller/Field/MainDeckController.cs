@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using Ygo.Controller.Component;
 using Ygo.Core;
 using Ygo.Core.Commands;
+using Ygo.Core.Enums;
 using Ygo.Core.Events;
 using Ygo.View;
 using Ygo.View.Field;
@@ -24,19 +26,22 @@ namespace Ygo.Controller.Field
         private Guid PlayerId { get; set; }
 
         private Action _onClick;
+        private TurnContext _context;
+        private CardsHandler _cardsHandler;
         
-        public void Init(GameCommandBus commandBus, GameEventBus eventBus)
+        public void Init(GameCommandBus commandBus, GameEventBus eventBus, TurnContext context)
         {
             hoverController.Init(onClick:OnClick);
             highlightController.Init();
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
-            eventBus.Subscribe<PlayerDeckUpdateEvent>(OnUpdate);
-            eventBus.Subscribe<PlayerShouldDrawEvent>(OnShouldDraw);
+            eventBus.Subscribe<CardDrawnEvent>(OnCardDrawn);
+            eventBus.Subscribe<PhaseBeginEvent>(OnPhaseBegin);
             
             _onClick = () =>
             {
                 commandBus.Send(new MainDeckClickCommand(PlayerId));
             };
+            _context = context;
         }
 
         private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
@@ -44,22 +49,35 @@ namespace Ygo.Controller.Field
             if (pointOfView == PointOfView.Top)
             {
                 PlayerId = e.OpponentId;
+                SetCardsHandler();
                 return;
             }
             PlayerId = e.PointOfViewId;
+            SetCardsHandler();
         }
         
-        private void OnUpdate(PlayerDeckUpdateEvent e)
+        private void SetCardsHandler()
+        {
+            var player = _context.Players.FirstOrDefault(x => x.Id == PlayerId);
+            if(player == null)
+                throw new InvalidOperationException("Player not found");
+            _cardsHandler = player.CardsHandler;
+        }
+        
+        private void OnCardDrawn(CardDrawnEvent e)
         {
             if (e.PlayerId != PlayerId)
                 return;
-            textView.SetText(e.Deck.Count.ToString());
+            textView.SetText(_cardsHandler.MainDeck.Count.ToString());
             highlightController.Disable();
         }
 
-        private void OnShouldDraw(PlayerShouldDrawEvent e)
+        private void OnPhaseBegin(PhaseBeginEvent e)
         {
-            if (e.PlayerId != PlayerId)
+            if (e.TurnPlayer != PlayerId)
+                return;
+
+            if (e.Phase != GamePhase.DrawPhase)
                 return;
             
             highlightController.Enable();

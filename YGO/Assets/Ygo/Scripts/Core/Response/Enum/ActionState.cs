@@ -1,0 +1,12 @@
+﻿namespace Ygo.Core.Response.Enum
+{
+    public enum ActionState
+    {
+        Success,
+        NotImplemented,
+        IncorrectStep,
+        IncorrectPlayer,
+        IncorrectPhase,
+        CannotDrawFromDeck
+    }
+}

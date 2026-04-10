@@ -53,7 +53,12 @@ namespace Ygo.Controller
             
             foreach (var handController in handControllers)
             {
-                handController.Init(_application.GameCommandBus, _application.GameEventBus, UpdateZoomCard);
+                handController.Init(
+                    _application.GameCommandBus, 
+                    _application.GameEventBus, 
+                    _application.TurnContext, 
+                    UpdateZoomCard
+                    );
             }
             
             foreach (var fieldController in fieldControllers)
@@ -63,7 +68,11 @@ namespace Ygo.Controller
 
             foreach (var mainDeckController in mainDeckControllers)
             {
-                mainDeckController.Init(_application.GameCommandBus, _application.GameEventBus);
+                mainDeckController.Init(
+                    _application.GameCommandBus, 
+                    _application.GameEventBus, 
+                    _application.TurnContext
+                    );
             }
             
             actionController.Init(_application.GameCommandBus);
@@ -101,7 +110,7 @@ namespace Ygo.Controller
 
         private void OnCommandDenied(CommandDeniedEvent e)
         {
-            Debug.LogWarning($"{e.CommandType} is denied because {e.DenialReason}");
+            Debug.LogWarning($"{e.CommandType} is denied because {e.ActionState}");
         }
     }
 }

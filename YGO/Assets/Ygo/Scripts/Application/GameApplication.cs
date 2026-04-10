@@ -13,7 +13,7 @@ namespace Ygo.Application
         public GameCommandBus GameCommandBus => _gameHandler.GameCommandBus;
         public GameEventBus GameEventBus => _gameHandler.GameEventBus;
         public IGamePhase CurrentPhase => _gameHandler.GameState.CurrentPhase;
-        public int CurrentTurn => _gameHandler.GameState.TurnContext.CurrentTurn;
+        public TurnContext TurnContext => _gameHandler.GameState.TurnContext;
         private readonly ICardRepository _cardRepository;
         private GameHandler _gameHandler;
         
@@ -31,11 +31,6 @@ namespace Ygo.Application
         public void Init()
         {
             _gameHandler.Init();
-        }
-
-        public bool DrawFromDeck()
-        {
-            return CurrentPhase.DrawFromDeck();
         }
     }
 }

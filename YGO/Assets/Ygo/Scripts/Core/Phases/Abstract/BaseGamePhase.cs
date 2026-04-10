@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ygo.Core.Abstract;
+using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Enums;
 using Ygo.Core.Response;
+using Ygo.Core.Response.Enum;
 
 namespace Ygo.Core.Phases.Abstract
 {
@@ -14,43 +16,24 @@ namespace Ygo.Core.Phases.Abstract
         public IGamePhase NextPhase { get; }
         public bool HasNextPhase => NextPhase != null;
         public GameStep CurrentStep => _currentStep;
-        
-        protected TurnContext _context;
+        protected TurnContext Context { get; }
+        protected GameState GameState { get; }
         private GameStep _currentStep;
-        
-        protected BaseGamePhase(TurnContext context)
+        protected BaseGamePhase(TurnContext context, GameState gameState)
         {
-            _context = context;
+            Context = context;
+            GameState = gameState;
         }
 
         public abstract void Init();
+        public virtual ActionQuery ClickedOnMainDeck(Guid playerId) 
+            => new(playerId,ActionState.NotImplemented);
 
-        public virtual bool DrawFromDeck()
-        {
-            return false;
-        }
-
-        public virtual ClickedOnCardResponse ClickedOnCardInHand(ICardInstance card)
-            => new ClickedOnCardResponse(null);
-
-        public virtual WhereToSummonMonsterResponse CheckWhereToSummonMonster(ICardInstance card) => null;
-        public virtual void CancelSummoning() { }
-
-        public virtual bool SummonCardOnSelectedZone(ICardInstance card, IBoardZone zone) => false;
-        public virtual void ToOpenGameStep() { }
-        public virtual void GoToNextPhase() { }
-
-        public virtual ClickedOnCardResponse ClickedOnCardInField(ICardInstance card) 
-            => new ClickedOnCardResponse(null);
-        public virtual CheckAttackTargetsResponse CheckAttackTargets(ICardInstance card)
-            => new CheckAttackTargetsResponse(null, new List<ICardInstance>());
-        public virtual BattleResponse DeclareAttack(ICardInstance attacker, ICardInstance target) 
-            => new BattleResponse(null, null);
-        public virtual void ContinueTheDamageStep() { }
-        
         protected void ChangeStep(GameStep step)
         {
             _currentStep = step;
         }
+
+        public virtual ActionResult DrawCard(Guid playerId) => new(playerId, ActionState.NotImplemented);
     }
 }

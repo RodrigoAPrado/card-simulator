@@ -1,17 +1,19 @@
-﻿using Ygo.Core.Abstract;
+﻿using System;
+using Ygo.Core.Abstract;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Enums;
 using Ygo.Core.Response;
 
 namespace Ygo.Core.Phases.Abstract
 {
-    public interface IGamePhase
+    public interface IGamePhase : IGamePhaseAction, IGamePhaseCommand
     {
         string Name { get; }
         GamePhase Phase { get; }
         GameStep CurrentStep { get; }
         void Init();
-        bool DrawFromDeck();
+        
+        /*
         ClickedOnCardResponse ClickedOnCardInHand(ICardInstance card);
         WhereToSummonMonsterResponse CheckWhereToSummonMonster(ICardInstance card);
         void CancelSummoning();
@@ -22,5 +24,6 @@ namespace Ygo.Core.Phases.Abstract
         CheckAttackTargetsResponse CheckAttackTargets(ICardInstance card);
         BattleResponse DeclareAttack(ICardInstance attacker, ICardInstance target);
         void ContinueTheDamageStep();
+        */
     }
 }

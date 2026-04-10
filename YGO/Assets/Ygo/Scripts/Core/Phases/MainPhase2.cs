@@ -6,7 +6,7 @@ namespace Ygo.Core.Phases
 {
     public class MainPhase2 : MainPhase1
     {
-        public MainPhase2(TurnContext context) : base(context)
+        public MainPhase2(TurnContext context, GameState gameState) : base(context, gameState)
         {
         }
         
@@ -14,7 +14,7 @@ namespace Ygo.Core.Phases
 
         public override void Init()
         {
-            if (_context.CurrentTurn <= 1)
+            if (Context.CurrentTurn <= 1)
             {
                 ChangeStep(GameStep.ProceedToNextPhase);
                 return;

@@ -6,12 +6,12 @@ namespace Ygo.Core.Events
     public class CommandDeniedEvent : IGameEvent
     {
         public CommandType CommandType { get; }
-        public GameStateResult DenialReason { get; }
+        public ActionState ActionState { get; }
         
-        public CommandDeniedEvent(CommandType commandType, GameStateResult denialReason)
+        public CommandDeniedEvent(CommandType commandType, ActionState actionState)
         {
             CommandType = commandType;
-            DenialReason = denialReason;
+            ActionState = actionState;
         }
     }
 

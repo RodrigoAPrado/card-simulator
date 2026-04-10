@@ -4,12 +4,12 @@ namespace Ygo.Core.Response
 {
     public class CommandResponse
     {
-        public bool Ok => GameStateResult == GameStateResult.Success;
+        public bool Ok => ActionState == ActionState.Success;
         public bool Fail => !Ok;
-        public GameStateResult GameStateResult { get; }
-        public CommandResponse(GameStateResult gameStateResult)
+        public ActionState ActionState { get; }
+        public CommandResponse(ActionState actionState)
         {
-            GameStateResult = gameStateResult;
+            ActionState = actionState;
         }
     }
 }

@@ -30,55 +30,62 @@ namespace Ygo.Core
             _effectPriority = new List<PlayerEffects>();
             _phases = new List<IGamePhase>
             {
-                new DrawPhase(TurnContext),
-                new StandbyPhase(TurnContext),
-                new MainPhase1(TurnContext),
-                new BattlePhase(TurnContext),
-                new MainPhase2(TurnContext),
-                new EndPhase(TurnContext)
+                new DrawPhase(TurnContext, this),
+                new StandbyPhase(TurnContext, this),
+                new MainPhase1(TurnContext, this),
+                new BattlePhase(TurnContext, this),
+                new MainPhase2(TurnContext, this),
+                new EndPhase(TurnContext, this)
             };
             _currentPhaseIndex = 0;
         }
 
-        public void Init()
+        public CommandResponse ClickedOnMainDeck(Guid playerId)
         {
-            CurrentPhase.Init();
-            _gameEventBus.Publish(new PhaseBeginEvent(CurrentPhase.Phase));
-        }
+            var result = CurrentPhase.ClickedOnMainDeck(playerId);
 
-        public CommandResponse TryDrawFromDeck(Guid playerId)
-        {
-            if (CurrentPhase.Phase != GamePhase.DrawPhase)
-                return new CommandResponse(GameStateResult.IncorrectPhase);
-            if (TurnContext.CurrentTurnPlayer.Id != playerId)
-                return new CommandResponse(GameStateResult.IncorrectPlayer);
-            
-            var result = CurrentPhase.DrawFromDeck();
-            if (!result)
+            if (!result.Success)
             {
-                throw new InvalidOperationException("DrawFromDeck failed");
+                return new CommandResponse(result.ActionState);
+            }
+
+            switch (result.Actions.Count)
+            {
+                case <= 0:
+                    throw new InvalidOperationException("Invalid success with no Actions.");
+                case 1:
+                    result.Actions[0].Execute();
+                    break;
+                default:
+                    _gameEventBus.Publish(new AvailableActionsEvent(result));
+                    break;
             }
             
-            _gameEventBus.Publish(new PlayerDeckUpdateEvent(
-                TurnContext.CurrentTurnPlayer.CardsHandler.MainDeck, 
-                TurnContext.CurrentTurnPlayer.Id));
-            
-            _gameEventBus.Publish(new PlayerHandUpdateEvent(
-                TurnContext.CurrentTurnPlayer.CardsHandler.PlayerHand, 
-                TurnContext.CurrentTurnPlayer.Id));
-
-            if (CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
-            {
-                HandleAdvancePhaseEffectPriority();
-            }
-            
-            return new CommandResponse(GameStateResult.Success);
+            return new CommandResponse(ActionState.Success);
         }
 
         public CommandResponse ClickCardInHand(ICardInstance card)
         {
             // Codar o comando.
-            return new CommandResponse(GameStateResult.Success);
+            return new CommandResponse(ActionState.Success);
+        }
+
+        public void InitGame()
+        {
+            StartTurn();
+        }
+
+        public void DrawFromDeck(Guid playerId)
+        {
+            var result = CurrentPhase.DrawCard(playerId);
+            if (result.ActionState != ActionState.Success)
+            {
+                throw new InvalidOperationException("Invalid action!");
+            }
+            
+            _gameEventBus.Publish(new CardDrawnEvent(playerId));
+            if(CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
+                AdvancePhase();
         }
         
         private void HandleAdvancePhaseEffectPriority()
@@ -94,16 +101,15 @@ namespace Ygo.Core
         {
             while (true)
             {
+                _gameEventBus.Publish(new PhaseEndEvent(CurrentPhase.Phase, TurnContext.CurrentTurnPlayer.Id));
                 if (CurrentPhase.Phase == GamePhase.EndPhase)
                 {
-                    _gameEventBus.Publish(new PhaseEndEvent(CurrentPhase.Phase));
                     TurnChange();
                     return;
                 }
-                _gameEventBus.Publish(new PhaseEndEvent(CurrentPhase.Phase));
                 _currentPhaseIndex++;
-                _gameEventBus.Publish(new PhaseBeginEvent(CurrentPhase.Phase));
                 CurrentPhase.Init();
+                _gameEventBus.Publish(new PhaseBeginEvent(CurrentPhase.Phase, TurnContext.CurrentTurnPlayer.Id));
                 if (CurrentPhase.CurrentStep != GameStep.ProceedToNextPhase)
                     break;
             }
@@ -112,9 +118,15 @@ namespace Ygo.Core
         private void TurnChange()
         {
             TurnContext.AdvanceTurn();
-            _gameEventBus.Publish(new TurnChangeEvent(TurnContext.CurrentTurn));
+            _gameEventBus.Publish(new TurnChangeEvent(TurnContext.CurrentTurn, TurnContext.CurrentTurnPlayer.Id));
+            StartTurn();
+        }
+        
+        private void StartTurn()
+        {
             _currentPhaseIndex = 0;
-            Init();
+            CurrentPhase.Init();
+            _gameEventBus.Publish(new PhaseBeginEvent(CurrentPhase.Phase, TurnContext.CurrentTurnPlayer.Id));
         }
     }
 }

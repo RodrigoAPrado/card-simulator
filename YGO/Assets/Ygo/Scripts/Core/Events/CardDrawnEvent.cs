@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using Ygo.Core.Abstract;
 using Ygo.Core.Events.Abstract;
 
 namespace Ygo.Core.Events
 {
-    public class PlayerShouldDrawEvent : IGameEvent
+    public class CardDrawnEvent : IGameEvent
     {
         public Guid PlayerId { get; }
-
-        public PlayerShouldDrawEvent(Guid playerId)
+        
+        public CardDrawnEvent(Guid playerId)
         {
             PlayerId = playerId;
         }

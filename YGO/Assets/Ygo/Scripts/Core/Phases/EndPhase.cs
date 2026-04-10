@@ -6,7 +6,7 @@ namespace Ygo.Core.Phases
 {
     public class EndPhase : BaseGamePhase
     {
-        public EndPhase(TurnContext context) : base(context)
+        public EndPhase(TurnContext context, GameState gameState) : base(context, gameState)
         {
         }
 

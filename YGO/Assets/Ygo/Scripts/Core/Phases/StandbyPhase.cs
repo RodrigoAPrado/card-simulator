@@ -6,7 +6,7 @@ namespace Ygo.Core.Phases
 {
     public class StandbyPhase : BaseGamePhase
     {
-        public StandbyPhase(TurnContext context) : base(context)
+        public StandbyPhase(TurnContext context, GameState gameState) : base(context, gameState)
         {
         }
 
