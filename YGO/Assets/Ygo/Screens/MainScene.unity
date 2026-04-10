@@ -719,7 +719,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5001695089129832243, guid: 6666917ba1a99bf46ab3683ff6343662, type: 3}
       propertyPath: pointOfView
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5210546800869144178, guid: 6666917ba1a99bf46ab3683ff6343662, type: 3}
       propertyPath: m_Pivot.x

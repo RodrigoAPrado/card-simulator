@@ -2,12 +2,12 @@
 
 namespace Ygo.Core.Response
 {
-    public class DrawFromDeckResponse
+    public class CommandResponse
     {
         public bool Ok => GameStateResult == GameStateResult.Success;
         public bool Fail => !Ok;
         public GameStateResult GameStateResult { get; }
-        public DrawFromDeckResponse(GameStateResult gameStateResult)
+        public CommandResponse(GameStateResult gameStateResult)
         {
             GameStateResult = gameStateResult;
         }

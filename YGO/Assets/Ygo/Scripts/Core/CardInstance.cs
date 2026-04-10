@@ -10,6 +10,8 @@ namespace Ygo.Core
     public class CardInstance : ICardInstance
     {
         public Guid Id { get; }
+        public Guid OwnerId { get; }
+        public Guid ControllerId { get; private set; }
         public CardData Data { get; }
         public CardLocation Location { get; private set; }
         public IBoardZone Zone { get; private set; }
@@ -47,9 +49,11 @@ namespace Ygo.Core
         private bool _isSummoned;
         private bool _hasAttacked;
 
-        public CardInstance(CardData data)
+        public CardInstance(CardData data, Guid ownerId)
         {
             Id = Guid.NewGuid();
+            OwnerId = ownerId;
+            ControllerId = ownerId;
             Data = data;
         }
 

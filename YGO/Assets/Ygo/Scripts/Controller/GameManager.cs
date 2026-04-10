@@ -70,9 +70,10 @@ namespace Ygo.Controller
             zoomCard.Init();
             
             
-            _application.GameEventBus.Subscribe<PhaseUpdateEvent>(OnPhaseUpdate);
+            _application.GameEventBus.Subscribe<PhaseBeginEvent>(OnPhaseUpdate);
             _application.GameEventBus.Subscribe<PlayerInfoUpdateEvent>(OnPlayerInfoUpdate);
             _application.GameEventBus.Subscribe<TurnChangeEvent>(OnTurnChange);
+            _application.GameEventBus.Subscribe<CommandDeniedEvent>(OnCommandDenied);
             
             _application.Init();
         }
@@ -82,9 +83,9 @@ namespace Ygo.Controller
             zoomCard.UpdateCard(card);
         }
 
-        private void OnPhaseUpdate(PhaseUpdateEvent e)
+        private void OnPhaseUpdate(PhaseBeginEvent e)
         {
-            phaseText.SetText(e.PhaseName);
+            phaseText.SetText(e.Phase.ToString());
         }
 
         private void OnPlayerInfoUpdate(PlayerInfoUpdateEvent e)
@@ -96,6 +97,11 @@ namespace Ygo.Controller
         private void OnTurnChange(TurnChangeEvent e)
         {
             turnText.SetText($"Turn: {e.TurnIndex}");
+        }
+
+        private void OnCommandDenied(CommandDeniedEvent e)
+        {
+            Debug.LogWarning($"{e.CommandType} is denied because {e.DenialReason}");
         }
     }
 }

@@ -5,6 +5,7 @@ using Ygo.Application;
 using Ygo.Controller.Card;
 using Ygo.Core;
 using Ygo.Core.Abstract;
+using Ygo.Core.Commands;
 using Ygo.Core.Events;
 
 namespace Ygo.Controller
@@ -16,6 +17,7 @@ namespace Ygo.Controller
         [field: SerializeField] 
         private PointOfView pointOfView;
         private Guid PlayerId { get; set; }
+        private Action<ICardInstance> _onClick;
 
         public void Init(GameCommandBus commandBus, GameEventBus eventBus, Action<ICardInstance> onEnter)
         {
@@ -25,6 +27,10 @@ namespace Ygo.Controller
             }
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<PlayerHandUpdateEvent>(OnUpdate);
+            _onClick = card =>
+            {
+                commandBus.Send(new CardInHandClickCommand(card));
+            };
         }
 
         private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
@@ -39,7 +45,7 @@ namespace Ygo.Controller
 
         private void ClickCard(ICardInstance card)
         {
-            Debug.Log("clicked card on hand");
+            _onClick?.Invoke(card);
         }
         
         private void OnUpdate(PlayerHandUpdateEvent e)

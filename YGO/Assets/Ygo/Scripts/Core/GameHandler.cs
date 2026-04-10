@@ -43,6 +43,7 @@ namespace Ygo.Core
         private void RegisterHandlers()
         {
             GameCommandBus.RegisterHandler<MainDeckClickCommand>(MainDeckClickHandler);
+            GameCommandBus.RegisterHandler<CardInHandClickCommand>(CardInHandClickHandler);
         }
 
         public void Init()
@@ -63,7 +64,6 @@ namespace Ygo.Core
             GameEventBus.Publish(new PlayerFieldUpdateEvent(
                 _turnContext.OpponentPlayer.BoardHandler.MonsterZones, 
                 _turnContext.OpponentPlayer.Id));
-            GameEventBus.Publish(new PhaseUpdateEvent(GameState.CurrentPhase.Name));
             GameEventBus.Publish(new PlayerInfoUpdateEvent(
                 GameState.TurnContext.PointOfViewPlayer.PlayerName, 
                 GameState.TurnContext.PointOfViewPlayer.CurrentLifePoints,
@@ -81,14 +81,15 @@ namespace Ygo.Core
 
         private PlayerContext CreatePlayer(ICardRepository repo, string playerName)
         {
+            var player = new PlayerContext(playerName, StartingLifePoints, true);
+            
             var cardsHandler = new CardsHandler();
-            cardsHandler.Setup(repo);
+            cardsHandler.Setup(repo, player.Id);
             cardsHandler.ShuffleDeck();
 
             var boardHandler = new BoardHandler();
             boardHandler.Setup(_validators);
-
-            var player = new PlayerContext(playerName, cardsHandler, boardHandler, StartingLifePoints, true);
+            player.Setup(cardsHandler, boardHandler);
             return player;
         }
 
@@ -109,7 +110,15 @@ namespace Ygo.Core
             if (response.Fail)
             {
                 GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.GameStateResult));
-                return;
+            }
+        }
+
+        private void CardInHandClickHandler(CardInHandClickCommand c)
+        {
+            var response = GameState.ClickCardInHand(c.Card);
+            if (response.Fail)
+            {
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.GameStateResult));
             }
         }
     }

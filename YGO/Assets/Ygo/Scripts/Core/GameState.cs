@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ygo.Core.Abstract;
 using Ygo.Core.Enums;
 using Ygo.Core.Events;
 using Ygo.Core.Phases;
@@ -45,26 +46,41 @@ namespace Ygo.Core
             _gameEventBus.Publish(new PhaseBeginEvent(CurrentPhase.Phase));
         }
 
-        public DrawFromDeckResponse TryDrawFromDeck(Guid playerId)
+        public CommandResponse TryDrawFromDeck(Guid playerId)
         {
             if (CurrentPhase.Phase != GamePhase.DrawPhase)
-                return new DrawFromDeckResponse(GameStateResult.IncorrectPhase);
+                return new CommandResponse(GameStateResult.IncorrectPhase);
             if (TurnContext.CurrentTurnPlayer.Id != playerId)
-                return new DrawFromDeckResponse(GameStateResult.IncorrectPlayer);
+                return new CommandResponse(GameStateResult.IncorrectPlayer);
             
             var result = CurrentPhase.DrawFromDeck();
             if (!result)
             {
                 throw new InvalidOperationException("DrawFromDeck failed");
             }
+            
+            _gameEventBus.Publish(new PlayerDeckUpdateEvent(
+                TurnContext.CurrentTurnPlayer.CardsHandler.MainDeck, 
+                TurnContext.CurrentTurnPlayer.Id));
+            
+            _gameEventBus.Publish(new PlayerHandUpdateEvent(
+                TurnContext.CurrentTurnPlayer.CardsHandler.PlayerHand, 
+                TurnContext.CurrentTurnPlayer.Id));
 
             if (CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
             {
                 HandleAdvancePhaseEffectPriority();
             }
             
-            return new DrawFromDeckResponse(GameStateResult.Success);
+            return new CommandResponse(GameStateResult.Success);
         }
+
+        public CommandResponse ClickCardInHand(ICardInstance card)
+        {
+            // Codar o comando.
+            return new CommandResponse(GameStateResult.Success);
+        }
+        
         private void HandleAdvancePhaseEffectPriority()
         {
             //Do Effects

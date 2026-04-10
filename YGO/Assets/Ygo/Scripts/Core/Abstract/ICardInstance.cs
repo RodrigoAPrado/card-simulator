@@ -9,6 +9,8 @@ namespace Ygo.Core.Abstract
     public interface ICardInstance
     {
         Guid Id { get; }
+        Guid OwnerId { get; }
+        Guid ControllerId { get; }
         CardData Data { get; }
         CardLocation Location { get; }
         IBoardZone Zone { get; }

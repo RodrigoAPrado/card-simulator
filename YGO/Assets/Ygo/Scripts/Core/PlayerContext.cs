@@ -19,15 +19,19 @@ namespace Ygo.Core
         
         private bool _overDeck;
 
-        public PlayerContext(string playerName, CardsHandler cardsHandler, BoardHandler boardHandler, int startingLifePoints, bool showViewPoint)
+        public PlayerContext(string playerName, int startingLifePoints, bool showViewPoint)
         {
             Id = Guid.NewGuid();
             PlayerName = playerName;
-            CardsHandler = cardsHandler;
-            BoardHandler = boardHandler;
             CurrentLifePoints = startingLifePoints;
             PreviousLifePoints = CurrentLifePoints;
             ShowViewPoint = showViewPoint;
+        }
+
+        public void Setup(CardsHandler cardsHandler, BoardHandler boardHandler)
+        {
+            CardsHandler = cardsHandler;
+            BoardHandler = boardHandler;
         }
 
         public bool DrawFromDeck()

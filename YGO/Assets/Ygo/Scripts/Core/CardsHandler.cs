@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Ygo.Core.Abstract;
@@ -16,10 +17,10 @@ namespace Ygo.Core
         private List<ICardInstance> _playerHand;
         private List<ICardInstance> _mainDeck;
 
-        public void Setup(ICardRepository repo)
+        public void Setup(ICardRepository repo, Guid ownerId)
         {
             _playerHand = new List<ICardInstance>();
-            _mainDeck = CreateDeck(repo, 40);
+            _mainDeck = CreateDeck(repo, 40, ownerId);
             PlayerCards = new ICardInstance[_mainDeck.Count];
             for (var i = 0; i < PlayerCards.Length; i++)
             {
@@ -61,7 +62,7 @@ namespace Ygo.Core
             _playerHand.Remove(cardInstance);
         }
 
-        private List<ICardInstance> CreateDeck(ICardRepository repo, int deckSize)
+        private List<ICardInstance> CreateDeck(ICardRepository repo, int deckSize, Guid ownerId)
         {
             var deck = new List<ICardInstance>();
 
@@ -95,7 +96,7 @@ namespace Ygo.Core
                     }
                 } while (data == null);
 
-                var instance = new CardInstance(data);
+                var instance = new CardInstance(data, ownerId);
                 instance.AddToMainDeck();
                 deck.Add(instance);
             }
