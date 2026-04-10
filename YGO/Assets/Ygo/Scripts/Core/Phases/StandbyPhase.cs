@@ -6,11 +6,11 @@ namespace Ygo.Core.Phases
 {
     public class StandbyPhase : BaseGamePhase
     {
-        public override string Name => "Standby Phase";
-
         public StandbyPhase(TurnContext context, Action onGameStepChanged) : base(context, onGameStepChanged)
         {
         }
+
+        public override GamePhase Phase => GamePhase.StandbyPhase;
 
         public override void Init()
         {

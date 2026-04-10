@@ -6,11 +6,12 @@ namespace Ygo.Core.Phases
 {
     public class DrawPhase : BaseGamePhase
     {
-        public override string Name => "Draw Phase";
         
         public DrawPhase(TurnContext context, Action onGameStepChanged) : base(context, onGameStepChanged)
         {
         }
+
+        public override GamePhase Phase => GamePhase.DrawPhase;
 
         public override void Init()
         {

@@ -61,6 +61,11 @@ namespace Ygo.Core
             SetPointOfView();
         }
 
+        public PlayerContext GetPlayerById(Guid playerId)
+        {
+            return Players.FirstOrDefault(x => x.Id == playerId);
+        }
+
         private void SetPointOfView()
         {
             if (Players.Count == 2)

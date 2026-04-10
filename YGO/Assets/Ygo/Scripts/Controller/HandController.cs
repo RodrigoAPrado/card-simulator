@@ -14,7 +14,8 @@ namespace Ygo.Controller
         [field:SerializeField]
         private CardController[] cardControllers;
         [field: SerializeField] 
-        private bool poVPlayer;
+        private PointOfView pointOfView;
+        private Guid PlayerId { get; set; }
 
         public void Init(GameCommandBus commandBus, GameEventBus eventBus, Action<ICardInstance> onEnter)
         {
@@ -22,7 +23,18 @@ namespace Ygo.Controller
             {
                 cardController.Init(onEnter, ClickCard);
             }
+            eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<PlayerHandUpdateEvent>(OnUpdate);
+        }
+
+        private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
+        {
+            if (pointOfView == PointOfView.Top)
+            {
+                PlayerId = e.OpponentId;
+                return;
+            }
+            PlayerId = e.PointOfViewId;
         }
 
         private void ClickCard(ICardInstance card)
@@ -32,7 +44,7 @@ namespace Ygo.Controller
         
         private void OnUpdate(PlayerHandUpdateEvent e)
         {
-            if (e.Pov != poVPlayer)
+            if (e.PlayerId != PlayerId)
                 return;
             
             var cards = e.Hand;

@@ -10,10 +10,11 @@ namespace Ygo.Core.Phases
 {
     public class BattlePhase : BaseGamePhase
     {
-        public override string Name => "Battle Phase";
         public BattlePhase(TurnContext context, Action onGameStepChanged) : base(context, onGameStepChanged)
         {
         }
+
+        public override GamePhase Phase => GamePhase.BasePhase;
 
         public override void Init()
         {

@@ -9,7 +9,8 @@ namespace Ygo.Core.Phases.Abstract
 {
     public abstract class BaseGamePhase : IGamePhase
     {
-        public abstract string Name { get; }
+        public string Name => Phase.ToString();
+        public abstract GamePhase Phase { get; }
         public IGamePhase NextPhase { get; }
         public bool HasNextPhase => NextPhase != null;
         public GameStep CurrentStep => _currentStep;
@@ -52,7 +53,6 @@ namespace Ygo.Core.Phases.Abstract
         protected void ChangeStep(GameStep step)
         {
             _currentStep = step;
-            _onGameStepChanged?.Invoke();
         }
     }
 }

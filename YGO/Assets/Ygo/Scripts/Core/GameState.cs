@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Ygo.Core.Enums;
 using Ygo.Core.Phases;
 using Ygo.Core.Phases.Abstract;
+using Ygo.Core.Response;
+using Ygo.Core.Response.Enum;
 
 namespace Ygo.Core
 {
@@ -37,6 +39,25 @@ namespace Ygo.Core
         public void Init()
         {
             CurrentPhase.Init();
+        }
+
+        public DrawFromDeckResponse TryDrawFromDeck(Guid playerId)
+        {
+            if (CurrentPhase.Phase != GamePhase.DrawPhase)
+                return new DrawFromDeckResponse(GameStateResult.IncorrectPhase);
+            if (TurnContext.CurrentTurnPlayer.Id != playerId)
+                return new DrawFromDeckResponse(GameStateResult.IncorrectPlayer);
+            
+            var result = CurrentPhase.DrawFromDeck();
+            if (!result)
+            {
+                throw new InvalidOperationException("DrawFromDeck failed");
+            }
+            
+            if(CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
+                AdvancePhase();
+
+            return new DrawFromDeckResponse(GameStateResult.Success);
         }
 
         private void OnGameStepChanged()
@@ -97,8 +118,23 @@ namespace Ygo.Core
 
         private void AdvancePhase()
         {
-            _currentPhaseIndex++;
-            CurrentPhase.Init();
+            while (true)
+            {
+                _currentPhaseIndex++;
+                CurrentPhase.Init();
+                if (CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
+                {
+                    if (CurrentPhase.Phase == GamePhase.EndPhase)
+                    {
+                        TurnChange();
+                        return;
+                    }
+
+                    continue;
+                }
+
+                break;
+            }
         }
 
         private void TurnChange()

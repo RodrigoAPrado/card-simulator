@@ -8,6 +8,7 @@ namespace Ygo.Core.Phases.Abstract
     public interface IGamePhase
     {
         string Name { get; }
+        GamePhase Phase { get; }
         GameStep CurrentStep { get; }
         void Init();
         bool DrawFromDeck();

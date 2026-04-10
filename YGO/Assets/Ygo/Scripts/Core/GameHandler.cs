@@ -48,10 +48,21 @@ namespace Ygo.Core
         public void Init()
         {
             GameState.Init();
-            GameEventBus.Publish(new PlayerHandUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.PlayerHand, true));
-            GameEventBus.Publish(new PlayerHandUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.PlayerHand, false));
-            GameEventBus.Publish(new PlayerFieldUpdateEvent(_turnContext.PointOfViewPlayer.BoardHandler.MonsterZones, true));
-            GameEventBus.Publish(new PlayerFieldUpdateEvent(_turnContext.OpponentPlayer.BoardHandler.MonsterZones, false));
+            GameEventBus.Publish(new PointOfViewUpdateEvent(
+                _turnContext.PointOfViewPlayer.Id, 
+                _turnContext.OpponentPlayer.Id));
+            GameEventBus.Publish(new PlayerHandUpdateEvent(
+                _turnContext.PointOfViewPlayer.CardsHandler.PlayerHand, 
+                _turnContext.PointOfViewPlayer.Id));
+            GameEventBus.Publish(new PlayerHandUpdateEvent(
+                _turnContext.OpponentPlayer.CardsHandler.PlayerHand, 
+                _turnContext.OpponentPlayer.Id));
+            GameEventBus.Publish(new PlayerFieldUpdateEvent(
+                _turnContext.PointOfViewPlayer.BoardHandler.MonsterZones, 
+                _turnContext.PointOfViewPlayer.Id));
+            GameEventBus.Publish(new PlayerFieldUpdateEvent(
+                _turnContext.OpponentPlayer.BoardHandler.MonsterZones, 
+                _turnContext.OpponentPlayer.Id));
             GameEventBus.Publish(new PhaseUpdateEvent(GameState.CurrentPhase.Name));
             GameEventBus.Publish(new PlayerInfoUpdateEvent(
                 GameState.TurnContext.PointOfViewPlayer.PlayerName, 
@@ -59,8 +70,13 @@ namespace Ygo.Core
                 GameState.TurnContext.OpponentPlayer.PlayerName, 
                 GameState.TurnContext.OpponentPlayer.CurrentLifePoints));
             GameEventBus.Publish(new TurnChangeEvent(GameState.TurnContext.CurrentTurn));
-            GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.MainDeck, true));
-            GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.MainDeck, false));
+            GameEventBus.Publish(new PlayerDeckUpdateEvent(
+                _turnContext.PointOfViewPlayer.CardsHandler.MainDeck, 
+                _turnContext.PointOfViewPlayer.Id));
+            GameEventBus.Publish(new PlayerDeckUpdateEvent(
+                _turnContext.OpponentPlayer.CardsHandler.MainDeck, 
+                _turnContext.OpponentPlayer.Id));
+            GameEventBus.Publish(new PlayerShouldDrawEvent(_turnContext.CurrentTurnPlayer.Id));
         }
 
         private PlayerContext CreatePlayer(ICardRepository repo, string playerName)
@@ -88,23 +104,20 @@ namespace Ygo.Core
 
         private void MainDeckClickHandler(MainDeckClickCommand c)
         {
-            if (GameState.CurrentPhase is not DrawPhase)
+            var response = GameState.TryDrawFromDeck(c.PlayerId);
+
+            if (response.Fail)
             {
-                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, DenialReason.NotInDrawPhase));
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.GameStateResult));
                 return;
             }
-
-            GameState.CurrentPhase.DrawFromDeck();
-            if (c.PoV)
-            {
-                GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.MainDeck, true));
-                GameEventBus.Publish(new PlayerHandUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.PlayerHand, true));
-            }
-            else
-            {
-                GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.MainDeck, false));
-                GameEventBus.Publish(new PlayerHandUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.PlayerHand, false));
-            }
+            
+            GameEventBus.Publish(new PlayerDeckUpdateEvent(
+                _turnContext.CurrentTurnPlayer.CardsHandler.MainDeck, 
+                _turnContext.CurrentTurnPlayer.Id));
+            GameEventBus.Publish(new PlayerHandUpdateEvent(
+                _turnContext.CurrentTurnPlayer.CardsHandler.PlayerHand, 
+                _turnContext.CurrentTurnPlayer.Id));
         }
     }
 }

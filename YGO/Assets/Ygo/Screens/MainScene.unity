@@ -717,6 +717,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 5001695089129832243, guid: 6666917ba1a99bf46ab3683ff6343662, type: 3}
+      propertyPath: pointOfView
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5210546800869144178, guid: 6666917ba1a99bf46ab3683ff6343662, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2149,7 +2153,7 @@ MonoBehaviour:
   - {fileID: 639166007}
   - {fileID: 631320380}
   - {fileID: 314433473}
-  poVPlayer: 1
+  pointOfView: 1
 --- !u!1001 &256713201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8550,7 +8554,7 @@ MonoBehaviour:
   - {fileID: 1231155882}
   - {fileID: 587791566}
   - {fileID: 1188487513}
-  poVPlayer: 1
+  pointOfView: 1
 --- !u!1001 &682583547
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11047,7 +11051,7 @@ MonoBehaviour:
   - {fileID: 1079573292}
   - {fileID: 498589826}
   - {fileID: 1620411301}
-  poVPlayer: 0
+  pointOfView: 0
 --- !u!1 &986029619
 GameObject:
   m_ObjectHideFlags: 0
@@ -18483,7 +18487,7 @@ MonoBehaviour:
   - {fileID: 2009979437}
   - {fileID: 918530722}
   - {fileID: 1604685783}
-  poVPlayer: 0
+  pointOfView: 0
 --- !u!1001 &1879309180
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19550,6 +19554,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5001695089129832243, guid: 6666917ba1a99bf46ab3683ff6343662, type: 3}
       propertyPath: poVPlayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001695089129832243, guid: 6666917ba1a99bf46ab3683ff6343662, type: 3}
+      propertyPath: pointOfView
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5210546800869144178, guid: 6666917ba1a99bf46ab3683ff6343662, type: 3}

@@ -11,11 +11,12 @@ namespace Ygo.Core.Phases
     public class MainPhase1 : BaseGamePhase
     {
 
-        public override string Name => "Main Phase 1";
         
         public MainPhase1(TurnContext context, Action onGameStepChanged) : base(context, onGameStepChanged)
         {
         }
+
+        public override GamePhase Phase => GamePhase.MainPhase1;
 
         public override void Init()
         {

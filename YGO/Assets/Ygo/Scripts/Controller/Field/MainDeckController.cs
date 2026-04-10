@@ -20,7 +20,8 @@ namespace Ygo.Controller.Field
         [field: SerializeField] 
         private TextViewUI textView;
         [field: SerializeField] 
-        private bool poVPlayer;
+        private PointOfView pointOfView;
+        private Guid PlayerId { get; set; }
 
         private Action _onClick;
         
@@ -28,18 +29,29 @@ namespace Ygo.Controller.Field
         {
             hoverController.Init(onClick:OnClick);
             highlightController.Init();
+            eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<PlayerDeckUpdateEvent>(OnUpdate);
             eventBus.Subscribe<PlayerShouldDrawEvent>(OnShouldDraw);
             
             _onClick = () =>
             {
-                commandBus.Send(new MainDeckClickCommand(poVPlayer));
+                commandBus.Send(new MainDeckClickCommand(PlayerId));
             };
+        }
+
+        private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
+        {
+            if (pointOfView == PointOfView.Top)
+            {
+                PlayerId = e.OpponentId;
+                return;
+            }
+            PlayerId = e.PointOfViewId;
         }
         
         private void OnUpdate(PlayerDeckUpdateEvent e)
         {
-            if (e.Pov != poVPlayer)
+            if (e.PlayerId != PlayerId)
                 return;
             textView.SetText(e.Deck.Count.ToString());
             highlightController.Disable();
@@ -47,7 +59,7 @@ namespace Ygo.Controller.Field
 
         private void OnShouldDraw(PlayerShouldDrawEvent e)
         {
-            if (!poVPlayer)
+            if (e.PlayerId != PlayerId)
                 return;
             
             highlightController.Enable();

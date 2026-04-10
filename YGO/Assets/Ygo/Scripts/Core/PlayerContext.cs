@@ -6,6 +6,7 @@ namespace Ygo.Core
 {
     public class PlayerContext
     {
+        public Guid Id { get; }
         public string PlayerName { get; }
         public CardsHandler CardsHandler { get; private set; }
         public BoardHandler BoardHandler { get; private set; }
@@ -20,6 +21,7 @@ namespace Ygo.Core
 
         public PlayerContext(string playerName, CardsHandler cardsHandler, BoardHandler boardHandler, int startingLifePoints, bool showViewPoint)
         {
+            Id = Guid.NewGuid();
             PlayerName = playerName;
             CardsHandler = cardsHandler;
             BoardHandler = boardHandler;

@@ -19,8 +19,9 @@ namespace Ygo.Controller
         [field:SerializeField]
         private CardController[] frontRowCards;
         [field: SerializeField] 
-        private bool poVPlayer;
-
+        private PointOfView pointOfView;
+        private Guid PlayerId { get; set; }
+        
         public void Init(GameCommandBus commandBus, GameEventBus eventBus, Action<ICardInstance> onEnter)
         {
             foreach (var cardController in frontRowCards)
@@ -32,7 +33,18 @@ namespace Ygo.Controller
             {
                 zoneController.Init(ClickZone);
             }
+            eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<PlayerFieldUpdateEvent>(OnUpdate);
+        }
+
+        private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
+        {
+            if (pointOfView == PointOfView.Top)
+            {
+                PlayerId = e.OpponentId;
+                return;
+            }
+            PlayerId = e.PointOfViewId;
         }
 
         private void ClickZone(IBoardZone zone)
@@ -48,7 +60,7 @@ namespace Ygo.Controller
 
         private void OnUpdate(PlayerFieldUpdateEvent e)
         {
-            if (e.Pov != poVPlayer)
+            if (e.PlayerId != PlayerId)
                 return;
             
             foreach (var card in frontRowCards)

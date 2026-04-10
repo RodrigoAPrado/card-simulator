@@ -1,14 +1,15 @@
-﻿using Ygo.Core.Commands.Abstract;
+﻿using System;
+using Ygo.Core.Commands.Abstract;
 
 namespace Ygo.Core.Commands
 {
     public class MainDeckClickCommand : IGameCommand
     {
-        public bool PoV { get; }
+        public Guid PlayerId { get; }
         
-        public MainDeckClickCommand(bool poV)
+        public MainDeckClickCommand(Guid playerId)
         {
-            PoV = poV;
+            PlayerId = playerId;
         }
     }
 }
