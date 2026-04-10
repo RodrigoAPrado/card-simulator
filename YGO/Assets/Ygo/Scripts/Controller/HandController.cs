@@ -5,6 +5,7 @@ using Ygo.Application;
 using Ygo.Controller.Card;
 using Ygo.Core;
 using Ygo.Core.Abstract;
+using Ygo.Core.Events;
 
 namespace Ygo.Controller
 {
@@ -12,15 +13,16 @@ namespace Ygo.Controller
     {
         [field:SerializeField]
         private CardController[] cardControllers;
-        [field:SerializeField]
-        private bool PoVPlayer { get; set; }
+        [field: SerializeField] 
+        private bool poVPlayer;
 
-        public void Init(GameCommandBus commandBus, GameEventBus gameEventBus, Action<ICardInstance> onEnter)
+        public void Init(GameCommandBus commandBus, GameEventBus eventBus, Action<ICardInstance> onEnter)
         {
             foreach (var cardController in cardControllers)
             {
                 cardController.Init(onEnter, ClickCard);
             }
+            eventBus.Subscribe<PlayerHandUpdateEvent>(OnUpdate);
         }
 
         private void ClickCard(ICardInstance card)
@@ -28,8 +30,12 @@ namespace Ygo.Controller
             Debug.Log("clicked card on hand");
         }
         
-        private void UpdatePlayerHand(IList<ICardInstance> cards)
+        private void OnUpdate(PlayerHandUpdateEvent e)
         {
+            if (e.Pov != poVPlayer)
+                return;
+            
+            var cards = e.Hand;
             foreach (var card in cardControllers)
             {
                 card.SetDirty();

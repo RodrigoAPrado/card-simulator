@@ -2,13 +2,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ygo.View.Field
+namespace Ygo.View.Component
 {
-    public class ZoneView : MonoBehaviour
+    public class HighlightView : MonoBehaviour
     {
-        [field: SerializeField]
-        private Color32 highlightColor { get; set; }
-
         [field: SerializeField]
         private Image highlight;
 
@@ -31,10 +28,9 @@ namespace Ygo.View.Field
         private void AnimateHighlight()
         {
             highlight.gameObject.SetActive(true);
-            highlight.color = highlightColor;
             highlight.DOKill();
 
-            highlight.DOFade(0f, 1f)
+            highlight.DOFade(0f, 0.6f)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.InOutSine);
         }

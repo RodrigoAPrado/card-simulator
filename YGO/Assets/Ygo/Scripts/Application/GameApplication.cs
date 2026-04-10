@@ -22,10 +22,14 @@ namespace Ygo.Application
             _cardRepository = cardRepository;
         }
 
-        public void InitializeGame()
+        public void Setup()
         {
             _gameHandler = new GameHandler();
             _gameHandler.Setup(_cardRepository);
+        }
+
+        public void Init()
+        {
             _gameHandler.Init();
         }
 

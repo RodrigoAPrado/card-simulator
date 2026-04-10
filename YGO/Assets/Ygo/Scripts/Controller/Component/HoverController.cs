@@ -12,12 +12,14 @@ namespace Ygo.Controller.Component
         private Action _onClick;
         private Action _onEnter;
         private Action _onExit;
+        private bool _doNotHover;
         
-        public void Init(Action onClick = null, Action onEnter = null, Action onExit = null)
+        public void Init(Action onClick = null, Action onEnter = null, Action onExit = null, bool doNotHover = false)
         {
             _onClick = onClick;
             _onEnter = onEnter;
             _onExit = onExit;
+            _doNotHover = doNotHover;
             hoverImage.SetActive(false);
         }
 
@@ -28,7 +30,7 @@ namespace Ygo.Controller.Component
 
         public void OnEnter()
         {
-            hoverImage.SetActive(true);
+            hoverImage.SetActive(true && !_doNotHover);
             _onEnter?.Invoke();
         }
 

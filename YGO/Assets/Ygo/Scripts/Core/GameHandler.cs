@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Ygo.Core.Abstract;
 using Ygo.Core.Board;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Board.Validator;
+using Ygo.Core.Events;
 
 namespace Ygo.Core
 {
@@ -40,6 +40,20 @@ namespace Ygo.Core
         public void Init()
         {
             GameState.Init();
+            GameEventBus.Publish(new PlayerHandUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.PlayerHand, true));
+            GameEventBus.Publish(new PlayerHandUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.PlayerHand, false));
+            GameEventBus.Publish(new PlayerFieldUpdateEvent(_turnContext.PointOfViewPlayer.BoardHandler.MonsterZones, true));
+            GameEventBus.Publish(new PlayerFieldUpdateEvent(_turnContext.OpponentPlayer.BoardHandler.MonsterZones, false));
+            GameEventBus.Publish(new PhaseUpdateEvent(GameState.CurrentPhase.Name));
+            GameEventBus.Publish(new PlayerInfoUpdateEvent(
+                GameState.TurnContext.PointOfViewPlayer.PlayerName, 
+                GameState.TurnContext.PointOfViewPlayer.CurrentLifePoints,
+                GameState.TurnContext.OpponentPlayer.PlayerName, 
+                GameState.TurnContext.OpponentPlayer.CurrentLifePoints));
+            GameEventBus.Publish(new TurnChangeEvent(GameState.TurnContext.CurrentTurn));
+            GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.PointOfViewPlayer.CardsHandler.MainDeck, true));
+            GameEventBus.Publish(new PlayerDeckUpdateEvent(_turnContext.OpponentPlayer.CardsHandler.MainDeck, false));
+            GameEventBus.Publish(new PlayerShouldDrawEvent());
         }
 
         private PlayerContext CreatePlayer(ICardRepository repo, string playerName)

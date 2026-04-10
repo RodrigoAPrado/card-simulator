@@ -23,6 +23,8 @@ namespace Ygo.Controller.Card
         private CardControllerMode cardMode;
         [field: SerializeField]
         private HoverController hoverController;
+        [field: SerializeField]
+        private HighlightController highlightController;
         
         private ICardInstance _card;
 
@@ -37,7 +39,8 @@ namespace Ygo.Controller.Card
             _onEnter = onEnter;
             _onCLick = onClick;
             view.ToggleField(cardMode == CardControllerMode.Field);
-            hoverController.Init(OnClick, OnEnter, OnExit);
+            hoverController.Init(OnClick, OnEnter, OnExit, cardMode == CardControllerMode.Zoom);
+            highlightController.Init();
         }
 
         public void UpdateCard(ICardInstance cardInstance, bool hidden = false)

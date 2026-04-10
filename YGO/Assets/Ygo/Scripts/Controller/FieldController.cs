@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Ygo.Controller.Card;
 using Ygo.Controller.Field;
 using Ygo.Core;
 using Ygo.Core.Abstract;
 using Ygo.Core.Board.Abstract;
+using Ygo.Core.Events;
 
 namespace Ygo.Controller
 {
@@ -16,9 +19,9 @@ namespace Ygo.Controller
         [field:SerializeField]
         private CardController[] frontRowCards;
         [field: SerializeField] 
-        private bool PoVPlayer;
+        private bool poVPlayer;
 
-        public void Init(GameCommandBus commandBus, GameEventBus gameEventBus, Action<ICardInstance> onEnter)
+        public void Init(GameCommandBus commandBus, GameEventBus eventBus, Action<ICardInstance> onEnter)
         {
             foreach (var cardController in frontRowCards)
             {
@@ -29,6 +32,7 @@ namespace Ygo.Controller
             {
                 zoneController.Init(ClickZone);
             }
+            eventBus.Subscribe<PlayerFieldUpdateEvent>(OnUpdate);
         }
 
         private void ClickZone(IBoardZone zone)
@@ -40,6 +44,32 @@ namespace Ygo.Controller
         private void ClickCard(ICardInstance card)
         {
             Debug.Log("clicked card on field");
+        }
+
+        private void OnUpdate(PlayerFieldUpdateEvent e)
+        {
+            if (e.Pov != poVPlayer)
+                return;
+            
+            foreach (var card in frontRowCards)
+            {
+                card.SetDirty();
+            }
+            
+            foreach (var zone in frontRowZones)
+            {
+                zone.SetBoardZone(e.Board.FirstOrDefault(x => x.Position == zone.Position));
+                if (zone.Zone.IsFree)
+                    continue;
+                var card = frontRowCards.FirstOrDefault(x => x.ZonePosition == zone.Position);
+                card?.Enable();
+                card?.UpdateCard(zone.Zone.CardInZone);
+            }
+            
+            foreach (var card in frontRowCards.Where(card => card.Dirty))
+            {
+                card.Disable();
+            }
         }
     }
 }

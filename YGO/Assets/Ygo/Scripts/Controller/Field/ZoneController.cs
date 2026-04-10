@@ -17,7 +17,7 @@ namespace Ygo.Controller.Field
         private ZoneView view;
 
         private Action<IBoardZone> _onClick;
-        private IBoardZone _zone;
+        public IBoardZone Zone { get; private set; }
         
         public void Init(Action<IBoardZone> onClick)
         {
@@ -28,12 +28,12 @@ namespace Ygo.Controller.Field
 
         public void SetBoardZone(IBoardZone zone)
         {
-            _zone = zone;
+            Zone = zone;
         }
 
         private void OnClick()
         {
-            _onClick?.Invoke(_zone);
+            _onClick?.Invoke(Zone);
         }
     }
 }

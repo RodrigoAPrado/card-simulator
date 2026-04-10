@@ -8,6 +8,7 @@ using Ygo.Controller.Card;
 using Ygo.Controller.Field;
 using Ygo.Core.Abstract;
 using Ygo.Core.Enums;
+using Ygo.Core.Events;
 using Ygo.Service;
 using Ygo.View;
 
@@ -21,11 +22,12 @@ namespace Ygo.Controller
         [Header("Field")] 
         [field: SerializeField]
         private FieldController[] fieldControllers;
-        
+        [Header("MainDeck")]
+        [field: SerializeField]
+        private MainDeckController[] mainDeckControllers;
         [Header("ActionMenu")]
         [field: SerializeField]
         private ActionController actionController;
-        
         [Header("ZoomCard")]
         [field: SerializeField]
         private CardController zoomCard;
@@ -47,7 +49,7 @@ namespace Ygo.Controller
             var service = new CardLoaderService();
             var data = service.LoadCards();
             _application = new GameApplication(data);
-            _application.InitializeGame();
+            _application.Setup();
             
             foreach (var handController in handControllers)
             {
@@ -58,18 +60,42 @@ namespace Ygo.Controller
             {
                 fieldController.Init(_application.GameCommandBus, _application.GameEventBus, UpdateZoomCard);
             }
+
+            foreach (var mainDeckController in mainDeckControllers)
+            {
+                mainDeckController.Init(_application.GameCommandBus, _application.GameEventBus);
+            }
             
             actionController.Init(_application.GameCommandBus);
-            
             zoomCard.Init();
-            poVPlayerText.SetText($"{_application.PointOfViewPlayer.PlayerName}\n{_application.PointOfViewPlayer.CurrentLifePoints}");
-            opponentPlayerText.SetText($"{_application.OpponentPlayer.PlayerName}\n{_application.OpponentPlayer.CurrentLifePoints}");
-            turnText.SetText($"Turn: {_application.CurrentTurn}");
+            
+            
+            _application.GameEventBus.Subscribe<PhaseUpdateEvent>(OnPhaseUpdate);
+            _application.GameEventBus.Subscribe<PlayerInfoUpdateEvent>(OnPlayerInfoUpdate);
+            _application.GameEventBus.Subscribe<TurnChangeEvent>(OnTurnChange);
+            
+            _application.Init();
         }
 
         private void UpdateZoomCard(ICardInstance card)
         {
             zoomCard.UpdateCard(card);
+        }
+
+        private void OnPhaseUpdate(PhaseUpdateEvent e)
+        {
+            phaseText.SetText(e.PhaseName);
+        }
+
+        private void OnPlayerInfoUpdate(PlayerInfoUpdateEvent e)
+        {
+            poVPlayerText.SetText($"{e.PlayerName}\n{e.PlayerLifePoint}");
+            opponentPlayerText.SetText($"{e.OpponentName}\n{e.OpponentLifePoint}");
+        }
+
+        private void OnTurnChange(TurnChangeEvent e)
+        {
+            turnText.SetText($"Turn: {e.TurnIndex}");
         }
     }
 }
