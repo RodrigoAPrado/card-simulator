@@ -7,8 +7,6 @@ namespace Ygo.View.Field
     public class ZoneView : MonoBehaviour
     {
         [field: SerializeField]
-        private Image border { get; set; }
-        [field: SerializeField]
         private Color32 normalColor { get; set; }
         [field: SerializeField]
         private Color32 hoverColor { get; set; }
@@ -21,7 +19,6 @@ namespace Ygo.View.Field
 
         public void Init()
         {
-            ToggleHover(false);
             ToggleHighlight(false);
         }
         
@@ -51,11 +48,6 @@ namespace Ygo.View.Field
         {
             highlight.DOKill();
             highlight.gameObject.SetActive(false);
-        }
-        
-        public void ToggleHover(bool value)
-        {
-            border.color = value ? hoverColor : normalColor;
         }
     }
 }

@@ -10,6 +10,8 @@ namespace Ygo.Application
     {
         public PlayerContext PointOfViewPlayer => _gameHandler.GameState.TurnContext.PointOfViewPlayer;
         public PlayerContext OpponentPlayer => _gameHandler.GameState.TurnContext.OpponentPlayer;
+        public GameCommandBus GameCommandBus => _gameHandler.GameCommandBus;
+        public GameEventBus GameEventBus => _gameHandler.GameEventBus;
         public IGamePhase CurrentPhase => _gameHandler.GameState.CurrentPhase;
         public int CurrentTurn => _gameHandler.GameState.TurnContext.CurrentTurn;
         private readonly ICardRepository _cardRepository;
@@ -30,26 +32,6 @@ namespace Ygo.Application
         public bool DrawFromDeck()
         {
             return CurrentPhase.DrawFromDeck();
-        }
-
-        public void SubscribeToPhaseChange(Action action)
-        {
-            _gameHandler.GameState.SubscribeToPhaseChange(action);
-        }
-        
-        public void SubscribeToTurnChange(Action action)
-        {
-            _gameHandler.GameState.SubscribeToTurnChange(action);
-        }
-
-        public void SubscribeToPointOfViewChange(Action action)
-        {
-            _gameHandler.SubscribeToPointOfViewChange(action);
-        }
-
-        public void SubscribeToBattleUpdate(Action action)
-        {
-            _gameHandler.GameState.SubscribeToBattleUpdate(action);
         }
     }
 }

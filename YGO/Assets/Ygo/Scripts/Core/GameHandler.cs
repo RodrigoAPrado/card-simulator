@@ -14,18 +14,22 @@ namespace Ygo.Core
         private const int StartingLifePoints = 8000;
 
         public GameState GameState { get; private set; }
+        public GameCommandBus GameCommandBus { get; private set; }
+        public GameEventBus GameEventBus { get; private set; }
         private IDictionary<ZoneType, IPutCardInZoneValidator> _validators;
         private TurnContext _turnContext;
         
         public void Setup(ICardRepository repo)
         {
-            GameState = new GameState();
+            GameCommandBus = new GameCommandBus();
+            GameEventBus = new GameEventBus();
+            GameState = new GameState(this);
             _validators = BuildZoneValidators();
 
             _turnContext = new TurnContext(new List<PlayerContext>()
             {
                 CreatePlayer(repo, "Player1"),
-                CreatePlayer(repo, "Player2"),
+                CreatePlayer(repo, "Player2")
             });
             
             _turnContext.Init(StartingPLayerIndex, StartingPlayerHand);
@@ -36,11 +40,6 @@ namespace Ygo.Core
         public void Init()
         {
             GameState.Init();
-        }
-
-        public void SubscribeToPointOfViewChange(Action action)
-        {
-            _turnContext.SubscribeToPointOfViewChanged(action);
         }
 
         private PlayerContext CreatePlayer(ICardRepository repo, string playerName)

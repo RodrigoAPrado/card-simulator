@@ -12,10 +12,12 @@ namespace Ygo.Core
         public IGamePhase CurrentPhase => _phases[_currentPhaseIndex];
         private List<IGamePhase> _phases;
         private int _currentPhaseIndex;
-        
-        public event Action OnPhaseChange;
-        public event Action OnTurnChange;
-        public event Action OnBattleUpdate;
+        private GameHandler _gameHandler;
+
+        public GameState(GameHandler gameHandler)
+        {
+            _gameHandler = gameHandler;
+        }
         
         public void Setup(TurnContext turnContext)
         {
@@ -35,36 +37,6 @@ namespace Ygo.Core
         public void Init()
         {
             CurrentPhase.Init();
-        }
-
-        public void SubscribeToPhaseChange(Action action)
-        {
-            OnPhaseChange += action;
-        }
-
-        public void UnsubscribeToPhaseChange(Action action)
-        {
-            OnPhaseChange -= action;
-        }
-
-        public void SubscribeToTurnChange(Action action)
-        {
-            OnTurnChange += action;
-        }
-
-        public void UnsubscribeToTurnChange(Action action)
-        {
-            OnTurnChange -= action;
-        }
-
-        public void SubscribeToBattleUpdate(Action action)
-        {
-            OnBattleUpdate += action;
-        }
-
-        public void UnsubscribeToBattleUpdate(Action action)
-        {
-            OnBattleUpdate -= action;
         }
 
         private void OnGameStepChanged()
@@ -91,7 +63,6 @@ namespace Ygo.Core
                     return;
                 case GameStep.EndOfDamageStep when CurrentPhase is BattlePhase:
                     CheckSendToGraveyard();
-                    OnBattleUpdate?.Invoke();
                     CurrentPhase.ContinueTheDamageStep();
                     return;
                 case GameStep.ProceedToNextPhase:
@@ -128,14 +99,12 @@ namespace Ygo.Core
         {
             _currentPhaseIndex++;
             CurrentPhase.Init();
-            OnPhaseChange?.Invoke();
         }
 
         private void TurnChange()
         {
             TurnContext.AdvanceTurn();
             _currentPhaseIndex = 0;
-            OnTurnChange?.Invoke();
             Init();
         }
     }

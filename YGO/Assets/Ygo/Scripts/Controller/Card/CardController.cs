@@ -2,6 +2,7 @@
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using Ygo.Controller.Component;
 using Ygo.Core.Abstract;
 using Ygo.Core.Board.Abstract;
 using Ygo.Data.Enums;
@@ -20,27 +21,28 @@ namespace Ygo.Controller.Card
         
         [field: SerializeField]
         private CardControllerMode cardMode;
-
-        public ICardInstance CardInstance => _cardInstance;
+        [field: SerializeField]
+        private HoverController hoverController;
         
-        private ICardInstance _cardInstance;
+        private ICardInstance _card;
 
-        private Action<ICardInstance> _onHover;
-        private Action<CardController> _onClick;
+        private Action<ICardInstance> _onEnter;
+        private Action<ICardInstance> _onCLick;
         
         public bool Dirty { get; private set; }
         public bool Enabled { get; private set; }
         
-        public void Init(Action<ICardInstance> onHover = null, Action<CardController> onClick = null)
+        public void Init(Action<ICardInstance> onEnter = null, Action<ICardInstance> onClick = null)
         {
-            _onHover = onHover;
-            _onClick = onClick;
+            _onEnter = onEnter;
+            _onCLick = onClick;
             view.ToggleField(cardMode == CardControllerMode.Field);
+            hoverController.Init(OnClick, OnEnter, OnExit);
         }
 
         public void UpdateCard(ICardInstance cardInstance, bool hidden = false)
         {
-            _cardInstance = cardInstance;
+            _card = cardInstance;
             Dirty = false;
             view.SetHidden(hidden);
             view.ToggleDefenseMode(false);
@@ -49,49 +51,49 @@ namespace Ygo.Controller.Card
             if (hidden)
                 return;
             
-            view.SetName(_cardInstance.Data.Name);
+            view.SetName(_card.Data.Name);
             view.SetFrame(GetCardFrameType());
             view.SetIcon(GetCardIconType());
             view.SetIllustration(GetIllustrationFileName());
 
-            if (_cardInstance.IsValidMonster)
+            if (_card.IsValidMonster)
                 InitMonster();
         }
 
         public void OnDestroy()
         {
-            _cardInstance = null;
+            _card = null;
         }
 
         private void InitMonster()
         {
-            view.SetLevel(_cardInstance.CurrentLevel.GetValueOrDefault());
-            view.SetMonsterText(cardMode == CardControllerMode.Zoom ? _cardInstance.CardText : "");
+            view.SetLevel(_card.CurrentLevel.GetValueOrDefault());
+            view.SetMonsterText(cardMode == CardControllerMode.Zoom ? _card.CardText : "");
             view.SetMonsterType(GetMonsterType());
-            view.SetMonsterAtk(_cardInstance.CurrentAtk.GetValueOrDefault().ToString());
-            view.SetMonsterDef(_cardInstance.CurrentDef.GetValueOrDefault().ToString());
+            view.SetMonsterAtk(_card.CurrentAtk.GetValueOrDefault().ToString());
+            view.SetMonsterDef(_card.CurrentDef.GetValueOrDefault().ToString());
         }
 
         private CardFrameType GetCardFrameType()
         {
-            switch (_cardInstance.Data.CardType)
+            switch (_card.Data.CardType)
             {
                 case CardType.Monster:
-                    if (!_cardInstance.IsValidMonster)
-                        throw new InvalidOperationException($"{nameof(_cardInstance.Data.MonsterData)} cannot be null.");
-                    if(_cardInstance.IsRitual)
-                        return _cardInstance.IsPendulum ? CardFrameType.RitualPendulum : CardFrameType.Ritual;
-                    if(_cardInstance.IsFusion)
-                        return _cardInstance.IsPendulum ? CardFrameType.FusionPendulum : CardFrameType.Fusion;
-                    if(_cardInstance.IsSynchro)
-                        return _cardInstance.IsPendulum ? CardFrameType.SynchroPendulum : CardFrameType.Synchro;
-                    if(_cardInstance.IsXyz)
-                        return _cardInstance.IsPendulum ? CardFrameType.XyzPendulum : CardFrameType.Xyz;
-                    if (_cardInstance.IsLink)
+                    if (!_card.IsValidMonster)
+                        throw new InvalidOperationException($"{nameof(_card.Data.MonsterData)} cannot be null.");
+                    if(_card.IsRitual)
+                        return _card.IsPendulum ? CardFrameType.RitualPendulum : CardFrameType.Ritual;
+                    if(_card.IsFusion)
+                        return _card.IsPendulum ? CardFrameType.FusionPendulum : CardFrameType.Fusion;
+                    if(_card.IsSynchro)
+                        return _card.IsPendulum ? CardFrameType.SynchroPendulum : CardFrameType.Synchro;
+                    if(_card.IsXyz)
+                        return _card.IsPendulum ? CardFrameType.XyzPendulum : CardFrameType.Xyz;
+                    if (_card.IsLink)
                         return CardFrameType.Link;
-                    if (_cardInstance.IsEffect)
-                        return _cardInstance.IsPendulum ? CardFrameType.EffectPendulum : CardFrameType.Effect;
-                    return _cardInstance.IsPendulum ? CardFrameType.NormalPendulum : CardFrameType.Normal;
+                    if (_card.IsEffect)
+                        return _card.IsPendulum ? CardFrameType.EffectPendulum : CardFrameType.Effect;
+                    return _card.IsPendulum ? CardFrameType.NormalPendulum : CardFrameType.Normal;
                 case CardType.Spell:
                     return CardFrameType.Spell;
                 case CardType.Trap:
@@ -104,12 +106,12 @@ namespace Ygo.Controller.Card
 
         private CardIconType GetCardIconType()
         {
-            switch (_cardInstance.Data.CardType)
+            switch (_card.Data.CardType)
             {
                 case CardType.Monster:
-                    if (!_cardInstance.IsValidMonster)
-                        throw new InvalidOperationException($"{nameof(_cardInstance.Data.MonsterData)} cannot be null.");
-                    switch (_cardInstance.Data.MonsterData.Attribute)
+                    if (!_card.IsValidMonster)
+                        throw new InvalidOperationException($"{nameof(_card.Data.MonsterData)} cannot be null.");
+                    switch (_card.Data.MonsterData.Attribute)
                     {
                         case MonsterAttribute.Dark:
                             return CardIconType.Dark;
@@ -141,7 +143,7 @@ namespace Ygo.Controller.Card
 
         private string GetIllustrationFileName()
         {
-            var id = _cardInstance.Data.Id.ToString();
+            var id = _card.Data.Id.ToString();
             var sb = new StringBuilder();
             for (var i = 6; i > id.Length; i--)
             {
@@ -154,9 +156,9 @@ namespace Ygo.Controller.Card
 
         private string GetMonsterType()
         {
-            var monsterData = _cardInstance.Data.MonsterData;
+            var monsterData = _card.Data.MonsterData;
             if(monsterData == null)
-                throw new InvalidOperationException($"There is no monster data for {_cardInstance.Data.Id}");
+                throw new InvalidOperationException($"There is no monster data for {_card.Data.Id}");
             var sb = new StringBuilder();
             sb.Append("[");
             sb.Append(monsterData.Type.ToString());
@@ -176,30 +178,29 @@ namespace Ygo.Controller.Card
             return sb.ToString();
         }
 
-        public void Hover()
+        public void OnEnter()
         {
             if (!Enabled)
                 return;
             if (cardMode == CardControllerMode.Zoom) 
                 return;
-            view.ToggleHighlight(true);
-            _onHover?.Invoke(_cardInstance);
+            
+            _onEnter?.Invoke(_card);
         }
 
-        public void Exit()
+        public void OnExit()
         {
             if (!Enabled)
                 return;
             if (cardMode == CardControllerMode.Zoom) 
                 return;
-            view.ToggleHighlight(false);
         }
 
-        public void Click()
+        public void OnClick()
         {
             if (!Enabled)
                 return;
-            _onClick?.Invoke(this);
+            _onCLick?.Invoke(_card);
         }
 
         public void SetDirty()
@@ -216,7 +217,7 @@ namespace Ygo.Controller.Card
         public void Disable()
         {
             Enabled = false;
-            _cardInstance = null;
+            _card = null;
             view.Clear();
             gameObject.SetActive(false);
             Dirty = false;

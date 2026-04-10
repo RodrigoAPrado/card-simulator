@@ -11,9 +11,6 @@ namespace Ygo.View.Card
         [Header("Frame")] 
         [field: SerializeField]
         private Image frameImage;
-
-        [field: SerializeField] 
-        private GameObject highlight;
         
         [field: SerializeField] 
         private CardFrameDatabase frameDatabase;
@@ -170,11 +167,6 @@ namespace Ygo.View.Card
             {
                 fieldDefText.text = value;
             }
-        }
-
-        public void ToggleHighlight(bool value)
-        {
-            highlight.SetActive(value);
         }
 
         public void ToggleField(bool value)

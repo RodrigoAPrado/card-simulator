@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using Ygo.Core.Abstract;
+using Ygo.Controller.Component;
+using Ygo.Core;
 using Ygo.Core.Board.Abstract;
 using Ygo.View.Field;
 
@@ -10,54 +10,30 @@ namespace Ygo.Controller.Field
     public class ZoneController : MonoBehaviour
     {
         [field: SerializeField] 
+        private HoverController hoverController;
+        [field: SerializeField] 
         public ZonePosition Position { get; private set; }
         [field: SerializeField] 
         private ZoneView view;
+
+        private Action<IBoardZone> _onClick;
+        private IBoardZone _zone;
         
-        public IBoardZone Zone { get; private set; }
-        
-        private Action<ZoneController> _onClick;
-        
-        
-        public void Init(IBoardZone zone, Action<ZoneController> onClick)
+        public void Init(Action<IBoardZone> onClick)
         {
-            Zone = zone;
             _onClick = onClick;
+            hoverController.Init(onClick: OnClick);
             view.Init();
         }
 
-        public void UpdateZone(IBoardZone zone)
+        public void SetBoardZone(IBoardZone zone)
         {
-            Zone = zone;
+            _zone = zone;
         }
 
-        public void ToggleHighlight(bool value)
+        private void OnClick()
         {
-            view.ToggleHighlight(value);
-        }
-        
-        public void OnClick()
-        {
-            if (!Zone.IsFree)
-            {
-                return;
-            }
-            _onClick?.Invoke(this);
-        }
-
-        public void OnEnter()
-        {
-            if (!Zone.IsFree)
-            {
-                view.ToggleHover(false);
-                return;
-            }
-            view.ToggleHover(true);
-        }
-
-        public void OnExit()
-        {
-            view.ToggleHover(false);
+            _onClick?.Invoke(_zone);
         }
     }
 }
