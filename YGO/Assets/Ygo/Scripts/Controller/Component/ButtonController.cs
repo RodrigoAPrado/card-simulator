@@ -17,6 +17,7 @@ namespace Ygo.Controller.Component
         
         public void Init(IGameAction action, Action<IGameAction> onClick, string label)
         {
+            gameObject.SetActive(true);
             IsDirty = false;
             _disabled = false;
             _action = action;
@@ -24,10 +25,11 @@ namespace Ygo.Controller.Component
             Label.SetText(label);
         }
 
-        public void Disable()
+        public void Disable(bool deactivate)
         {
             IsDirty = false;
-            gameObject.SetActive(false);
+            if(deactivate)
+                gameObject.SetActive(false);
             _disabled = true;
         }
 

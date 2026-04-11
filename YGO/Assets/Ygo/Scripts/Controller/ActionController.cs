@@ -31,7 +31,15 @@ namespace Ygo.Controller
         {
             foreach (var button in buttons)
             {
-                button.gameObject.SetActive(false);
+                button.Disable(true);
+            }
+        }
+
+        private void DeactivateAll()
+        {
+            foreach (var button in buttons)
+            {
+                button.Disable(false);
             }
         }
 
@@ -60,6 +68,7 @@ namespace Ygo.Controller
 
         private void OnClick(IGameAction gameAction)
         {
+            DeactivateAll();
             _commandBus.Send(new ActionExecutionCommand(gameAction));
         }
     }

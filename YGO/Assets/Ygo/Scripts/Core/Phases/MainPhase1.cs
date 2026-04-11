@@ -30,7 +30,7 @@ namespace Ygo.Core.Phases
         {
             if (CurrentStep == GameStep.Open)
             {
-                
+                return OnClickedOnCardInHandOnGameStateOpen(playerId, card);
             }
             return new ActionQuery(playerId, ActionState.NotImplemented);
         }
