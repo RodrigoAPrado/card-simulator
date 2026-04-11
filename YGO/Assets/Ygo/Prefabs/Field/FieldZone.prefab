@@ -107,6 +107,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8453597837642516264}
+  - {fileID: 189287883231321605}
   - {fileID: 7183668430531604208}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -128,6 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Field.ZoneController
   hoverController: {fileID: 90600753699838530}
+  highlightController: {fileID: 3170959244648533463}
   <Position>k__BackingField: 0
   view: {fileID: 1678838831008860323}
 --- !u!114 &1678838831008860323
@@ -142,12 +144,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fee613725fc441bbb302496d22d2af17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.Field.ZoneView
-  <normalColor>k__BackingField:
-    serializedVersion: 2
-    rgba: 4278190080
-  <hoverColor>k__BackingField:
-    serializedVersion: 2
-    rgba: 4278254137
   <highlightColor>k__BackingField:
     serializedVersion: 2
     rgba: 2296231168
@@ -326,3 +322,116 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4966861743040103952, guid: 4d5217d0f1bb1734094187dfa0881b60, type: 3}
   m_PrefabInstance: {fileID: 2836232097908402400}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5886788518950992826
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1200330853627373910}
+    m_Modifications:
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6881263922004659456, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+      propertyPath: m_Name
+      value: HighlightController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+--- !u!224 &189287883231321605 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5985968506919855551, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+  m_PrefabInstance: {fileID: 5886788518950992826}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3170959244648533463 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9057741974704993901, guid: 36d8ec41ea99ca246a91eb19db1e12e4, type: 3}
+  m_PrefabInstance: {fileID: 5886788518950992826}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9fe875c54d4ef29b1b7fcb486e8d7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Component.HighlightController

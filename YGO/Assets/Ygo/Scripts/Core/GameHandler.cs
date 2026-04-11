@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Ygo.Core.Abstract;
 using Ygo.Core.Board;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Board.Validator;
 using Ygo.Core.Commands;
 using Ygo.Core.Events;
+using Ygo.Core.Interaction.Abstract;
 using Ygo.Core.Phases;
 
 namespace Ygo.Core
@@ -20,12 +22,13 @@ namespace Ygo.Core
         public GameEventBus GameEventBus { get; private set; }
         private IDictionary<ZoneType, IPutCardInZoneValidator> _validators;
         private TurnContext _turnContext;
+        private IInteractionState _currentInteractionState;
         
         public void Setup(ICardRepository repo)
         {
             GameCommandBus = new GameCommandBus();
             GameEventBus = new GameEventBus();
-            GameState = new GameState();
+            GameState = new GameState(this);
             _validators = BuildZoneValidators();
 
             _turnContext = new TurnContext(new List<PlayerContext>()
@@ -44,6 +47,8 @@ namespace Ygo.Core
         {
             GameCommandBus.RegisterHandler<MainDeckClickCommand>(MainDeckClickHandler);
             GameCommandBus.RegisterHandler<CardInHandClickCommand>(CardInHandClickHandler);
+            GameCommandBus.RegisterHandler<ActionExecutionCommand>(ActionExecutionHandler);
+            GameCommandBus.RegisterHandler<ZoneClickCommand>(ZoneClickHandler);
         }
 
         public void Init()
@@ -51,8 +56,6 @@ namespace Ygo.Core
             GameEventBus.Publish(new PointOfViewUpdateEvent(
                 _turnContext.PointOfViewPlayer.Id, 
                 _turnContext.OpponentPlayer.Id));
-            GameEventBus.Publish(new PlayerFieldUpdateEvent(_turnContext.PointOfViewPlayer.Id));
-            GameEventBus.Publish(new PlayerFieldUpdateEvent(_turnContext.OpponentPlayer.Id));
             GameEventBus.Publish(new PlayerInfoUpdateEvent(
                 GameState.TurnContext.PointOfViewPlayer.PlayerName, 
                 GameState.TurnContext.PointOfViewPlayer.CurrentLifePoints,
@@ -61,6 +64,21 @@ namespace Ygo.Core
             GameEventBus.Publish(new CardDrawnEvent(_turnContext.PointOfViewPlayer.Id));
             GameEventBus.Publish(new CardDrawnEvent(_turnContext.OpponentPlayer.Id));
             GameState.InitGame();
+        }
+
+        public void SetInteractionState(IInteractionState currentInteractionState)
+        {
+            if(_currentInteractionState != null)
+                throw new InvalidOperationException("Cannot change interaction state while already set.");
+            ;
+            _currentInteractionState = currentInteractionState;
+        }
+
+        public void ClearInteractionState()
+        {
+            if(_currentInteractionState == null)
+                throw new InvalidOperationException("Cannot change interaction state while not set.");
+            _currentInteractionState = null;
         }
 
         private PlayerContext CreatePlayer(ICardRepository repo, string playerName)
@@ -89,8 +107,13 @@ namespace Ygo.Core
 
         private void MainDeckClickHandler(MainDeckClickCommand c)
         {
+            if (_currentInteractionState != null)
+            {
+                _currentInteractionState.Handle(c);
+                return;
+            }
+            
             var response = GameState.ClickedOnMainDeck(c.PlayerId);
-
             if (response.Fail)
             {
                 GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.ActionState));
@@ -99,11 +122,36 @@ namespace Ygo.Core
 
         private void CardInHandClickHandler(CardInHandClickCommand c)
         {
+            if (_currentInteractionState != null)
+            {
+                _currentInteractionState.Handle(c);
+                return;
+            }
+            
             var response = GameState.ClickCardInHand(c.PlayerId, c.Card);
             if (response.Fail)
             {
                 GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.ActionState));
             }
+        }
+
+        private void ZoneClickHandler(ZoneClickCommand c) {
+            if (_currentInteractionState != null)
+            {
+                _currentInteractionState.Handle(c);
+                return;
+            }
+            //GameState.ExecuteAction(c.Action);
+        }
+
+        private void ActionExecutionHandler(ActionExecutionCommand c)
+        {
+            if (_currentInteractionState != null)
+            {
+                _currentInteractionState.Handle(c);
+                return;
+            }
+            GameState.ExecuteAction(c.Action);
         }
     }
 }

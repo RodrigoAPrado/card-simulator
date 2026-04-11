@@ -11,16 +11,14 @@ namespace Ygo.Controller.Component
         private TextViewUI Label { get; set; }
         
         public bool IsDirty { get; private set; }
-        private Action<IGameAction> _onClick;
-        private IGameAction _action;
+        private Action _onClick;
         private bool _disabled;
         
-        public void Init(IGameAction action, Action<IGameAction> onClick, string label)
+        public void Init(Action onClick, string label)
         {
             gameObject.SetActive(true);
             IsDirty = false;
             _disabled = false;
-            _action = action;
             _onClick = onClick;
             Label.SetText(label);
         }
@@ -42,7 +40,7 @@ namespace Ygo.Controller.Component
         {
             if (_disabled)
                 return;
-            _onClick?.Invoke(_action);
+            _onClick?.Invoke();
         }
     }
 }

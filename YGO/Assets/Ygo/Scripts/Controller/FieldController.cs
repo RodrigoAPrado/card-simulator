@@ -9,7 +9,9 @@ using Ygo.Core;
 using Ygo.Core.Abstract;
 using Ygo.Core.Board;
 using Ygo.Core.Board.Abstract;
+using Ygo.Core.Commands;
 using Ygo.Core.Events;
+using Ygo.Core.Interaction.Abstract;
 
 namespace Ygo.Controller
 {
@@ -41,10 +43,14 @@ namespace Ygo.Controller
 
             foreach (var zoneController in frontRowZones)
             {
-                zoneController.Init(ClickZone);
+                zoneController.Init(zone =>
+                {
+                    commandBus.Send(new ZoneClickCommand(PlayerId, zone));
+                });
             }
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
-            eventBus.Subscribe<PlayerFieldUpdateEvent>(OnUpdate);
+            eventBus.Subscribe<InteractionStateSetEvent>(OnInteractionStateSet);
+            eventBus.Subscribe<NormalSummonEvent>(OnNormalSummon);
             _context = context;
             _registry = registry;
         }
@@ -55,10 +61,12 @@ namespace Ygo.Controller
             {
                 PlayerId = e.OpponentId;
                 SetBoardHandler();
+                UpdateBoard();
                 return;
             }
             PlayerId = e.PointOfViewId;
             SetBoardHandler();
+            UpdateBoard();
         }
 
         private void SetBoardHandler()
@@ -68,23 +76,38 @@ namespace Ygo.Controller
                 throw new InvalidOperationException("Player not found");
             _boardHandler = player.BoardHandler;
         }
-
-        private void ClickZone(IBoardZone zone)
-        {
-            
-            Debug.Log("clicked zone");
-        }
         
         private void ClickCard(ICardInstance card)
         {
             Debug.Log("clicked card on field");
         }
 
-        private void OnUpdate(PlayerFieldUpdateEvent e)
+        private void OnInteractionStateSet(InteractionStateSetEvent e)
         {
             if (e.PlayerId != PlayerId)
                 return;
-            
+            if (e.InteractionState is not ZoneSelectionState state)
+                return;
+            foreach (var zone in state.AvailableZones)
+            {
+                var zoneController = frontRowZones.FirstOrDefault(x => x.Zone == zone);
+                zoneController?.ToggleHighlight(true);
+            }
+        }
+
+        private void OnNormalSummon(NormalSummonEvent e)
+        {
+            if (e.PlayerId != PlayerId)
+                return;
+            foreach (var zone in frontRowZones)
+            {
+                zone.ToggleHighlight(false);
+            }
+            UpdateBoard();
+        }
+
+        private void UpdateBoard()
+        {
             foreach (var card in frontRowCards)
             {
                 card.SetDirty();

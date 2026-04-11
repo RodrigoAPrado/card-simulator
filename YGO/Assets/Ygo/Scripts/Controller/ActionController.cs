@@ -5,8 +5,12 @@ using Ygo.Controller.Component;
 using Ygo.Core;
 using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Commands;
+using Ygo.Core.Enums;
 using Ygo.Core.Events;
+using Ygo.Core.Events.Abstract;
 using Ygo.Core.Response;
+using Ygo.Core.Response.Context;
+using Ygo.Core.Response.Context.Abstract;
 
 namespace Ygo.Controller
 {
@@ -15,6 +19,13 @@ namespace Ygo.Controller
         [Header("Actions")] 
         [field: SerializeField]
         private ButtonController[] buttons;
+        [field: SerializeField]
+        private Transform handPosition;
+        [field: SerializeField]
+        private Transform frontRowPosition;
+        [field: SerializeField]
+        private Transform backRowPosition;
+
         
         private CardControllerRegistry _registry;
         private GameCommandBus _commandBus;
@@ -35,14 +46,6 @@ namespace Ygo.Controller
             }
         }
 
-        private void DeactivateAll()
-        {
-            foreach (var button in buttons)
-            {
-                button.Disable(false);
-            }
-        }
-
         private void OnAvailableActions(AvailableActionsEvent e)
         {
             foreach (var button in buttons)
@@ -56,7 +59,10 @@ namespace Ygo.Controller
                     throw new InvalidOperationException("Not enough buttons");
                 var action = e.Actions.Actions[i];
                 var button = buttons[i];
-                button.Init(action, OnClick, action.ActionName);
+                button.Init(() =>
+                {
+                    OnClick(e.Actions.PlayerId, action);
+                }, action.ActionName);
             }
             
             foreach (var button in buttons)
@@ -64,12 +70,44 @@ namespace Ygo.Controller
                 if(button.IsDirty)
                     button.Disable(true);
             }
+
+            transform.position = SetPositionByContext(e.Actions.Context);
         }
 
-        private void OnClick(IGameAction gameAction)
+        private Vector2 SetPositionByContext(IInteractionContext context)
         {
-            DeactivateAll();
-            _commandBus.Send(new ActionExecutionCommand(gameAction));
+            if (context is CardInteractionContext cardContext)
+            {
+                var cardLocation = cardContext.Card.Location;
+                switch (cardLocation)
+                {
+                    case CardLocation.Hand:
+                        return new Vector2(_registry.Get(cardContext.Card).gameObject.transform.position.x,
+                            handPosition.position.y);
+                    case CardLocation.FieldZone
+                        or CardLocation.LeftCenterMonsterZone
+                        or CardLocation.LeftMostMonsterZone
+                        or CardLocation.RightCenterMonsterZone
+                        or CardLocation.RightMostMonsterZone
+                        or CardLocation.MiddleCenterMonsterZone:
+                        return new Vector2(Camera.main.WorldToScreenPoint(
+                                _registry.Get(cardContext.Card).gameObject.transform.localPosition).x,
+                            frontRowPosition.position.y);
+                }
+            }
+
+            /*
+            if (context is MainDeckInteractionContext)
+            {
+                return new Vector2(mainDeckPosition.position.x, backRowPosition.position.y);
+            }*/
+            throw new InvalidOperationException("Invalid context");
+        }
+
+        private void OnClick(Guid playerId, IGameAction gameAction)
+        {
+            HideAll();
+            _commandBus.Send(new ActionExecutionCommand(playerId, gameAction));
         }
     }
 }

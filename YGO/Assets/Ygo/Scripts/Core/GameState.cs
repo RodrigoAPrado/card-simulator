@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ygo.Core.Abstract;
+using Ygo.Core.Actions.Abstract;
+using Ygo.Core.Board.Abstract;
 using Ygo.Core.Enums;
 using Ygo.Core.Events;
+using Ygo.Core.Interaction.Abstract;
 using Ygo.Core.Phases;
 using Ygo.Core.Phases.Abstract;
 using Ygo.Core.Response;
@@ -21,6 +24,12 @@ namespace Ygo.Core
         private PlayerEffects _currentEffects;
         private int _currentPlayerEffectIndex;
         private GameEventBus _gameEventBus;
+        private GameHandler _gameHandler;
+
+        public GameState(GameHandler gameHandler)
+        {
+            _gameHandler = gameHandler;
+        }
         
         public void Setup(TurnContext turnContext, GameEventBus gameEventBus)
         {
@@ -64,23 +73,50 @@ namespace Ygo.Core
             }
             
             _gameEventBus.Publish(new CardDrawnEvent(playerId));
-            if(CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
-                AdvancePhase();
         }
 
-        public void TryNormalSummon(Guid playerId, ICardInstance card)
+        public void CheckNormalSummon(Guid playerId, ICardInstance card)
+        {
+            CurrentPhase.CheckNormalSummon(playerId, card);
+        }
+        
+        public void CheckNormalSet(Guid playerId, ICardInstance card)
         {
             throw new NotImplementedException();
         }
-        
-        public void TryNormalSet(Guid playerId, ICardInstance card)
+
+        public void DoNormalSummon(Guid playerId, ICardInstance card, IBoardZone boardZone)
         {
-            throw new NotImplementedException();
+            CurrentPhase.DoNormalSummon(playerId, card, boardZone);
+            _gameEventBus.Publish(new NormalSummonEvent(playerId, card, boardZone));
         }
 
         public void CancelAction()
         {
             _gameEventBus.Publish(new ActionCancelEvent());
+        }
+
+        public void ExecuteAction(IGameAction action)
+        {
+            action.Execute();
+            ResolveGameStep();
+        }
+
+        public void SetInteractionState(Guid playerId, IInteractionState interactionState)
+        {
+            _gameHandler.SetInteractionState(interactionState);
+            _gameEventBus.Publish(new InteractionStateSetEvent(playerId, interactionState));
+        }
+
+        public void ClearInteractionState(Guid playerId)
+        {
+            _gameHandler.ClearInteractionState();
+        }
+        
+        private void ResolveGameStep()
+        {
+            HandlePhaseProgression();
+            HandleAdvancePhaseEffectPriority();
         }
 
         private CommandResponse ProcessActionQuery(ActionQuery query)
@@ -95,7 +131,7 @@ namespace Ygo.Core
                 case <= 0:
                     throw new InvalidOperationException("Invalid success with no Actions.");
                 case 1:
-                    query.Actions[0].Execute();
+                    ExecuteAction(query.Actions[0]);
                     break;
                 default:
                     _gameEventBus.Publish(new AvailableActionsEvent(query));
@@ -104,14 +140,15 @@ namespace Ygo.Core
             
             return new CommandResponse(ActionState.Success);
         }
+
+        private void HandlePhaseProgression()
+        {
+            if(CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
+                AdvancePhase();
+        }
         
         private void HandleAdvancePhaseEffectPriority()
         {
-            //Do Effects
-            if (_currentEffects == null)
-            {
-                AdvancePhase();
-            }
         }
 
         private void AdvancePhase()

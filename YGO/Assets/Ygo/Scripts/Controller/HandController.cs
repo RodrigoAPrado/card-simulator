@@ -37,6 +37,7 @@ namespace Ygo.Controller
             }
             eventBus.Subscribe<CardDrawnEvent>(OnCardDrawn);
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
+            eventBus.Subscribe<NormalSummonEvent>(OnNormalSummon);
             _onClick = card =>
             {
                 commandBus.Send(new CardInHandClickCommand(PlayerId, card));
@@ -74,7 +75,18 @@ namespace Ygo.Controller
         {
             if (e.PlayerId != PlayerId)
                 return;
+            UpdateHand();
+        }
+        
+        private void OnNormalSummon(NormalSummonEvent e)
+        {
+            if (e.PlayerId != PlayerId)
+                return;
+            UpdateHand();
+        }
 
+        private void UpdateHand()
+        {
             var cards = _cardsHandler.PlayerHand;
             foreach (var card in cardControllers)
             {

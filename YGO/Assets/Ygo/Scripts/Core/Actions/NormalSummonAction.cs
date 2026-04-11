@@ -20,7 +20,7 @@ namespace Ygo.Core.Actions
 
         public void Execute()
         {
-            _gameState.TryNormalSummon(_playerId, _card);
+            _gameState.CheckNormalSummon(_playerId, _card);
         }
     }
 }

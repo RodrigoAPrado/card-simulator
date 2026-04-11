@@ -12,6 +12,9 @@ namespace Ygo.Controller.Field
         [field: SerializeField] 
         private HoverController hoverController;
         [field: SerializeField] 
+        private HighlightController highlightController;
+        
+        [field: SerializeField] 
         public ZonePosition Position { get; private set; }
         [field: SerializeField] 
         private ZoneView view;
@@ -24,11 +27,20 @@ namespace Ygo.Controller.Field
             _onClick = onClick;
             hoverController.Init(onClick: OnClick);
             view.Init();
+            highlightController.Init();
         }
 
         public void SetBoardZone(IBoardZone zone)
         {
             Zone = zone;
+        }
+
+        public void ToggleHighlight(bool value)
+        {
+            if(value)
+                highlightController.Enable();
+            else
+                highlightController.Disable();
         }
 
         private void OnClick()

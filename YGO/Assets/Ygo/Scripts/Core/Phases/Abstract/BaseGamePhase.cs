@@ -37,6 +37,13 @@ namespace Ygo.Core.Phases.Abstract
             _currentStep = step;
         }
 
-        public virtual ActionResult DrawCard(Guid playerId) => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult DrawCard(Guid playerId) 
+            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult CheckNormalSummon(Guid playerId, ICardInstance card) 
+            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult CheckNormalSet(Guid playerId, ICardInstance card) 
+            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult DoNormalSummon(Guid playerId, ICardInstance card, IBoardZone boardZone)
+            => new(playerId, ActionState.NotImplemented);
     }
 }

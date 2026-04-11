@@ -3,11 +3,11 @@ using Ygo.Core.Response.Context.Abstract;
 
 namespace Ygo.Core.Response.Context
 {
-    public class DeckInteractionContext : IInteractionContext
+    public class MainDeckInteractionContext : IInteractionContext
     {
         public Guid PlayerId { get; }
 
-        public DeckInteractionContext(Guid playerId)
+        public MainDeckInteractionContext(Guid playerId)
         {
             PlayerId = playerId;
         }

@@ -1,7 +1,9 @@
-﻿namespace Ygo.Core.Commands.Abstract
+﻿using System;
+
+namespace Ygo.Core.Commands.Abstract
 {
     public interface IGameCommand
     {
-        
+        Guid PlayerId { get; }
     }
 }

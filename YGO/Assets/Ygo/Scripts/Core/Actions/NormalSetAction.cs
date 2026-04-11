@@ -20,7 +20,7 @@ namespace Ygo.Core.Actions
 
         public void Execute()
         {
-            _gameState.TryNormalSet(_playerId, _card);
+            _gameState.CheckNormalSet(_playerId, _card);
         }
     }
 }

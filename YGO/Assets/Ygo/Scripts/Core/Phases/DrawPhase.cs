@@ -36,7 +36,7 @@ namespace Ygo.Core.Phases
             return new ActionQuery(
                 playerId, 
                 new List<IGameAction>() { drawAction }, 
-                new DeckInteractionContext(playerId)
+                new MainDeckInteractionContext(playerId)
                 );
         }
         
