@@ -7,6 +7,7 @@ using Ygo.Controller.Card;
 using Ygo.Controller.Field;
 using Ygo.Core;
 using Ygo.Core.Abstract;
+using Ygo.Core.Board;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Events;
 
@@ -21,8 +22,17 @@ namespace Ygo.Controller
         [field: SerializeField] 
         private PointOfView pointOfView;
         private Guid PlayerId { get; set; }
+        private TurnContext _context;
+        private BoardHandler _boardHandler;
+        private CardControllerRegistry _registry;
         
-        public void Init(GameCommandBus commandBus, GameEventBus eventBus, Action<ICardInstance> onEnter)
+        public void Init(
+            GameCommandBus commandBus, 
+            GameEventBus eventBus, 
+            TurnContext context,
+            CardControllerRegistry registry,
+            Action<ICardInstance> onEnter
+            )
         {
             foreach (var cardController in frontRowCards)
             {
@@ -35,16 +45,28 @@ namespace Ygo.Controller
             }
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<PlayerFieldUpdateEvent>(OnUpdate);
+            _context = context;
+            _registry = registry;
         }
-
+        
         private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
         {
             if (pointOfView == PointOfView.Top)
             {
                 PlayerId = e.OpponentId;
+                SetBoardHandler();
                 return;
             }
             PlayerId = e.PointOfViewId;
+            SetBoardHandler();
+        }
+
+        private void SetBoardHandler()
+        {
+            var player = _context.Players.FirstOrDefault(x => x.Id == PlayerId);
+            if(player == null)
+                throw new InvalidOperationException("Player not found");
+            _boardHandler = player.BoardHandler;
         }
 
         private void ClickZone(IBoardZone zone)
@@ -70,12 +92,16 @@ namespace Ygo.Controller
             
             foreach (var zone in frontRowZones)
             {
-                zone.SetBoardZone(e.Board.FirstOrDefault(x => x.Position == zone.Position));
+                zone.SetBoardZone(_boardHandler.MonsterZones.FirstOrDefault(x => x.Position == zone.Position));
                 if (zone.Zone.IsFree)
                     continue;
                 var card = frontRowCards.FirstOrDefault(x => x.ZonePosition == zone.Position);
                 card?.Enable();
                 card?.UpdateCard(zone.Zone.CardInZone);
+                if (card != null)
+                {
+                    _registry.Register(zone.Zone.CardInZone, card);
+                }
             }
             
             foreach (var card in frontRowCards.Where(card => card.Dirty))

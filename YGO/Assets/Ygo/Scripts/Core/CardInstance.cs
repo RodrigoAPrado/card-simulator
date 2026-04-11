@@ -32,6 +32,8 @@ namespace Ygo.Core
         public bool TreatedAsTrap { get; private set; }
         public bool TreatedAsMonster { get; private set; }
         public bool IsField => Data.CardType == CardType.Spell && Data.SpellData is { Type: SpellType.Field };
+        public bool CanNormalSummon { get; private set; }
+        public bool CanNormalSet { get; private set; }
         public bool CanAttack => !_hasAttacked && IsValidMonster && !IsInDefense;
         public bool IsSummoned => _isSummoned;
         public bool IsFaceDown { get; private set; }
@@ -66,6 +68,8 @@ namespace Ygo.Core
             IsFaceDown = false;
             _isInDefense = false;
             Location = zone.Position.ToMonsterCardLocation();
+            CanNormalSummon = false;
+            CanNormalSet = false;
         }
 
         public void Set(IBoardZone zone)
@@ -77,6 +81,8 @@ namespace Ygo.Core
             IsFaceDown = true;
             _isInDefense = true;
             Location = zone.Position.ToMonsterCardLocation();
+            CanNormalSummon = false;
+            CanNormalSet = false;
         }
 
         public void AddToHand()
@@ -89,6 +95,11 @@ namespace Ygo.Core
             _isInDefense = false;
             IsDestroyedByBattle = false;
             IsDestroyedByCardEffect = false;
+            if (Data.CardType == CardType.Monster)
+            {
+                CanNormalSummon = true;
+                CanNormalSet = true;
+            }
         }
 
         public void AddToMainDeck()
@@ -101,6 +112,8 @@ namespace Ygo.Core
             _isInDefense = false;
             IsDestroyedByBattle = false;
             IsDestroyedByCardEffect = false;
+            CanNormalSummon = false;
+            CanNormalSet = false;
         }
 
         public void SetAttacked()
@@ -154,6 +167,8 @@ namespace Ygo.Core
             _hasAttacked = false;
             IsFaceDown = false;
             _isInDefense = false;
+            CanNormalSummon = false;
+            CanNormalSet = false;
         }
 
         public void ClearDestroyed()

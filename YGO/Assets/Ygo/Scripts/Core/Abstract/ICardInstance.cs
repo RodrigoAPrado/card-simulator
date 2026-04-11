@@ -31,6 +31,8 @@ namespace Ygo.Core.Abstract
         bool TreatedAsTrap { get; }
         bool TreatedAsMonster { get; }
         bool IsField { get; }
+        bool CanNormalSummon { get; }
+        bool CanNormalSet { get; }
         bool CanAttack { get; }
         bool IsSummoned { get; }
         bool IsFaceDown { get; }

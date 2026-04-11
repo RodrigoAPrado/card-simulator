@@ -50,6 +50,8 @@ namespace Ygo.Controller
             var data = service.LoadCards();
             _application = new GameApplication(data);
             _application.Setup();
+
+            var registry = new CardControllerRegistry();
             
             foreach (var handController in handControllers)
             {
@@ -57,13 +59,20 @@ namespace Ygo.Controller
                     _application.GameCommandBus, 
                     _application.GameEventBus, 
                     _application.TurnContext, 
+                    registry,
                     UpdateZoomCard
                     );
             }
             
             foreach (var fieldController in fieldControllers)
             {
-                fieldController.Init(_application.GameCommandBus, _application.GameEventBus, UpdateZoomCard);
+                fieldController.Init(
+                    _application.GameCommandBus, 
+                    _application.GameEventBus, 
+                    _application.TurnContext, 
+                    registry,
+                    UpdateZoomCard
+                    );
             }
 
             foreach (var mainDeckController in mainDeckControllers)
@@ -75,9 +84,8 @@ namespace Ygo.Controller
                     );
             }
             
-            actionController.Init(_application.GameCommandBus);
+            actionController.Init(_application.GameCommandBus, _application.GameEventBus, registry);
             zoomCard.Init();
-            
             
             _application.GameEventBus.Subscribe<PhaseBeginEvent>(OnPhaseUpdate);
             _application.GameEventBus.Subscribe<PlayerInfoUpdateEvent>(OnPlayerInfoUpdate);

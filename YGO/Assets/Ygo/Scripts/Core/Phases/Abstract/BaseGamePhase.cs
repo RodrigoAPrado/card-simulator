@@ -29,6 +29,9 @@ namespace Ygo.Core.Phases.Abstract
         public virtual ActionQuery ClickedOnMainDeck(Guid playerId) 
             => new(playerId,ActionState.NotImplemented);
 
+        public virtual ActionQuery ClickedOnCardInHand(Guid playerId, ICardInstance card)
+            => new(playerId,ActionState.NotImplemented);
+
         protected void ChangeStep(GameStep step)
         {
             _currentStep = step;

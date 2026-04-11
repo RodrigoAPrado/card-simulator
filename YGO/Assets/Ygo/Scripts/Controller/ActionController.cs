@@ -1,7 +1,11 @@
 ﻿using System;
 using UnityEngine;
+using Ygo.Controller.Card;
 using Ygo.Controller.Component;
 using Ygo.Core;
+using Ygo.Core.Actions.Abstract;
+using Ygo.Core.Commands;
+using Ygo.Core.Events;
 using Ygo.Core.Response;
 
 namespace Ygo.Controller
@@ -10,65 +14,53 @@ namespace Ygo.Controller
     {
         [Header("Actions")] 
         [field: SerializeField]
-        private ButtonController normalSummonButton;
-        [field: SerializeField]
-        private ButtonController setButton;
-        [field: SerializeField]
-        private ButtonController tributeSummonButton;
-        [field: SerializeField]
-        private ButtonController tributeSetButton;
-        [field: SerializeField]
-        private ButtonController attackButton;
-        [field: SerializeField]
-        private ButtonController cancelButton;
+        private ButtonController[] buttons;
         
-        public void Init(GameCommandBus gameCommandBus)
+        private CardControllerRegistry _registry;
+        private GameCommandBus _commandBus;
+        
+        public void Init(GameCommandBus commandBus, GameEventBus eventBus, CardControllerRegistry registry)
         {
-            normalSummonButton.Init(OnNormalSummon, "Normal Summon");
-            setButton.Init(OnSet, "Set");
-            tributeSummonButton.Init(OnTributeSummon, "Tribute Summon");
-            tributeSetButton.Init(OnTributeSet, "Tribute Set");
-            attackButton.Init(OnAttack, "Attack");
-            cancelButton.Init(OnCancel, "Cancel");
+            eventBus.Subscribe<AvailableActionsEvent>(OnAvailableActions);
+            _registry = registry;
+            _commandBus = commandBus;
             HideAll();
         }
 
         private void HideAll()
         {
-            normalSummonButton.gameObject.SetActive(false);
-            setButton.gameObject.SetActive(false);
-            tributeSummonButton.gameObject.SetActive(false);
-            tributeSetButton.gameObject.SetActive(false);
-            attackButton.gameObject.SetActive(false);
-            cancelButton.gameObject.SetActive(false);
+            foreach (var button in buttons)
+            {
+                button.gameObject.SetActive(false);
+            }
         }
 
-        public void Show(ClickedOnCardResponse response, float xPosition, float yPosition)
+        private void OnAvailableActions(AvailableActionsEvent e)
         {
+            foreach (var button in buttons)
+            {
+                button.SetIsDirty();    
+            }
+            
+            for (int i = 0; i < e.Actions.Actions.Count; i++)
+            {
+                if(buttons.Length <= i)
+                    throw new InvalidOperationException("Not enough buttons");
+                var action = e.Actions.Actions[i];
+                var button = buttons[i];
+                button.Init(action, OnClick, action.ActionName);
+            }
+            
+            foreach (var button in buttons)
+            {
+                if(button.IsDirty)
+                    button.Disable(true);
+            }
         }
 
-        public void OnNormalSummon()
+        private void OnClick(IGameAction gameAction)
         {
-        }
-
-        public void OnSet()
-        {
-        }
-
-        public void OnTributeSummon()
-        {
-        }
-
-        public void OnTributeSet()
-        {
-        }
-        
-        public void OnAttack()
-        {
-        }
-        
-        public void OnCancel()
-        {
+            _commandBus.Send(new ActionExecutionCommand(gameAction));
         }
     }
 }

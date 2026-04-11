@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Ygo.Core.Actions.Abstract;
 using Ygo.View;
 
 namespace Ygo.Controller.Component
@@ -8,20 +9,38 @@ namespace Ygo.Controller.Component
     {
         [field: SerializeField]
         private TextViewUI Label { get; set; }
-        private Action _onClick;
         
-        public void Init(Action onClick, string label)
+        public bool IsDirty { get; private set; }
+        private Action<IGameAction> _onClick;
+        private IGameAction _action;
+        private bool _disabled;
+        
+        public void Init(IGameAction action, Action<IGameAction> onClick, string label)
         {
+            IsDirty = false;
+            _disabled = false;
+            _action = action;
             _onClick = onClick;
             Label.SetText(label);
         }
-        
+
+        public void Disable()
+        {
+            IsDirty = false;
+            gameObject.SetActive(false);
+            _disabled = true;
+        }
+
+        public void SetIsDirty()
+        {
+            IsDirty = true;
+        }
+
         public void OnClick()
         {
-            if(_onClick == null)
-                throw new InvalidOperationException("You must init the button first.");
-            
-            _onClick.Invoke();
+            if (_disabled)
+                return;
+            _onClick?.Invoke(_action);
         }
     }
 }

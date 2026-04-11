@@ -42,32 +42,12 @@ namespace Ygo.Core
 
         public CommandResponse ClickedOnMainDeck(Guid playerId)
         {
-            var result = CurrentPhase.ClickedOnMainDeck(playerId);
-
-            if (!result.Success)
-            {
-                return new CommandResponse(result.ActionState);
-            }
-
-            switch (result.Actions.Count)
-            {
-                case <= 0:
-                    throw new InvalidOperationException("Invalid success with no Actions.");
-                case 1:
-                    result.Actions[0].Execute();
-                    break;
-                default:
-                    _gameEventBus.Publish(new AvailableActionsEvent(result));
-                    break;
-            }
-            
-            return new CommandResponse(ActionState.Success);
+            return ProcessActionQuery(CurrentPhase.ClickedOnMainDeck(playerId));
         }
 
-        public CommandResponse ClickCardInHand(ICardInstance card)
+        public CommandResponse ClickCardInHand(Guid playerId, ICardInstance card)
         {
-            // Codar o comando.
-            return new CommandResponse(ActionState.Success);
+            return ProcessActionQuery(CurrentPhase.ClickedOnCardInHand(playerId, card));
         }
 
         public void InitGame()
@@ -86,6 +66,43 @@ namespace Ygo.Core
             _gameEventBus.Publish(new CardDrawnEvent(playerId));
             if(CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
                 AdvancePhase();
+        }
+
+        public void TryNormalSummon(Guid playerId, ICardInstance card)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public void TryNormalSet(Guid playerId, ICardInstance card)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CancelAction()
+        {
+            _gameEventBus.Publish(new ActionCancelEvent());
+        }
+
+        private CommandResponse ProcessActionQuery(ActionQuery query)
+        {
+            if (!query.Success)
+            {
+                return new CommandResponse(query.ActionState);
+            }
+
+            switch (query.Actions.Count)
+            {
+                case <= 0:
+                    throw new InvalidOperationException("Invalid success with no Actions.");
+                case 1:
+                    query.Actions[0].Execute();
+                    break;
+                default:
+                    _gameEventBus.Publish(new AvailableActionsEvent(query));
+                    break;
+            }
+            
+            return new CommandResponse(ActionState.Success);
         }
         
         private void HandleAdvancePhaseEffectPriority()

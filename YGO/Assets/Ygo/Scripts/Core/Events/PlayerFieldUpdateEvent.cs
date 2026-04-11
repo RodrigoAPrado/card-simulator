@@ -7,12 +7,10 @@ namespace Ygo.Core.Events
 {
     public class PlayerFieldUpdateEvent : IGameEvent
     {
-        public IList<IBoardZone> Board { get; }
         public Guid PlayerId { get; }
 
-        public PlayerFieldUpdateEvent(IList<IBoardZone> board, Guid playerId)
+        public PlayerFieldUpdateEvent(Guid playerId)
         {
-            Board = board;
             PlayerId = playerId;
         }
     }

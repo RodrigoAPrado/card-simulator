@@ -6,6 +6,7 @@ using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Enums;
 using Ygo.Core.Phases.Abstract;
 using Ygo.Core.Response;
+using Ygo.Core.Response.Context;
 using Ygo.Core.Response.Enum;
 
 namespace Ygo.Core.Phases
@@ -31,8 +32,12 @@ namespace Ygo.Core.Phases
             if (playerId != Context.CurrentTurnPlayer.Id)
                 return new ActionQuery(playerId, ActionState.IncorrectPlayer);
                 
-            var drawAction = new DrawCardAction(GameState, playerId);
-            return new ActionQuery(playerId, new List<IGameAction>() { drawAction });
+            var drawAction = new DrawAction(GameState, playerId);
+            return new ActionQuery(
+                playerId, 
+                new List<IGameAction>() { drawAction }, 
+                new DeckInteractionContext(playerId)
+                );
         }
         
         public override ActionResult DrawCard(Guid playerId)

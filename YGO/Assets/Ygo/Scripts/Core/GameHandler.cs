@@ -51,18 +51,15 @@ namespace Ygo.Core
             GameEventBus.Publish(new PointOfViewUpdateEvent(
                 _turnContext.PointOfViewPlayer.Id, 
                 _turnContext.OpponentPlayer.Id));
-            GameEventBus.Publish(new PlayerFieldUpdateEvent(
-                _turnContext.PointOfViewPlayer.BoardHandler.MonsterZones, 
-                _turnContext.PointOfViewPlayer.Id));
-            GameEventBus.Publish(new PlayerFieldUpdateEvent(
-                _turnContext.OpponentPlayer.BoardHandler.MonsterZones, 
-                _turnContext.OpponentPlayer.Id));
+            GameEventBus.Publish(new PlayerFieldUpdateEvent(_turnContext.PointOfViewPlayer.Id));
+            GameEventBus.Publish(new PlayerFieldUpdateEvent(_turnContext.OpponentPlayer.Id));
             GameEventBus.Publish(new PlayerInfoUpdateEvent(
                 GameState.TurnContext.PointOfViewPlayer.PlayerName, 
                 GameState.TurnContext.PointOfViewPlayer.CurrentLifePoints,
                 GameState.TurnContext.OpponentPlayer.PlayerName, 
                 GameState.TurnContext.OpponentPlayer.CurrentLifePoints));
             GameEventBus.Publish(new CardDrawnEvent(_turnContext.PointOfViewPlayer.Id));
+            GameEventBus.Publish(new CardDrawnEvent(_turnContext.OpponentPlayer.Id));
             GameState.InitGame();
         }
 
@@ -102,7 +99,7 @@ namespace Ygo.Core
 
         private void CardInHandClickHandler(CardInHandClickCommand c)
         {
-            var response = GameState.ClickCardInHand(c.Card);
+            var response = GameState.ClickCardInHand(c.PlayerId, c.Card);
             if (response.Fail)
             {
                 GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.ActionState));

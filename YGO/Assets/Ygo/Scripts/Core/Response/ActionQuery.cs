@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ygo.Core.Actions.Abstract;
+using Ygo.Core.Response.Context.Abstract;
 using Ygo.Core.Response.Enum;
 
 namespace Ygo.Core.Response
@@ -9,13 +10,15 @@ namespace Ygo.Core.Response
     {
         public Guid PlayerId { get; }
         public IList<IGameAction> Actions { get; }
+        public IInteractionContext Context { get; }
         public ActionState ActionState { get; }
         public bool Success => Actions.Count > 0 && ActionState == ActionState.Success; 
         
-        public ActionQuery(Guid playerId, IList<IGameAction> actions)
+        public ActionQuery(Guid playerId, IList<IGameAction> actions, IInteractionContext context)
         {
             PlayerId = playerId;
             Actions = actions;
+            Context = context;
             ActionState = ActionState.Success;
         }
 

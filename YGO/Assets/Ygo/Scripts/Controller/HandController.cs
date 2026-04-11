@@ -21,11 +21,13 @@ namespace Ygo.Controller
         private TurnContext _context;
         private Action<ICardInstance> _onClick;
         private CardsHandler _cardsHandler;
+        private CardControllerRegistry _registry;
 
         public void Init(
             GameCommandBus commandBus, 
             GameEventBus eventBus, 
             TurnContext context,
+            CardControllerRegistry registry,
             Action<ICardInstance> onEnter
             )
         {
@@ -33,13 +35,14 @@ namespace Ygo.Controller
             {
                 cardController.Init(onEnter, ClickCard);
             }
-            eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<CardDrawnEvent>(OnCardDrawn);
+            eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             _onClick = card =>
             {
-                commandBus.Send(new CardInHandClickCommand(card));
+                commandBus.Send(new CardInHandClickCommand(PlayerId, card));
             };
             _context = context;
+            _registry = registry;
         }
 
         private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
@@ -87,6 +90,7 @@ namespace Ygo.Controller
                 
                 cardControllers[i].Enable();
                 cardControllers[i].UpdateCard(cards[i]);
+                _registry.Register(cards[i], cardControllers[i]);
             }
 
             foreach (var card in cardControllers)
