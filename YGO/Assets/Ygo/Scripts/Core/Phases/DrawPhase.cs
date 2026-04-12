@@ -28,31 +28,32 @@ namespace Ygo.Core.Phases
         public override ActionQuery ClickedOnMainDeck(Guid requesterId, Guid ownerId)
         {
             if (CurrentStep != GameStep.WaitingDraw)
-                return new ActionQuery(ownerId, ActionState.IncorrectStep);
+                return new ActionQuery(requesterId, ownerId, ActionState.IncorrectStep);
             if (ownerId != Context.CurrentTurnPlayer.Id)
-                return new ActionQuery(ownerId, ActionState.IncorrectPlayer);
+                return new ActionQuery(requesterId, ownerId, ActionState.IncorrectPlayer);
                 
             var drawAction = new DrawAction(GameState, ownerId);
             return new ActionQuery(
+                requesterId,
                 ownerId, 
                 new List<IGameAction>() { drawAction }, 
                 new MainDeckInteractionContext(ownerId)
                 );
         }
         
-        public override ActionResult DrawCard(Guid playerId)
+        public override ActionResult DrawCard(Guid ownerId)
         {
             if (CurrentStep != GameStep.WaitingDraw)
-                return new ActionResult(playerId, ActionState.IncorrectStep);
-            if (playerId != Context.CurrentTurnPlayer.Id)
-                return new ActionResult(playerId, ActionState.IncorrectPlayer);
+                return new ActionResult(ownerId, ActionState.IncorrectStep);
+            if (ownerId != Context.CurrentTurnPlayer.Id)
+                return new ActionResult(ownerId, ActionState.IncorrectPlayer);
             
-            var result = Context.Players.FirstOrDefault(x => x.Id == playerId)!.CardsHandler.TryDrawFromDeck();
+            var result = Context.Players.FirstOrDefault(x => x.Id == ownerId)!.CardsHandler.TryDrawFromDeck();
 
             if (!result)
-                return new ActionResult(playerId, ActionState.CannotDrawFromDeck);
+                return new ActionResult(ownerId, ActionState.CannotDrawFromDeck);
             ChangeStep(GameStep.ProceedToNextPhase);
-            return new ActionResult(playerId, ActionState.Success);
+            return new ActionResult(ownerId, ActionState.Success);
         }
     }
 }

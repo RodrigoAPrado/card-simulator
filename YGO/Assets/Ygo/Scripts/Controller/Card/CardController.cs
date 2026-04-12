@@ -25,11 +25,11 @@ namespace Ygo.Controller.Card
         [field: SerializeField]
         private HighlightController highlightController;
         
-        private ICardInstance _card;
 
         private Action<ICardInstance, bool> _onEnter;
         private Action<ICardInstance> _onCLick;
         
+        public ICardInstance Card { get; private set; }
         public bool Dirty { get; private set; }
         public bool Enabled { get; private set; }
         private bool Hidden { get; set; }
@@ -45,7 +45,7 @@ namespace Ygo.Controller.Card
 
         public void UpdateCard(ICardInstance cardInstance, bool hidden = false)
         {
-            _card = cardInstance;
+            Card = cardInstance;
             Dirty = false;
             Hidden = hidden;
             view.SetHidden(Hidden || (cardInstance?.IsFaceDown == true && cardMode != CardControllerMode.Zoom));
@@ -55,49 +55,49 @@ namespace Ygo.Controller.Card
             if (Hidden || (cardInstance?.IsFaceDown == true && cardMode != CardControllerMode.Zoom))
                 return;
             
-            view.SetName(_card.Data.Name);
+            view.SetName(Card.Data.Name);
             view.SetFrame(GetCardFrameType());
             view.SetIcon(GetCardIconType());
             view.SetIllustration(GetIllustrationFileName());
 
-            if (_card.IsValidMonster)
+            if (Card.IsValidMonster)
                 InitMonster();
         }
 
         public void OnDestroy()
         {
-            _card = null;
+            Card = null;
         }
 
         private void InitMonster()
         {
-            view.SetLevel(_card.CurrentLevel.GetValueOrDefault());
-            view.SetMonsterText(cardMode == CardControllerMode.Zoom ? _card.CardText : "");
+            view.SetLevel(Card.CurrentLevel.GetValueOrDefault());
+            view.SetMonsterText(cardMode == CardControllerMode.Zoom ? Card.CardText : "");
             view.SetMonsterType(GetMonsterType());
-            view.SetMonsterAtk(_card.CurrentAtk.GetValueOrDefault().ToString());
-            view.SetMonsterDef(_card.CurrentDef.GetValueOrDefault().ToString());
+            view.SetMonsterAtk(Card.CurrentAtk.GetValueOrDefault().ToString());
+            view.SetMonsterDef(Card.CurrentDef.GetValueOrDefault().ToString());
         }
 
         private CardFrameType GetCardFrameType()
         {
-            switch (_card.Data.CardType)
+            switch (Card.Data.CardType)
             {
                 case CardType.Monster:
-                    if (!_card.IsValidMonster)
-                        throw new InvalidOperationException($"{nameof(_card.Data.MonsterData)} cannot be null.");
-                    if(_card.IsRitual)
-                        return _card.IsPendulum ? CardFrameType.RitualPendulum : CardFrameType.Ritual;
-                    if(_card.IsFusion)
-                        return _card.IsPendulum ? CardFrameType.FusionPendulum : CardFrameType.Fusion;
-                    if(_card.IsSynchro)
-                        return _card.IsPendulum ? CardFrameType.SynchroPendulum : CardFrameType.Synchro;
-                    if(_card.IsXyz)
-                        return _card.IsPendulum ? CardFrameType.XyzPendulum : CardFrameType.Xyz;
-                    if (_card.IsLink)
+                    if (!Card.IsValidMonster)
+                        throw new InvalidOperationException($"{nameof(Card.Data.MonsterData)} cannot be null.");
+                    if(Card.IsRitual)
+                        return Card.IsPendulum ? CardFrameType.RitualPendulum : CardFrameType.Ritual;
+                    if(Card.IsFusion)
+                        return Card.IsPendulum ? CardFrameType.FusionPendulum : CardFrameType.Fusion;
+                    if(Card.IsSynchro)
+                        return Card.IsPendulum ? CardFrameType.SynchroPendulum : CardFrameType.Synchro;
+                    if(Card.IsXyz)
+                        return Card.IsPendulum ? CardFrameType.XyzPendulum : CardFrameType.Xyz;
+                    if (Card.IsLink)
                         return CardFrameType.Link;
-                    if (_card.IsEffect)
-                        return _card.IsPendulum ? CardFrameType.EffectPendulum : CardFrameType.Effect;
-                    return _card.IsPendulum ? CardFrameType.NormalPendulum : CardFrameType.Normal;
+                    if (Card.IsEffect)
+                        return Card.IsPendulum ? CardFrameType.EffectPendulum : CardFrameType.Effect;
+                    return Card.IsPendulum ? CardFrameType.NormalPendulum : CardFrameType.Normal;
                 case CardType.Spell:
                     return CardFrameType.Spell;
                 case CardType.Trap:
@@ -110,12 +110,12 @@ namespace Ygo.Controller.Card
 
         private CardIconType GetCardIconType()
         {
-            switch (_card.Data.CardType)
+            switch (Card.Data.CardType)
             {
                 case CardType.Monster:
-                    if (!_card.IsValidMonster)
-                        throw new InvalidOperationException($"{nameof(_card.Data.MonsterData)} cannot be null.");
-                    switch (_card.Data.MonsterData?.Attribute)
+                    if (!Card.IsValidMonster)
+                        throw new InvalidOperationException($"{nameof(Card.Data.MonsterData)} cannot be null.");
+                    switch (Card.Data.MonsterData?.Attribute)
                     {
                         case MonsterAttribute.Dark:
                             return CardIconType.Dark;
@@ -146,7 +146,7 @@ namespace Ygo.Controller.Card
 
         private string GetIllustrationFileName()
         {
-            var id = _card.Data.Id.ToString();
+            var id = Card.Data.Id.ToString();
             var sb = new StringBuilder();
             for (var i = 6; i > id.Length; i--)
             {
@@ -159,9 +159,9 @@ namespace Ygo.Controller.Card
 
         private string GetMonsterType()
         {
-            var monsterData = _card.Data.MonsterData;
+            var monsterData = Card.Data.MonsterData;
             if(monsterData == null)
-                throw new InvalidOperationException($"There is no monster data for {_card.Data.Id}");
+                throw new InvalidOperationException($"There is no monster data for {Card.Data.Id}");
             var sb = new StringBuilder();
             sb.Append("[");
             sb.Append(monsterData.Type.ToString());
@@ -188,7 +188,7 @@ namespace Ygo.Controller.Card
             if (cardMode == CardControllerMode.Zoom) 
                 return;
             
-            _onEnter?.Invoke(_card, Hidden);
+            _onEnter?.Invoke(Card, Hidden);
         }
 
         public void OnExit()
@@ -203,7 +203,7 @@ namespace Ygo.Controller.Card
         {
             if (!Enabled)
                 return;
-            _onCLick?.Invoke(_card);
+            _onCLick?.Invoke(Card);
         }
 
         public void SetDirty()
@@ -220,10 +220,18 @@ namespace Ygo.Controller.Card
         public void Disable()
         {
             Enabled = false;
-            _card = null;
+            Card = null;
             view.Clear();
             gameObject.SetActive(false);
             Dirty = false;
+        }
+        
+        public void ToggleHighlight(bool value)
+        {
+            if(value)
+                highlightController.Enable();
+            else
+                highlightController.Disable();
         }
     }
 }

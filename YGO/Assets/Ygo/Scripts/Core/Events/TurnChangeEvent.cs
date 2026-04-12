@@ -6,12 +6,12 @@ namespace Ygo.Core.Events
     public class TurnChangeEvent : IGameEvent
     {
         public int TurnIndex { get; }
-        public Guid TurnPlayer { get; }
+        public Guid PlayerId { get; }
 
-        public TurnChangeEvent(int turnIndex, Guid turnPlayer)
+        public TurnChangeEvent(int turnIndex, Guid playerId)
         {
             TurnIndex = turnIndex;
-            TurnPlayer = turnPlayer;
+            PlayerId = playerId;
         }
     }
 }

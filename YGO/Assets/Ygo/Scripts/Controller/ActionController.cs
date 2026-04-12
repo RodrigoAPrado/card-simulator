@@ -67,7 +67,7 @@ namespace Ygo.Controller
                 var button = buttons[i];
                 button.Init(() =>
                 {
-                    OnClick(e.Actions.PlayerId, action);
+                    OnClick(e.Actions.ContextPlayerId, action);
                 }, action.ActionName);
             }
             

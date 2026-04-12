@@ -8,23 +8,26 @@ namespace Ygo.Core.Response
 {
     public class ActionQuery
     {
-        public Guid PlayerId { get; }
+        public Guid RequesterId { get; }
+        public Guid ContextPlayerId { get; }
         public IList<IGameAction> Actions { get; }
         public IInteractionContext Context { get; }
         public ActionState ActionState { get; }
         public bool Success => Actions.Count > 0 && ActionState == ActionState.Success; 
         
-        public ActionQuery(Guid playerId, IList<IGameAction> actions, IInteractionContext context)
+        public ActionQuery(Guid requesterId, Guid contextPlayerId, IList<IGameAction> actions, IInteractionContext context)
         {
-            PlayerId = playerId;
+            RequesterId = requesterId;
+            ContextPlayerId = contextPlayerId;
             Actions = actions;
             Context = context;
             ActionState = ActionState.Success;
         }
 
-        public ActionQuery(Guid playerId, ActionState actionState)
+        public ActionQuery(Guid requesterId, Guid contextPlayerId, ActionState actionState)
         {
-            PlayerId = playerId;
+            RequesterId = requesterId;
+            ContextPlayerId = contextPlayerId;
             Actions = new List<IGameAction>();
             ActionState = actionState;
         }

@@ -34,20 +34,22 @@ namespace Ygo.Core.Phases
             {
                 return OnClickedOnCardInHandOnGameStateOpen(requesterId, ownerId, card);
             }
-            return new ActionQuery(ownerId, ActionState.NotImplemented);
+            return new ActionQuery(requesterId, ownerId, ActionState.IncorrectStep);
         }
 
-        private ActionQuery OnClickedOnCardInHandOnGameStateOpen(Guid requesterId, Guid playerId, ICardInstance card)
+        private ActionQuery OnClickedOnCardInHandOnGameStateOpen(Guid requesterId, Guid ownerId, ICardInstance card)
         {
-            if(Context.CurrentTurnPlayer.Id != playerId)
-                return new ActionQuery(playerId, ActionState.IncorrectPlayer);
+            if(Context.CurrentTurnPlayer.Id != requesterId)
+                return new ActionQuery(requesterId, ownerId, ActionState.IncorrectPlayer);
+            if(Context.CurrentTurnPlayer.Id != ownerId)
+                return new ActionQuery(requesterId, ownerId, ActionState.NotOwner);
             if (card.Location != CardLocation.Hand)
                 throw new InvalidOperationException("Card location is not hand");
             
             switch (card.Data.CardType)
             {
                 case CardType.Monster:
-                    return OnClickedOnMonsterInHandOnGameStateOpen(requesterId, playerId, card);
+                    return OnClickedOnMonsterInHandOnGameStateOpen(requesterId, ownerId, card);
                 case CardType.Spell:
                     throw new NotImplementedException();
                 case CardType.Trap:
@@ -57,7 +59,7 @@ namespace Ygo.Core.Phases
             }
         }
 
-        private ActionQuery OnClickedOnMonsterInHandOnGameStateOpen(Guid requesterId, Guid playerId, ICardInstance card)
+        private ActionQuery OnClickedOnMonsterInHandOnGameStateOpen(Guid requesterId, Guid ownerId, ICardInstance card)
         {
             var actionList = new List<IGameAction>();
 
@@ -65,14 +67,14 @@ namespace Ygo.Core.Phases
             var canPlayerNormalSummon = !Context.CurrentTurnPlayer.NormalSummonFlag;
             
             if(card.CanNormalSummon && zoneFrees && canPlayerNormalSummon)
-                actionList.Add(new NormalSummonAction(GameState, playerId, card));
+                actionList.Add(new NormalSummonAction(GameState, ownerId, card));
             
             if(card.CanNormalSet && zoneFrees && canPlayerNormalSummon)
-                actionList.Add(new NormalSetAction(GameState, playerId, card));
+                actionList.Add(new NormalSetAction(GameState, ownerId, card));
             
             actionList.Add(new CancelAction(GameState));
 
-            return new ActionQuery(playerId, actionList, new CardInteractionContext(playerId, card));
+            return new ActionQuery(requesterId, ownerId, actionList, new CardInteractionContext(ownerId, card));
         }
         
         public override ActionQuery ClickedOnCardOnField(Guid requesterId, Guid ownerId, ICardInstance card)
@@ -81,13 +83,15 @@ namespace Ygo.Core.Phases
             {
                 return OnClickedOnCardOnFieldOnGameStateOpen(requesterId, ownerId, card);
             }
-            return new ActionQuery(ownerId, ActionState.NotImplemented);
+            return new ActionQuery(requesterId, ownerId, ActionState.NotImplemented);
         }
         
-        private ActionQuery OnClickedOnCardOnFieldOnGameStateOpen(Guid requesterId, Guid playerId, ICardInstance card)
+        private ActionQuery OnClickedOnCardOnFieldOnGameStateOpen(Guid requesterId, Guid ownerId, ICardInstance card)
         {
-            if(Context.CurrentTurnPlayer.Id != playerId)
-                return new ActionQuery(playerId, ActionState.IncorrectPlayer);
+            if(Context.CurrentTurnPlayer.Id != requesterId)
+                return new ActionQuery(requesterId, ownerId, ActionState.IncorrectPlayer);
+            if(Context.CurrentTurnPlayer.Id != ownerId)
+                return new ActionQuery(requesterId, ownerId, ActionState.NotOwner);
             if (card.Location 
                 is not CardLocation.FieldZone
                 and not CardLocation.LeftMostMonsterZone
@@ -105,7 +109,7 @@ namespace Ygo.Core.Phases
             switch (card.Data.CardType)
             {
                 case CardType.Monster:
-                    return OnClickedOnMonsterOnFieldOnGameStateOpen(requesterId, playerId, card);
+                    return OnClickedOnMonsterOnFieldOnGameStateOpen(requesterId, ownerId, card);
                 case CardType.Spell:
                     throw new NotImplementedException();
                 case CardType.Trap:
@@ -115,7 +119,7 @@ namespace Ygo.Core.Phases
             }
         }
         
-        private ActionQuery OnClickedOnMonsterOnFieldOnGameStateOpen(Guid requesterId, Guid playerId, ICardInstance card)
+        private ActionQuery OnClickedOnMonsterOnFieldOnGameStateOpen(Guid requesterId, Guid ownerId, ICardInstance card)
         {
             var actionList = new List<IGameAction>();
 
@@ -125,33 +129,34 @@ namespace Ygo.Core.Phases
                 {
                     if (card.IsFaceDown)
                     {
-                        actionList.Add(new FlipSummonAction(GameState, playerId, card));
+                        actionList.Add(new FlipSummonAction(GameState, ownerId, card));
                     }
                     else
                     {
-                        actionList.Add(new SwitchMonsterToAttackAction(GameState, playerId, card));
+                        actionList.Add(new SwitchMonsterToAttackAction(GameState, ownerId, card));
                     }
                 }
                 else
                 {
-                    actionList.Add(new SwitchMonsterToDefenseAction(GameState, playerId, card));
+                    actionList.Add(new SwitchMonsterToDefenseAction(GameState, ownerId, card));
                 }
             }
             
             actionList.Add(new CancelAction(GameState));
 
-            return new ActionQuery(playerId, actionList, new CardInteractionContext(playerId, card));
+            return new ActionQuery(requesterId, ownerId, actionList, new CardInteractionContext(ownerId, card));
         }
         
         public override ActionQuery ClickedOnNextPhase(Guid requesterId)
         {
             if(requesterId != Context.CurrentTurnPlayer.Id)
-                return new ActionQuery(requesterId, ActionState.IncorrectPlayer);
+                return new ActionQuery(requesterId, Guid.Empty, ActionState.IncorrectPlayer);
             if(CurrentStep != GameStep.Open)
-                return new ActionQuery(requesterId, ActionState.IncorrectStep);
+                return new ActionQuery(requesterId, Guid.Empty, ActionState.IncorrectStep);
             ChangeStep(GameStep.ProceedToNextPhase);
             return new ActionQuery(
                 requesterId,
+                Guid.Empty, 
                 new List<IGameAction>()
                 {
                     new EmptyAction()

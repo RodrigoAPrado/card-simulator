@@ -7,12 +7,12 @@ namespace Ygo.Core.Response
 {
     public class ActionResult
     {
-        public Guid PlayerId { get; }
+        public Guid ContextPlayerId { get; }
         public ActionState ActionState { get; }
 
-        public ActionResult(Guid playerId, ActionState actionState)
+        public ActionResult(Guid contextContextPlayerId, ActionState actionState)
         {
-            PlayerId = playerId;
+            ContextPlayerId = contextContextPlayerId;
             ActionState = actionState;
         }
     }

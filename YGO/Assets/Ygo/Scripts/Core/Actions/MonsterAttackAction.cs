@@ -15,7 +15,7 @@ namespace Ygo.Core.Actions
 
         public override void Execute()
         {
-            
+            GameState.CheckAttack(PlayerId, Card);
         }
     }
 }

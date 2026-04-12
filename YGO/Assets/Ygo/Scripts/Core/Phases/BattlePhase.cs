@@ -5,6 +5,7 @@ using Ygo.Core.Abstract;
 using Ygo.Core.Actions;
 using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Enums;
+using Ygo.Core.Interaction;
 using Ygo.Core.Phases.Abstract;
 using Ygo.Core.Response;
 using Ygo.Core.Response.Context;
@@ -34,7 +35,7 @@ namespace Ygo.Core.Phases
         public override ActionQuery ClickedOnCardOnField(Guid requesterId, Guid ownerId, ICardInstance card)
         {
             if (requesterId != Context.CurrentTurnPlayer.Id || ownerId != Context.CurrentTurnPlayer.Id)
-                return new ActionQuery(requesterId, ActionState.IncorrectPlayer);
+                return new ActionQuery(requesterId, ownerId, ActionState.IncorrectPlayer);
             
             if (card.Location 
                 is not CardLocation.FieldZone
@@ -63,26 +64,66 @@ namespace Ygo.Core.Phases
             }
         }
 
-
-        private ActionQuery OnClickedOnMonsterOnFieldOnBattle(Guid requesterId, Guid playerId,
+        private ActionQuery OnClickedOnMonsterOnFieldOnBattle(Guid requesterId, Guid ownerId,
             ICardInstance card)
         {
             var actionList = new List<IGameAction>();
             if(card.CanAttack)
-                actionList.Add(new MonsterAttackAction(GameState, playerId, card));
+                actionList.Add(new MonsterAttackAction(GameState, ownerId, card));
             actionList.Add(new CancelAction(GameState));
-            return new ActionQuery(playerId, actionList, new CardInteractionContext(playerId, card));
+            return new ActionQuery(requesterId, ownerId, actionList, new CardInteractionContext(ownerId, card));
+        }
+
+        public override ActionResult CheckAttack(Guid playerId, ICardInstance attacker)
+        {
+            if (playerId != Context.CurrentTurnPlayer.Id)
+                throw new InvalidOperationException("Player has not been on the current turn");
+            
+            if (attacker.Location 
+                is not CardLocation.FieldZone
+                and not CardLocation.LeftMostMonsterZone
+                and not CardLocation.LeftCenterMonsterZone
+                and not CardLocation.MiddleCenterMonsterZone
+                and not CardLocation.RightCenterMonsterZone
+                and not CardLocation.RightMostMonsterZone
+                and not CardLocation.LeftMostSpellTrapZone
+                and not CardLocation.LeftCenterSpellTrapZone
+                and not CardLocation.MiddleCenterSpellTrapZone
+                and not CardLocation.RightCenterSpellTrapZone
+                and not CardLocation.RightMostSpellTrapZone)
+                throw new InvalidOperationException("Card location is not on field");
+
+            if (!attacker.CanAttack)
+                throw new InvalidOperationException("Card cannot attack");
+
+            IList<ICardInstance> availableCards = Context.OpponentPlayer.BoardHandler.MonsterZones.Where(x => !x.IsFree)
+                .Select(x => x.CardInZone).ToList();
+
+            if (availableCards.Count <= 0)
+            {
+                GameState.DeclareDirectAttack(playerId, attacker);
+            }
+            else
+            {
+                GameState.SetInteractionState(Context.OpponentPlayer.Id, 
+                    new AttackTargetSelectState(playerId, 
+                        GameState, 
+                        availableCards, 
+                        attacker));
+            }
+            
+            return new ActionResult(playerId, ActionState.Success);
         }
         
         public override ActionQuery ClickedOnNextPhase(Guid requesterId)
         {
             if(requesterId != Context.CurrentTurnPlayer.Id)
-                return new ActionQuery(requesterId, ActionState.IncorrectPlayer);
+                return new ActionQuery(requesterId,Guid.Empty, ActionState.IncorrectPlayer);
             if(CurrentStep != GameStep.Battle)
-                return new ActionQuery(requesterId, ActionState.IncorrectStep);
+                return new ActionQuery(requesterId,Guid.Empty, ActionState.IncorrectStep);
             ChangeStep(GameStep.ProceedToNextPhase);
             return new ActionQuery(
-                requesterId,
+                requesterId,Guid.Empty,
                 new List<IGameAction>()
                 {
                     new EmptyAction()

@@ -25,7 +25,7 @@ namespace Ygo.Core.Interaction
 
         protected override void InternalHandle(ZoneClickCommand zoneClickCommand)
         {
-            var gameAction = new DelegatedGameAction("Do Normal Summon",
+            var gameAction = new DelegatedGameAction("Do Normal Set",
                 () =>
                 {
                     _gameState.DoNormalSet(_playerId, _cardInstance, zoneClickCommand.Zone);

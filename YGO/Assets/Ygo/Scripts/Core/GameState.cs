@@ -79,61 +79,70 @@ namespace Ygo.Core
             StartTurn();
         }
 
-        public void DrawFromDeck(Guid playerId)
+        public void DrawFromDeck(Guid ownerId)
         {
-            var result = CurrentPhase.DrawCard(playerId);
+            var result = CurrentPhase.DrawCard(ownerId);
             if (result.ActionState != ActionState.Success)
             {
                 throw new InvalidOperationException("Invalid action!");
             }
             
-            _gameEventBus.Publish(new CardDrawnEvent(playerId));
+            _gameEventBus.Publish(new CardDrawnEvent(ownerId));
         }
 
-        public void CheckNormalSummon(Guid playerId, ICardInstance card)
+        public void CheckNormalSummon(Guid ownerId, ICardInstance card)
         {
-            CurrentPhase.CheckNormalSummon(playerId, card);
+            CurrentPhase.CheckNormalSummon(ownerId, card);
         }
         
-        public void CheckNormalSet(Guid playerId, ICardInstance card)
+        public void CheckNormalSet(Guid ownerId, ICardInstance card)
         {
-            CurrentPhase.CheckNormalSet(playerId, card);
+            CurrentPhase.CheckNormalSet(ownerId, card);
         }
 
-        public void DoNormalSummon(Guid playerId, ICardInstance card, IBoardZone boardZone)
+        public void DoNormalSummon(Guid ownerId, ICardInstance card, IBoardZone boardZone)
         {
-            CurrentPhase.DoNormalSummon(playerId, card, boardZone);
-            _gameEventBus.Publish(new NormalSummonEvent(playerId, card, boardZone));
+            CurrentPhase.DoNormalSummon(ownerId, card, boardZone);
+            _gameEventBus.Publish(new NormalSummonEvent(ownerId, card, boardZone));
         }
 
-        public void DoNormalSet(Guid playerId, ICardInstance card, IBoardZone boardZone)
+        public void DoNormalSet(Guid ownerId, ICardInstance card, IBoardZone boardZone)
         {
-            CurrentPhase.DoNormalSet(playerId, card, boardZone);
-            _gameEventBus.Publish(new NormalSetEvent(playerId, card, boardZone));
+            CurrentPhase.DoNormalSet(ownerId, card, boardZone);
+            _gameEventBus.Publish(new NormalSetEvent(ownerId, card, boardZone));
         }
 
-        public void DoFlipSummon(Guid playerId, ICardInstance card)
+        public void DoFlipSummon(Guid ownerId, ICardInstance card)
         {
-            CurrentPhase.DoFlipSummon(playerId, card);
-            _gameEventBus.Publish(new FlipSummonEvent(playerId, card));
+            CurrentPhase.DoFlipSummon(ownerId, card);
+            _gameEventBus.Publish(new FlipSummonEvent(ownerId, card));
         }
         
-        public void DoSwitchMonsterToAttack(Guid playerId, ICardInstance card)
+        public void DoSwitchMonsterToAttack(Guid ownerId, ICardInstance card)
         {
-            CurrentPhase.DoSwitchMonsterToAttack(playerId, card);
-            _gameEventBus.Publish(new SwitchMonsterToAttackEvent(playerId, card));
+            CurrentPhase.DoSwitchMonsterToAttack(ownerId, card);
+            _gameEventBus.Publish(new SwitchMonsterToAttackEvent(ownerId, card));
         }
         
-        public void DoSwitchMonsterToDefense(Guid playerId, ICardInstance card)
+        public void DoSwitchMonsterToDefense(Guid ownerId, ICardInstance card)
         {
-            CurrentPhase.DoSwitchMonsterToDefense(playerId, card);
-            _gameEventBus.Publish(new SwitchMonsterToDefenseEvent(playerId, card));
+            CurrentPhase.DoSwitchMonsterToDefense(ownerId, card);
+            _gameEventBus.Publish(new SwitchMonsterToDefenseEvent(ownerId, card));
         }
 
-        public void CheckAttack(Guid playerId, ICardInstance card)
+        public void CheckAttack(Guid ownerId, ICardInstance card)
         {
-            CurrentPhase.CheckAttack(playerId, card);
-            //TODO:
+            CurrentPhase.CheckAttack(ownerId, card);
+        }
+
+        public void DeclareAttack(Guid ownerId, ICardInstance attacker, ICardInstance defender)
+        {
+            
+        }
+
+        public void DeclareDirectAttack(Guid ownerId, ICardInstance attacker)
+        {
+            
         }
 
         public void CancelAction()

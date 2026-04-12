@@ -27,46 +27,46 @@ namespace Ygo.Core.Phases.Abstract
 
         public abstract void Init();
         public virtual ActionQuery ClickedOnMainDeck(Guid requesterId, Guid ownerId) 
-            => new(ownerId,ActionState.NotImplemented);
+            => new(requesterId, ownerId,ActionState.NotImplemented);
 
         public virtual ActionQuery ClickedOnCardInHand(Guid requesterId, Guid ownerId, ICardInstance card)
-            => new(ownerId,ActionState.NotImplemented);
+            => new(requesterId, ownerId,ActionState.NotImplemented);
 
         public virtual ActionQuery ClickedOnCardOnField(Guid requesterId, Guid ownerId, ICardInstance card)
-            => new(ownerId,ActionState.NotImplemented);
+            => new(requesterId, ownerId,ActionState.NotImplemented);
 
         public virtual ActionQuery ClickedOnZone(Guid requesterId, Guid ownerId, IBoardZone zone)
-            => new(ownerId,ActionState.NotImplemented);
+            => new(requesterId, ownerId,ActionState.NotImplemented);
 
         public virtual ActionQuery ClickedOnNextPhase(Guid requesterId)
-            => new(requesterId,ActionState.NotImplemented);
+            => new(requesterId, requesterId, ActionState.NotImplemented);
 
         protected void ChangeStep(GameStep step)
         {
             _currentStep = step;
         }
 
-        public virtual ActionResult DrawCard(Guid playerId) 
-            => new(playerId, ActionState.NotImplemented);
-        public virtual ActionResult CheckNormalSummon(Guid playerId, ICardInstance card) 
-            => new(playerId, ActionState.NotImplemented);
-        public virtual ActionResult CheckNormalSet(Guid playerId, ICardInstance card) 
-            => new(playerId, ActionState.NotImplemented);
-        public virtual ActionResult DoNormalSummon(Guid playerId, ICardInstance card, IBoardZone boardZone)
-            => new(playerId, ActionState.NotImplemented);
-        public virtual ActionResult DoNormalSet(Guid playerId, ICardInstance card, IBoardZone boardZone)
-            => new(playerId, ActionState.NotImplemented);
-        public virtual ActionResult DoFlipSummon(Guid playerId, ICardInstance card)
-            => new(playerId, ActionState.NotImplemented);
-        public virtual ActionResult DoSwitchMonsterToAttack(Guid playerId, ICardInstance card)
-            => new(playerId, ActionState.NotImplemented);
-        public virtual ActionResult DoSwitchMonsterToDefense(Guid playerId, ICardInstance card)
-            => new(playerId, ActionState.NotImplemented);
-        public virtual ActionResult CheckAttack(Guid playerId, ICardInstance card)
-            => new(playerId, ActionState.NotImplemented);
-        public ActionResult DeclareAttack(Guid playerId, ICardInstance attacker, ICardInstance defender)
-            => new(playerId, ActionState.NotImplemented);
-        public ActionResult DeclareDirectAttack(Guid playerId, ICardInstance attacker)
-            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult DrawCard(Guid ownerId) 
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult CheckNormalSummon(Guid ownerId, ICardInstance card) 
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult CheckNormalSet(Guid ownerId, ICardInstance card) 
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult DoNormalSummon(Guid ownerId, ICardInstance card, IBoardZone boardZone)
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult DoNormalSet(Guid ownerId, ICardInstance card, IBoardZone boardZone)
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult DoFlipSummon(Guid ownerId, ICardInstance card)
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult DoSwitchMonsterToAttack(Guid ownerId, ICardInstance card)
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult DoSwitchMonsterToDefense(Guid ownerId, ICardInstance card)
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult CheckAttack(Guid targetId, ICardInstance attacker)
+            => new(targetId, ActionState.NotImplemented);
+        public ActionResult DeclareAttack(Guid targetId, ICardInstance attacker, ICardInstance defender)
+            => new(targetId, ActionState.NotImplemented);
+        public ActionResult DeclareDirectAttack(Guid targetId, ICardInstance attacker)
+            => new(targetId, ActionState.NotImplemented);
     }
 }

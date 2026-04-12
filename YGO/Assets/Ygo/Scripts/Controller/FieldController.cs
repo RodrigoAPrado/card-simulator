@@ -86,12 +86,25 @@ namespace Ygo.Controller
         {
             if (e.PlayerId != _ownerId)
                 return;
-            if (e.InteractionState is not ZoneSelectionState state)
-                return;
-            foreach (var zone in state.AvailableZones)
+            
+            if (e.InteractionState is ZoneSelectionState zoneState)
             {
-                var zoneController = frontRowZones.FirstOrDefault(x => x.Zone == zone);
-                zoneController?.ToggleHighlight(true);
+                foreach (var zone in zoneState.AvailableZones)
+                {
+                    var zoneController = frontRowZones.FirstOrDefault(x => x.Zone == zone);
+                    zoneController?.ToggleHighlight(true);
+                }
+
+                return;
+            }
+
+            if (e.InteractionState is MonsterCardSelectionState monsterState)
+            {
+                foreach (var card in monsterState.AvailableCards)
+                {
+                    var cardController = frontRowCards.FirstOrDefault(x => x.Card == card);
+                    cardController?.ToggleHighlight(true);
+                }
             }
         }
 

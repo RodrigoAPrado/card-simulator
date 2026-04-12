@@ -6,6 +6,7 @@
         NotImplemented,
         IncorrectStep,
         IncorrectPlayer,
+        NotOwner,
         IncorrectPhase,
         CannotDrawFromDeck
     }
