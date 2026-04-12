@@ -27,13 +27,14 @@ namespace Ygo.Controller.Card
         
         private ICardInstance _card;
 
-        private Action<ICardInstance> _onEnter;
+        private Action<ICardInstance, bool> _onEnter;
         private Action<ICardInstance> _onCLick;
         
         public bool Dirty { get; private set; }
         public bool Enabled { get; private set; }
+        private bool Hidden { get; set; }
         
-        public void Init(Action<ICardInstance> onEnter = null, Action<ICardInstance> onClick = null)
+        public void Init(Action<ICardInstance, bool> onEnter = null, Action<ICardInstance> onClick = null)
         {
             _onEnter = onEnter;
             _onCLick = onClick;
@@ -46,11 +47,12 @@ namespace Ygo.Controller.Card
         {
             _card = cardInstance;
             Dirty = false;
-            view.SetHidden(hidden);
-            view.ToggleDefenseMode(false);
+            Hidden = hidden;
+            view.SetHidden(Hidden || (cardInstance?.IsFaceDown == true && cardMode != CardControllerMode.Zoom));
+            view.ToggleDefenseMode(cardInstance?.IsInDefense == true);
             view.Animate();
 
-            if (hidden)
+            if (Hidden || (cardInstance?.IsFaceDown == true && cardMode != CardControllerMode.Zoom))
                 return;
             
             view.SetName(_card.Data.Name);
@@ -186,7 +188,7 @@ namespace Ygo.Controller.Card
             if (cardMode == CardControllerMode.Zoom) 
                 return;
             
-            _onEnter?.Invoke(_card);
+            _onEnter?.Invoke(_card, Hidden);
         }
 
         public void OnExit()

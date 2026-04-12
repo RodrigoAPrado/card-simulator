@@ -4,23 +4,17 @@ using Ygo.Core.Actions.Abstract;
 
 namespace Ygo.Core.Actions
 {
-    public class NormalSetAction : IGameAction
+    public class NormalSetAction : BaseCardAction
     {
-        public string ActionName => "Normal Set";
-        private readonly Guid _playerId;
-        private readonly ICardInstance _card;
-        private readonly GameState _gameState;
+        public override string ActionName => "Normal Set";
 
-        public NormalSetAction(GameState gameState, Guid playerId, ICardInstance card)
+        public NormalSetAction(GameState gameState, Guid playerId, ICardInstance card) : base(gameState, playerId, card)
         {
-            _gameState = gameState;
-            _playerId = playerId;
-            _card = card;
         }
 
-        public void Execute()
+        public override void Execute()
         {
-            _gameState.CheckNormalSet(_playerId, _card);
+            GameState.CheckNormalSet(PlayerId, Card);
         }
     }
 }

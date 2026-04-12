@@ -6,10 +6,12 @@ namespace Ygo.Core.Actions
     public class DelegatedGameAction : IGameAction
     {
         public string ActionName { get; }
+
         private readonly Action _action;
 
         public DelegatedGameAction(string actionName, Action action)
         {
+            ActionName = actionName;
             _action = action;
         }
         

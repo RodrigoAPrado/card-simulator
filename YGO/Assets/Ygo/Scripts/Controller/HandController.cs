@@ -30,7 +30,7 @@ namespace Ygo.Controller
             GameEventBus eventBus, 
             TurnContext context,
             CardControllerRegistry registry,
-            Action<ICardInstance> onEnter
+            Action<ICardInstance, bool> onEnter
             )
         {
             foreach (var cardController in cardControllers)
@@ -40,6 +40,7 @@ namespace Ygo.Controller
             eventBus.Subscribe<CardDrawnEvent>(OnCardDrawn);
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<NormalSummonEvent>(OnNormalSummon);
+            eventBus.Subscribe<NormalSetEvent>(OnNormalSummon);
             _onClick = card =>
             {
                 commandBus.Send(new CardInHandClickCommand(_requesterId, _ownerId, card));

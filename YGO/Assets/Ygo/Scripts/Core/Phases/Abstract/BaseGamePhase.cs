@@ -32,6 +32,9 @@ namespace Ygo.Core.Phases.Abstract
         public virtual ActionQuery ClickedOnCardInHand(Guid requesterId, Guid ownerId, ICardInstance card)
             => new(ownerId,ActionState.NotImplemented);
 
+        public virtual ActionQuery ClickedOnCardOnField(Guid requesterId, Guid ownerId, ICardInstance card)
+            => new(ownerId,ActionState.NotImplemented);
+
         public virtual ActionQuery ClickedOnZone(Guid requesterId, Guid ownerId, IBoardZone zone)
             => new(ownerId,ActionState.NotImplemented);
 
@@ -50,6 +53,20 @@ namespace Ygo.Core.Phases.Abstract
         public virtual ActionResult CheckNormalSet(Guid playerId, ICardInstance card) 
             => new(playerId, ActionState.NotImplemented);
         public virtual ActionResult DoNormalSummon(Guid playerId, ICardInstance card, IBoardZone boardZone)
+            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult DoNormalSet(Guid playerId, ICardInstance card, IBoardZone boardZone)
+            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult DoFlipSummon(Guid playerId, ICardInstance card)
+            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult DoSwitchMonsterToAttack(Guid playerId, ICardInstance card)
+            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult DoSwitchMonsterToDefense(Guid playerId, ICardInstance card)
+            => new(playerId, ActionState.NotImplemented);
+        public virtual ActionResult CheckAttack(Guid playerId, ICardInstance card)
+            => new(playerId, ActionState.NotImplemented);
+        public ActionResult DeclareAttack(Guid playerId, ICardInstance attacker, ICardInstance defender)
+            => new(playerId, ActionState.NotImplemented);
+        public ActionResult DeclareDirectAttack(Guid playerId, ICardInstance attacker)
             => new(playerId, ActionState.NotImplemented);
     }
 }

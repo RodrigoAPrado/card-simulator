@@ -59,6 +59,11 @@ namespace Ygo.Core
             return ProcessActionQuery(CurrentPhase.ClickedOnCardInHand(requesterId, playerId, card));
         }
 
+        public CommandResponse ClickCardOnField(Guid requesterId, Guid playerId, ICardInstance card)
+        {
+            return ProcessActionQuery(CurrentPhase.ClickedOnCardOnField(requesterId, playerId, card));
+        }
+
         public CommandResponse ClickZone(Guid requesterId, Guid playerId, IBoardZone zone)
         {
             return ProcessActionQuery(CurrentPhase.ClickedOnZone(requesterId, playerId, zone));
@@ -92,13 +97,43 @@ namespace Ygo.Core
         
         public void CheckNormalSet(Guid playerId, ICardInstance card)
         {
-            throw new NotImplementedException();
+            CurrentPhase.CheckNormalSet(playerId, card);
         }
 
         public void DoNormalSummon(Guid playerId, ICardInstance card, IBoardZone boardZone)
         {
             CurrentPhase.DoNormalSummon(playerId, card, boardZone);
             _gameEventBus.Publish(new NormalSummonEvent(playerId, card, boardZone));
+        }
+
+        public void DoNormalSet(Guid playerId, ICardInstance card, IBoardZone boardZone)
+        {
+            CurrentPhase.DoNormalSet(playerId, card, boardZone);
+            _gameEventBus.Publish(new NormalSetEvent(playerId, card, boardZone));
+        }
+
+        public void DoFlipSummon(Guid playerId, ICardInstance card)
+        {
+            CurrentPhase.DoFlipSummon(playerId, card);
+            _gameEventBus.Publish(new FlipSummonEvent(playerId, card));
+        }
+        
+        public void DoSwitchMonsterToAttack(Guid playerId, ICardInstance card)
+        {
+            CurrentPhase.DoSwitchMonsterToAttack(playerId, card);
+            _gameEventBus.Publish(new SwitchMonsterToAttackEvent(playerId, card));
+        }
+        
+        public void DoSwitchMonsterToDefense(Guid playerId, ICardInstance card)
+        {
+            CurrentPhase.DoSwitchMonsterToDefense(playerId, card);
+            _gameEventBus.Publish(new SwitchMonsterToDefenseEvent(playerId, card));
+        }
+
+        public void CheckAttack(Guid playerId, ICardInstance card)
+        {
+            CurrentPhase.CheckAttack(playerId, card);
+            //TODO:
         }
 
         public void CancelAction()

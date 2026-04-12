@@ -8,6 +8,8 @@ namespace Ygo.View.Component
     {
         [field: SerializeField]
         private Image highlight;
+        [field: SerializeField]
+        private Color highlightStartColor;
 
         public void Init()
         {
@@ -29,6 +31,7 @@ namespace Ygo.View.Component
         {
             highlight.gameObject.SetActive(true);
             highlight.DOKill();
+            highlight.color = highlightStartColor;
 
             highlight.DOFade(0f, 0.6f)
                 .SetLoops(-1, LoopType.Yoyo)

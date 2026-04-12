@@ -64,6 +64,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.Component.HighlightView
   highlight: {fileID: 8082748208236346524}
+  highlightStartColor: {r: 0.3647059, g: 0.89411765, b: 1, a: 0.5254902}
 --- !u!1 &7988775948465592846
 GameObject:
   m_ObjectHideFlags: 0

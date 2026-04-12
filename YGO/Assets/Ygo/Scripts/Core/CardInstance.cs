@@ -37,7 +37,7 @@ namespace Ygo.Core
         public bool CanAttack => !_hasAttacked && IsValidMonster && !IsInDefense;
         public bool IsSummoned => _isSummoned;
         public bool IsFaceDown { get; private set; }
-        public bool CanChangePosition => _isSummoned && !_hasChangedPosition;
+        public bool CanChangePosition => (_isSummoned || _isSet) && !_hasChangedPosition;
         public bool IsInDefense => IsFaceDown || _isInDefense;
         public bool IsDestroyed => IsDestroyedByBattle || IsDestroyedByCardEffect;
         public bool IsDestroyedByBattle { get; private set; }
@@ -49,6 +49,7 @@ namespace Ygo.Core
         private bool _isInDefense;
         private bool _hasChangedPosition;
         private bool _isSummoned;
+        private bool _isSet;
         private bool _hasAttacked;
 
         public CardInstance(CardData data, Guid ownerId)
@@ -63,6 +64,7 @@ namespace Ygo.Core
         {
             Zone = zone;
             _isSummoned = true;
+            _isSet = false;
             _hasChangedPosition = true;
             _hasAttacked = false;
             IsFaceDown = false;
@@ -76,6 +78,7 @@ namespace Ygo.Core
         {
             Zone = zone;
             _isSummoned = false;
+            _isSet = true;
             _hasChangedPosition = true;
             _hasAttacked = false;
             IsFaceDown = true;
@@ -89,6 +92,7 @@ namespace Ygo.Core
         {
             Location = CardLocation.Hand;
             _isSummoned = false;
+            _isSet = false;
             _hasChangedPosition = false;
             _hasAttacked = false;
             IsFaceDown = false;
@@ -106,6 +110,7 @@ namespace Ygo.Core
         {
             Location = CardLocation.MainDeck;
             _isSummoned = false;
+            _isSet = false;
             _hasChangedPosition = false;
             _hasAttacked = false;
             IsFaceDown = false;
@@ -128,9 +133,24 @@ namespace Ygo.Core
                 throw new InvalidOperationException($"Cannot flip card because of FaceDown:{IsFaceDown} or Defense:{IsInDefense}");
             }
             _isSummoned = true;
+            _isSet = false;
             _hasChangedPosition = true;
             _hasAttacked = false;
             IsFaceDown = false;
+        }
+        
+        public void FlipSummon()
+        {
+            if (!_isInDefense || !IsFaceDown)
+            {
+                throw new InvalidOperationException($"Cannot flip card because of FaceDown:{IsFaceDown} or Defense:{IsInDefense}");
+            }
+            _isSummoned = true;
+            _isSet = false;
+            _hasChangedPosition = true;
+            _hasAttacked = false;
+            IsFaceDown = false;
+            _isInDefense = false;
         }
 
         public void PassTurn()
@@ -163,6 +183,7 @@ namespace Ygo.Core
             Location = CardLocation.Graveyard;
             Zone = null;
             _isSummoned = false;
+            _isSet = false;
             _hasChangedPosition = false;
             _hasAttacked = false;
             IsFaceDown = false;

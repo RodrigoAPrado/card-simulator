@@ -2,18 +2,17 @@
 
 namespace Ygo.Core.Actions
 {
-    public class CancelAction: IGameAction
+    public class CancelAction : BaseGameAction
     {
-        public string ActionName => "Cancel";
-        private readonly GameState _gameState;
+        public override string ActionName => "Cancel";
         
-        public CancelAction(GameState gameState)
+        public CancelAction(GameState gameState) : base(gameState)
         {
-            _gameState = gameState;
         }
-        public void Execute()
+        
+        public override void Execute()
         {
-            _gameState.CancelAction();
+            GameState.CancelAction();
         }
     }
 }

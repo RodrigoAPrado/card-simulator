@@ -47,6 +47,7 @@ namespace Ygo.Core
         {
             GameCommandBus.RegisterHandler<MainDeckClickCommand>(MainDeckClickHandler);
             GameCommandBus.RegisterHandler<CardInHandClickCommand>(CardInHandClickHandler);
+            GameCommandBus.RegisterHandler<CardOnFieldClickCommand>(CardOnFieldClickHandler);
             GameCommandBus.RegisterHandler<ActionExecutionCommand>(ActionExecutionHandler);
             GameCommandBus.RegisterHandler<ZoneClickCommand>(ZoneClickHandler);
             GameCommandBus.RegisterHandler<NextPhaseClickCommand>(NextPhaseClickHandler);
@@ -133,6 +134,21 @@ namespace Ygo.Core
             if (response.Fail)
             {
                 GameEventBus.Publish(new CommandDeniedEvent(CommandType.CardInHandClicked, response.ActionState));
+            }
+        }
+
+        private void CardOnFieldClickHandler(CardOnFieldClickCommand c)
+        {
+            if (_currentInteractionState != null)
+            {
+                _currentInteractionState.Handle(c);
+                return;
+            }
+            
+            var response = GameState.ClickCardOnField(c.RequesterId, c.OwnerId, c.Card);
+            if (response.Fail)
+            {
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.CardOnFieldClicked, response.ActionState));
             }
         }
 

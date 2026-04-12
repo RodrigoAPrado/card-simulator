@@ -4,23 +4,18 @@ using Ygo.Core.Actions.Abstract;
 
 namespace Ygo.Core.Actions
 {
-    public class NormalSummonAction : IGameAction
+    public class NormalSummonAction : BaseCardAction
     {
-        public string ActionName => "Normal Summon";
-        private readonly Guid _playerId;
-        private readonly ICardInstance _card;
-        private readonly GameState _gameState;
+        public override string ActionName => "Normal Summon";
 
-        public NormalSummonAction(GameState gameState, Guid playerId, ICardInstance card)
+        public NormalSummonAction(GameState gameState, Guid playerId, ICardInstance card) 
+            : base(gameState, playerId, card)
         {
-            _gameState = gameState;
-            _playerId = playerId;
-            _card = card;
         }
 
-        public void Execute()
+        public override void Execute()
         {
-            _gameState.CheckNormalSummon(_playerId, _card);
+            GameState.CheckNormalSummon(PlayerId, Card);
         }
     }
 }

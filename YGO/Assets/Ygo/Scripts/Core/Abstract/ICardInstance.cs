@@ -47,6 +47,7 @@ namespace Ygo.Core.Abstract
         void AddToMainDeck();
         void SetAttacked();
         void Flip();
+        void FlipSummon();
         void PassTurn();
         void ChangePosition(bool defense);
         void DestroyByBattle();

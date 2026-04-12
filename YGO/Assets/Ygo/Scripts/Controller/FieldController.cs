@@ -7,10 +7,12 @@ using Ygo.Controller.Card;
 using Ygo.Controller.Field;
 using Ygo.Core;
 using Ygo.Core.Abstract;
+using Ygo.Core.Actions;
 using Ygo.Core.Board;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Commands;
 using Ygo.Core.Events;
+using Ygo.Core.Events.Abstract;
 using Ygo.Core.Interaction.Abstract;
 
 namespace Ygo.Controller
@@ -35,12 +37,15 @@ namespace Ygo.Controller
             GameEventBus eventBus, 
             TurnContext context,
             CardControllerRegistry registry,
-            Action<ICardInstance> onEnter
+            Action<ICardInstance, bool> onEnter
             )
         {
             foreach (var cardController in frontRowCards)
             {
-                cardController.Init(onEnter, ClickCard);
+                cardController.Init(onEnter, card =>
+                {
+                    commandBus.Send(new CardOnFieldClickCommand(_requesterId, _ownerId, card));
+                });
             }
 
             foreach (var zoneController in frontRowZones)
@@ -53,6 +58,10 @@ namespace Ygo.Controller
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<InteractionStateSetEvent>(OnInteractionStateSet);
             eventBus.Subscribe<NormalSummonEvent>(OnNormalSummon);
+            eventBus.Subscribe<NormalSetEvent>(OnNormalSummon);
+            eventBus.Subscribe<FlipSummonEvent>(OnCardSwitchedPosition);
+            eventBus.Subscribe<SwitchMonsterToAttackEvent>(OnCardSwitchedPosition);
+            eventBus.Subscribe<SwitchMonsterToDefenseEvent>(OnCardSwitchedPosition);
             _context = context;
             _registry = registry;
         }
@@ -71,11 +80,6 @@ namespace Ygo.Controller
             if(player == null)
                 throw new InvalidOperationException("Player not found");
             _boardHandler = player.BoardHandler;
-        }
-        
-        private void ClickCard(ICardInstance card)
-        {
-            Debug.Log("clicked card on field");
         }
 
         private void OnInteractionStateSet(InteractionStateSetEvent e)
@@ -99,6 +103,11 @@ namespace Ygo.Controller
             {
                 zone.ToggleHighlight(false);
             }
+            UpdateBoard();
+        }
+
+        private void OnCardSwitchedPosition(IGameEvent e)
+        {
             UpdateBoard();
         }
 

@@ -9,6 +9,7 @@ namespace Ygo.Core.Phases.Abstract
     {
         ActionQuery ClickedOnMainDeck(Guid requesterId, Guid ownerId);
         ActionQuery ClickedOnCardInHand(Guid requesterId, Guid ownerId, ICardInstance card);
+        ActionQuery ClickedOnCardOnField(Guid requesterId, Guid ownerId, ICardInstance card);
         ActionQuery ClickedOnZone(Guid requesterId, Guid ownerId, IBoardZone zone);
         ActionQuery ClickedOnNextPhase(Guid requesterId);
     }

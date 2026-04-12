@@ -99,9 +99,9 @@ namespace Ygo.Controller
             _application.Init();
         }
 
-        private void UpdateZoomCard(ICardInstance card)
+        private void UpdateZoomCard(ICardInstance card, bool hidden)
         {
-            zoomCard.UpdateCard(card);
+            zoomCard.UpdateCard(card, hidden);
         }
 
         private void OnPlayerInfoUpdate(PlayerInfoUpdateEvent e)
