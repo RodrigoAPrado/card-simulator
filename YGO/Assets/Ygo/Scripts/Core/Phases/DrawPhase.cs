@@ -22,12 +22,12 @@ namespace Ygo.Core.Phases
 
         public override void Init()
         {
-            ChangeStep(GameStep.WaitingDraw);
+            ChangeStep(PhaseStep.WaitingDraw);
         }
 
         public override ActionQuery ClickedOnMainDeck(Guid requesterId, Guid ownerId)
         {
-            if (CurrentStep != GameStep.WaitingDraw)
+            if (CurrentStep != PhaseStep.WaitingDraw)
                 return new ActionQuery(requesterId, ownerId, ActionState.IncorrectStep);
             if (ownerId != Context.CurrentTurnPlayer.Id)
                 return new ActionQuery(requesterId, ownerId, ActionState.IncorrectPlayer);
@@ -41,9 +41,9 @@ namespace Ygo.Core.Phases
                 );
         }
         
-        public override ActionResult DrawCard(Guid ownerId)
+        public override ActionResult DrawForTurn(Guid ownerId)
         {
-            if (CurrentStep != GameStep.WaitingDraw)
+            if (CurrentStep != PhaseStep.WaitingDraw)
                 return new ActionResult(ownerId, ActionState.IncorrectStep);
             if (ownerId != Context.CurrentTurnPlayer.Id)
                 return new ActionResult(ownerId, ActionState.IncorrectPlayer);
@@ -52,7 +52,7 @@ namespace Ygo.Core.Phases
 
             if (!result)
                 return new ActionResult(ownerId, ActionState.CannotDrawFromDeck);
-            ChangeStep(GameStep.ProceedToNextPhase);
+            ChangeStep(PhaseStep.ProceedToNextPhase);
             return new ActionResult(ownerId, ActionState.Success);
         }
     }

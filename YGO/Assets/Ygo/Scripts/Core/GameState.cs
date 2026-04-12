@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ygo.Core.Abstract;
 using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Board.Abstract;
@@ -16,6 +17,7 @@ namespace Ygo.Core
     public class GameState
     {
         public TurnContext TurnContext { get; private set; }
+        public BattleState BattleState { get; private set; }
         public IGamePhase CurrentPhase => _phases[_currentPhaseIndex];
         private List<IGamePhase> _phases;
         private int _currentPhaseIndex;
@@ -81,7 +83,7 @@ namespace Ygo.Core
 
         public void DrawFromDeck(Guid ownerId)
         {
-            var result = CurrentPhase.DrawCard(ownerId);
+            var result = CurrentPhase.DrawForTurn(ownerId);
             if (result.ActionState != ActionState.Success)
             {
                 throw new InvalidOperationException("Invalid action!");
@@ -117,6 +119,12 @@ namespace Ygo.Core
             CurrentPhase.DoFlipSummon(ownerId, card);
             _gameEventBus.Publish(new FlipSummonEvent(ownerId, card));
         }
+
+        public void DoFlip(Guid ownerId, ICardInstance card)
+        {
+            CurrentPhase.DoTryFlip(ownerId, card);
+            _gameEventBus.Publish(new FlipEvent(ownerId, card));
+        }
         
         public void DoSwitchMonsterToAttack(Guid ownerId, ICardInstance card)
         {
@@ -137,12 +145,14 @@ namespace Ygo.Core
 
         public void DeclareAttack(Guid ownerId, ICardInstance attacker, ICardInstance defender)
         {
-            
+            CurrentPhase.DeclareAttack(ownerId, attacker, defender);
+            _gameEventBus.Publish(new AttackDeclarationEvent(ownerId, attacker, defender));
         }
 
         public void DeclareDirectAttack(Guid ownerId, ICardInstance attacker)
         {
-            
+            CurrentPhase.DeclareDirectAttack(ownerId, attacker);
+            _gameEventBus.Publish(new DirectAttackDeclarationEvent(ownerId, attacker));
         }
 
         public void CancelAction()
@@ -166,11 +176,43 @@ namespace Ygo.Core
         {
             _gameHandler.ClearInteractionState();
         }
+
+        public void BattleStateChanged()
+        {
+            _gameEventBus.Publish(new BattleStateProgressEvent(BattleState.Attacker, BattleState.Defender, BattleState.CurrentStep));
+            ResolveGameStep();
+        }
+
+        public void DealBattleDamage(Guid playerId, int damage)
+        {
+            var player = TurnContext.Players.FirstOrDefault(x => x.Id == playerId);
+            player?.ChangeLifePoints(-damage);
+            _gameEventBus.Publish(new PlayerTakenBattleDamageEvent(playerId, damage));
+        }
+
+        public void DestroyMonsterByBattle(Guid playerId, ICardInstance card)
+        {
+            card.DestroyByBattle();
+            _gameEventBus.Publish(new CardDestroyedByBattleEvent(playerId, card));
+        }
         
         private void ResolveGameStep()
         {
+            HandleEffectPriority();
             HandlePhaseProgression();
-            HandleAdvancePhaseEffectPriority();
+        }
+
+        public void SetBattleState(BattleState battleState)
+        {
+            if (BattleState != null)
+                throw new InvalidOperationException("BattleState should be null at this point.");
+            BattleState = battleState;
+        }
+        public void ClearBattleState()
+        {
+            if (BattleState == null)
+                throw new InvalidOperationException("BattleState should not be null at this point.");
+            BattleState = null;
         }
 
         private CommandResponse ProcessActionQuery(ActionQuery query)
@@ -197,11 +239,18 @@ namespace Ygo.Core
 
         private void HandlePhaseProgression()
         {
-            if(CurrentPhase.CurrentStep == GameStep.ProceedToNextPhase)
+            if(CurrentPhase.CurrentStep == PhaseStep.ProceedToNextPhase)
                 AdvancePhase();
+            if (CurrentPhase.CurrentStep == PhaseStep.Battle)
+                HandleBattleProgression();
+        }
+
+        private void HandleBattleProgression()
+        {
+            BattleState.ProceedBattleState();
         }
         
-        private void HandleAdvancePhaseEffectPriority()
+        private void HandleEffectPriority()
         {
         }
 
@@ -218,7 +267,7 @@ namespace Ygo.Core
                 _currentPhaseIndex++;
                 CurrentPhase.Init();
                 _gameEventBus.Publish(new PhaseBeginEvent(CurrentPhase.Phase, TurnContext.CurrentTurnPlayer.Id));
-                if (CurrentPhase.CurrentStep != GameStep.ProceedToNextPhase)
+                if (CurrentPhase.CurrentStep != PhaseStep.ProceedToNextPhase)
                     break;
             }
         }

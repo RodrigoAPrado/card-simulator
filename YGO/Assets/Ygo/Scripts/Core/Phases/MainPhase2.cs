@@ -16,7 +16,7 @@ namespace Ygo.Core.Phases
         {
             if (Context.CurrentTurn <= 1)
             {
-                ChangeStep(GameStep.ProceedToNextPhase);
+                ChangeStep(PhaseStep.ProceedToNextPhase);
                 return;
             }
             base.Init();

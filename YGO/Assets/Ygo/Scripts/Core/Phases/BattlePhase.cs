@@ -26,14 +26,17 @@ namespace Ygo.Core.Phases
         {
             if (Context.CurrentTurn <= 1)
             {
-                ChangeStep(GameStep.ProceedToNextPhase);
+                ChangeStep(PhaseStep.ProceedToNextPhase);
                 return;
             }
-            ChangeStep(GameStep.Battle);
+            ChangeStep(PhaseStep.Open);
         }
 
         public override ActionQuery ClickedOnCardOnField(Guid requesterId, Guid ownerId, ICardInstance card)
         {
+            if (CurrentStep != PhaseStep.Open)
+                return new ActionQuery(requesterId, ownerId, ActionState.IncorrectStep);
+            
             if (requesterId != Context.CurrentTurnPlayer.Id || ownerId != Context.CurrentTurnPlayer.Id)
                 return new ActionQuery(requesterId, ownerId, ActionState.IncorrectPlayer);
             
@@ -74,9 +77,9 @@ namespace Ygo.Core.Phases
             return new ActionQuery(requesterId, ownerId, actionList, new CardInteractionContext(ownerId, card));
         }
 
-        public override ActionResult CheckAttack(Guid playerId, ICardInstance attacker)
+        public override ActionResult CheckAttack(Guid ownerId, ICardInstance attacker)
         {
-            if (playerId != Context.CurrentTurnPlayer.Id)
+            if (ownerId != Context.CurrentTurnPlayer.Id)
                 throw new InvalidOperationException("Player has not been on the current turn");
             
             if (attacker.Location 
@@ -101,27 +104,44 @@ namespace Ygo.Core.Phases
 
             if (availableCards.Count <= 0)
             {
-                GameState.DeclareDirectAttack(playerId, attacker);
+                GameState.DeclareDirectAttack(ownerId, attacker);
             }
             else
             {
                 GameState.SetInteractionState(Context.OpponentPlayer.Id, 
-                    new AttackTargetSelectState(playerId, 
+                    new AttackTargetSelectState(ownerId, 
                         GameState, 
                         availableCards, 
                         attacker));
             }
             
-            return new ActionResult(playerId, ActionState.Success);
+            return new ActionResult(ownerId, ActionState.Success);
         }
-        
+
+
+        public override ActionResult DeclareAttack(Guid ownerId, ICardInstance attacker, ICardInstance defender)
+        {
+            GameState.SetBattleState(new BattleState(GameState, ownerId, Context.OpponentPlayer.Id, attacker, defender));
+            ChangeStep(PhaseStep.Battle);
+            return new ActionResult(ownerId, ActionState.Success);
+        }
+
+        public override ActionResult DoTryFlip(Guid ownerId, ICardInstance card)
+        {
+            if (!card.IsFaceDown) 
+                throw new InvalidOperationException("Card is already face-up");
+            
+            card.Flip();
+            return new ActionResult(ownerId, ActionState.Success);
+        }
+
         public override ActionQuery ClickedOnNextPhase(Guid requesterId)
         {
             if(requesterId != Context.CurrentTurnPlayer.Id)
                 return new ActionQuery(requesterId,Guid.Empty, ActionState.IncorrectPlayer);
-            if(CurrentStep != GameStep.Battle)
+            if(CurrentStep != PhaseStep.Open)
                 return new ActionQuery(requesterId,Guid.Empty, ActionState.IncorrectStep);
-            ChangeStep(GameStep.ProceedToNextPhase);
+            ChangeStep(PhaseStep.ProceedToNextPhase);
             return new ActionQuery(
                 requesterId,Guid.Empty,
                 new List<IGameAction>()

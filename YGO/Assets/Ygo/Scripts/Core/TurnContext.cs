@@ -11,7 +11,7 @@ namespace Ygo.Core
         public PlayerContext CurrentTurnPlayer => Players[_currentTurnPlayerIndex];
         public PlayerContext PointOfViewPlayer { get; private set; }
         public PlayerContext OpponentPlayer => Players.FirstOrDefault(x => x != PointOfViewPlayer);
-        public BattleContext BattleContext { get; private set; }
+        public BattleState BattleState { get; private set; }
         
         public int CurrentTurn => _currentTurn;
         private int _currentTurn;
@@ -106,12 +106,12 @@ namespace Ygo.Core
 
         public void SetBattleContext(ICardInstance attacker, ICardInstance target)
         {
-            BattleContext = new BattleContext(attacker, target);
+            BattleState = new BattleState(attacker, target);
         }
 
         public void ClearBattleContext()
         {
-            BattleContext = null;
+            BattleState = null;
         }
     }
 }

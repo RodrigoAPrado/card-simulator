@@ -14,10 +14,10 @@ namespace Ygo.Core.Response
             Target = target;
         }
 
-        public BattleResponse(BattleContext battleContext)
+        public BattleResponse(BattleState battleState)
         {
-            Attacker = battleContext.Attacker;
-            Target = battleContext.Target;
+            Attacker = battleState.Attacker;
+            Target = battleState.Defender;
         }
     }
 }

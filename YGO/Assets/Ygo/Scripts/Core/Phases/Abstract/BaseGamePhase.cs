@@ -15,10 +15,10 @@ namespace Ygo.Core.Phases.Abstract
         public abstract GamePhase Phase { get; }
         public IGamePhase NextPhase { get; }
         public bool HasNextPhase => NextPhase != null;
-        public GameStep CurrentStep => _currentStep;
+        public PhaseStep CurrentStep => _currentStep;
         protected TurnContext Context { get; }
         protected GameState GameState { get; }
-        private GameStep _currentStep;
+        private PhaseStep _currentStep;
         protected BaseGamePhase(TurnContext context, GameState gameState)
         {
             Context = context;
@@ -41,12 +41,12 @@ namespace Ygo.Core.Phases.Abstract
         public virtual ActionQuery ClickedOnNextPhase(Guid requesterId)
             => new(requesterId, requesterId, ActionState.NotImplemented);
 
-        protected void ChangeStep(GameStep step)
+        protected void ChangeStep(PhaseStep step)
         {
             _currentStep = step;
         }
 
-        public virtual ActionResult DrawCard(Guid ownerId) 
+        public virtual ActionResult DrawForTurn(Guid ownerId) 
             => new(ownerId, ActionState.NotImplemented);
         public virtual ActionResult CheckNormalSummon(Guid ownerId, ICardInstance card) 
             => new(ownerId, ActionState.NotImplemented);
@@ -58,15 +58,17 @@ namespace Ygo.Core.Phases.Abstract
             => new(ownerId, ActionState.NotImplemented);
         public virtual ActionResult DoFlipSummon(Guid ownerId, ICardInstance card)
             => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult DoTryFlip(Guid ownerId, ICardInstance card)
+            => new(ownerId, ActionState.NotImplemented);
         public virtual ActionResult DoSwitchMonsterToAttack(Guid ownerId, ICardInstance card)
             => new(ownerId, ActionState.NotImplemented);
         public virtual ActionResult DoSwitchMonsterToDefense(Guid ownerId, ICardInstance card)
             => new(ownerId, ActionState.NotImplemented);
-        public virtual ActionResult CheckAttack(Guid targetId, ICardInstance attacker)
-            => new(targetId, ActionState.NotImplemented);
-        public ActionResult DeclareAttack(Guid targetId, ICardInstance attacker, ICardInstance defender)
-            => new(targetId, ActionState.NotImplemented);
-        public ActionResult DeclareDirectAttack(Guid targetId, ICardInstance attacker)
-            => new(targetId, ActionState.NotImplemented);
+        public virtual ActionResult CheckAttack(Guid ownerId, ICardInstance attacker)
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult DeclareAttack(Guid ownerId, ICardInstance attacker, ICardInstance defender)
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult DeclareDirectAttack(Guid ownerId, ICardInstance attacker)
+            => new(ownerId, ActionState.NotImplemented);
     }
 }

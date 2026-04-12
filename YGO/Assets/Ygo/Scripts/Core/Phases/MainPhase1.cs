@@ -25,12 +25,12 @@ namespace Ygo.Core.Phases
 
         public override void Init()
         {
-            ChangeStep(GameStep.Open);
+            ChangeStep(PhaseStep.Open);
         }
 
         public override ActionQuery ClickedOnCardInHand(Guid requesterId, Guid ownerId, ICardInstance card)
         {
-            if (CurrentStep == GameStep.Open)
+            if (CurrentStep == PhaseStep.Open)
             {
                 return OnClickedOnCardInHandOnGameStateOpen(requesterId, ownerId, card);
             }
@@ -79,7 +79,7 @@ namespace Ygo.Core.Phases
         
         public override ActionQuery ClickedOnCardOnField(Guid requesterId, Guid ownerId, ICardInstance card)
         {
-            if (CurrentStep == GameStep.Open)
+            if (CurrentStep == PhaseStep.Open)
             {
                 return OnClickedOnCardOnFieldOnGameStateOpen(requesterId, ownerId, card);
             }
@@ -151,9 +151,9 @@ namespace Ygo.Core.Phases
         {
             if(requesterId != Context.CurrentTurnPlayer.Id)
                 return new ActionQuery(requesterId, Guid.Empty, ActionState.IncorrectPlayer);
-            if(CurrentStep != GameStep.Open)
+            if(CurrentStep != PhaseStep.Open)
                 return new ActionQuery(requesterId, Guid.Empty, ActionState.IncorrectStep);
-            ChangeStep(GameStep.ProceedToNextPhase);
+            ChangeStep(PhaseStep.ProceedToNextPhase);
             return new ActionQuery(
                 requesterId,
                 Guid.Empty, 

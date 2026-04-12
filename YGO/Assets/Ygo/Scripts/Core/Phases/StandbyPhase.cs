@@ -14,7 +14,7 @@ namespace Ygo.Core.Phases
 
         public override void Init()
         {
-            ChangeStep(GameStep.ProceedToNextPhase);
+            ChangeStep(PhaseStep.ProceedToNextPhase);
         }
     }
 }

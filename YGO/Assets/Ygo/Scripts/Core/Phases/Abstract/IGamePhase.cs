@@ -10,7 +10,7 @@ namespace Ygo.Core.Phases.Abstract
     {
         string Name { get; }
         GamePhase Phase { get; }
-        GameStep CurrentStep { get; }
+        PhaseStep CurrentStep { get; }
         void Init();
         
         /*
