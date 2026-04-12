@@ -25,18 +25,18 @@ namespace Ygo.Core.Phases
             ChangeStep(GameStep.WaitingDraw);
         }
 
-        public override ActionQuery ClickedOnMainDeck(Guid playerId)
+        public override ActionQuery ClickedOnMainDeck(Guid requesterId, Guid ownerId)
         {
             if (CurrentStep != GameStep.WaitingDraw)
-                return new ActionQuery(playerId, ActionState.IncorrectStep);
-            if (playerId != Context.CurrentTurnPlayer.Id)
-                return new ActionQuery(playerId, ActionState.IncorrectPlayer);
+                return new ActionQuery(ownerId, ActionState.IncorrectStep);
+            if (ownerId != Context.CurrentTurnPlayer.Id)
+                return new ActionQuery(ownerId, ActionState.IncorrectPlayer);
                 
-            var drawAction = new DrawAction(GameState, playerId);
+            var drawAction = new DrawAction(GameState, ownerId);
             return new ActionQuery(
-                playerId, 
+                ownerId, 
                 new List<IGameAction>() { drawAction }, 
-                new MainDeckInteractionContext(playerId)
+                new MainDeckInteractionContext(ownerId)
                 );
         }
         

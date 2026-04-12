@@ -26,13 +26,14 @@ namespace Ygo.Controller
         [field: SerializeField]
         private Transform backRowPosition;
 
-        
+        private Guid _requesterId;
         private CardControllerRegistry _registry;
         private GameCommandBus _commandBus;
         
         public void Init(GameCommandBus commandBus, GameEventBus eventBus, CardControllerRegistry registry)
         {
             eventBus.Subscribe<AvailableActionsEvent>(OnAvailableActions);
+            eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             _registry = registry;
             _commandBus = commandBus;
             HideAll();
@@ -44,6 +45,11 @@ namespace Ygo.Controller
             {
                 button.Disable(true);
             }
+        }
+
+        private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
+        {
+            _requesterId = e.PointOfViewId;
         }
 
         private void OnAvailableActions(AvailableActionsEvent e)
@@ -104,10 +110,10 @@ namespace Ygo.Controller
             throw new InvalidOperationException("Invalid context");
         }
 
-        private void OnClick(Guid playerId, IGameAction gameAction)
+        private void OnClick(Guid ownerId, IGameAction gameAction)
         {
             HideAll();
-            _commandBus.Send(new ActionExecutionCommand(playerId, gameAction));
+            _commandBus.Send(new ActionExecutionCommand(_requesterId, ownerId, gameAction));
         }
     }
 }

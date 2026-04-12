@@ -23,7 +23,9 @@ namespace Ygo.Controller
         private CardController[] frontRowCards;
         [field: SerializeField] 
         private PointOfView pointOfView;
-        private Guid PlayerId { get; set; }
+
+        private Guid _requesterId;
+        private Guid _ownerId;
         private TurnContext _context;
         private BoardHandler _boardHandler;
         private CardControllerRegistry _registry;
@@ -45,7 +47,7 @@ namespace Ygo.Controller
             {
                 zoneController.Init(zone =>
                 {
-                    commandBus.Send(new ZoneClickCommand(PlayerId, zone));
+                    commandBus.Send(new ZoneClickCommand(_requesterId, _ownerId, zone));
                 });
             }
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
@@ -57,21 +59,15 @@ namespace Ygo.Controller
         
         private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
         {
-            if (pointOfView == PointOfView.Top)
-            {
-                PlayerId = e.OpponentId;
-                SetBoardHandler();
-                UpdateBoard();
-                return;
-            }
-            PlayerId = e.PointOfViewId;
+            _requesterId = e.PointOfViewId;
+            _ownerId = pointOfView == PointOfView.Top ? e.OpponentId : e.PointOfViewId;
             SetBoardHandler();
             UpdateBoard();
         }
 
         private void SetBoardHandler()
         {
-            var player = _context.Players.FirstOrDefault(x => x.Id == PlayerId);
+            var player = _context.Players.FirstOrDefault(x => x.Id == _ownerId);
             if(player == null)
                 throw new InvalidOperationException("Player not found");
             _boardHandler = player.BoardHandler;
@@ -84,7 +80,7 @@ namespace Ygo.Controller
 
         private void OnInteractionStateSet(InteractionStateSetEvent e)
         {
-            if (e.PlayerId != PlayerId)
+            if (e.PlayerId != _ownerId)
                 return;
             if (e.InteractionState is not ZoneSelectionState state)
                 return;
@@ -97,7 +93,7 @@ namespace Ygo.Controller
 
         private void OnNormalSummon(NormalSummonEvent e)
         {
-            if (e.PlayerId != PlayerId)
+            if (e.PlayerId != _ownerId)
                 return;
             foreach (var zone in frontRowZones)
             {
@@ -115,10 +111,10 @@ namespace Ygo.Controller
             
             foreach (var zone in frontRowZones)
             {
-                zone.SetBoardZone(_boardHandler.MonsterZones.FirstOrDefault(x => x.Position == zone.Position));
+                zone.SetBoardZone(_boardHandler.MonsterZones[(int)zone.Position-2]);
                 if (zone.Zone.IsFree)
                     continue;
-                var card = frontRowCards.FirstOrDefault(x => x.ZonePosition == zone.Position);
+                var card = frontRowCards[(int)zone.Position-2];
                 card?.Enable();
                 card?.UpdateCard(zone.Zone.CardInZone);
                 if (card != null)

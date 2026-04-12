@@ -26,11 +26,17 @@ namespace Ygo.Core.Phases.Abstract
         }
 
         public abstract void Init();
-        public virtual ActionQuery ClickedOnMainDeck(Guid playerId) 
-            => new(playerId,ActionState.NotImplemented);
+        public virtual ActionQuery ClickedOnMainDeck(Guid requesterId, Guid ownerId) 
+            => new(ownerId,ActionState.NotImplemented);
 
-        public virtual ActionQuery ClickedOnCardInHand(Guid playerId, ICardInstance card)
-            => new(playerId,ActionState.NotImplemented);
+        public virtual ActionQuery ClickedOnCardInHand(Guid requesterId, Guid ownerId, ICardInstance card)
+            => new(ownerId,ActionState.NotImplemented);
+
+        public virtual ActionQuery ClickedOnZone(Guid requesterId, Guid ownerId, IBoardZone zone)
+            => new(ownerId,ActionState.NotImplemented);
+
+        public virtual ActionQuery ClickedOnNextPhase(Guid requesterId)
+            => new(requesterId,ActionState.NotImplemented);
 
         protected void ChangeStep(GameStep step)
         {

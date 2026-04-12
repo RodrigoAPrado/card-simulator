@@ -5,11 +5,14 @@ namespace Ygo.Core.Commands
 {
     public class MainDeckClickCommand : IGameCommand
     {
-        public Guid PlayerId { get; }
+
+        public Guid RequesterId { get; }
+        public Guid OwnerId { get; }
         
-        public MainDeckClickCommand(Guid playerId)
+        public MainDeckClickCommand(Guid requesterId, Guid ownerId)
         {
-            PlayerId = playerId;
+            RequesterId = requesterId;
+            OwnerId = ownerId;
         }
     }
 }

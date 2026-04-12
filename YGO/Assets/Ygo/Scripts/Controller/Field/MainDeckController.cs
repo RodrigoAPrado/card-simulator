@@ -23,8 +23,9 @@ namespace Ygo.Controller.Field
         private TextViewUI textView;
         [field: SerializeField] 
         private PointOfView pointOfView;
-        private Guid PlayerId { get; set; }
 
+        private Guid _requesterId;
+        private Guid _ownerId;
         private Action _onClick;
         private TurnContext _context;
         private CardsHandler _cardsHandler;
@@ -36,29 +37,30 @@ namespace Ygo.Controller.Field
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<CardDrawnEvent>(OnCardDrawn);
             eventBus.Subscribe<PhaseBeginEvent>(OnPhaseBegin);
-            
             _onClick = () =>
             {
-                commandBus.Send(new MainDeckClickCommand(PlayerId));
+                commandBus.Send(new MainDeckClickCommand(_requesterId, _ownerId));
             };
             _context = context;
         }
 
         private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
         {
+            _requesterId = e.PointOfViewId;
             if (pointOfView == PointOfView.Top)
             {
-                PlayerId = e.OpponentId;
+                _ownerId = e.OpponentId;
                 SetCardsHandler();
                 return;
             }
-            PlayerId = e.PointOfViewId;
+            _ownerId = e.PointOfViewId;
             SetCardsHandler();
+            textView.SetText(_cardsHandler.MainDeck.Count.ToString());
         }
         
         private void SetCardsHandler()
         {
-            var player = _context.Players.FirstOrDefault(x => x.Id == PlayerId);
+            var player = _context.Players.FirstOrDefault(x => x.Id == _ownerId);
             if(player == null)
                 throw new InvalidOperationException("Player not found");
             _cardsHandler = player.CardsHandler;
@@ -66,7 +68,7 @@ namespace Ygo.Controller.Field
         
         private void OnCardDrawn(CardDrawnEvent e)
         {
-            if (e.PlayerId != PlayerId)
+            if (e.PlayerId != _ownerId)
                 return;
             textView.SetText(_cardsHandler.MainDeck.Count.ToString());
             highlightController.Disable();
@@ -74,7 +76,7 @@ namespace Ygo.Controller.Field
 
         private void OnPhaseBegin(PhaseBeginEvent e)
         {
-            if (e.TurnPlayer != PlayerId)
+            if (e.TurnPlayer != _ownerId)
                 return;
 
             if (e.Phase != GamePhase.DrawPhase)

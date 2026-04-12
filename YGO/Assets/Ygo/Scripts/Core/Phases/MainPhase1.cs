@@ -28,16 +28,16 @@ namespace Ygo.Core.Phases
             ChangeStep(GameStep.Open);
         }
 
-        public override ActionQuery ClickedOnCardInHand(Guid playerId, ICardInstance card)
+        public override ActionQuery ClickedOnCardInHand(Guid requesterId, Guid ownerId, ICardInstance card)
         {
             if (CurrentStep == GameStep.Open)
             {
-                return OnClickedOnCardInHandOnGameStateOpen(playerId, card);
+                return OnClickedOnCardInHandOnGameStateOpen(requesterId, ownerId, card);
             }
-            return new ActionQuery(playerId, ActionState.NotImplemented);
+            return new ActionQuery(ownerId, ActionState.NotImplemented);
         }
 
-        private ActionQuery OnClickedOnCardInHandOnGameStateOpen(Guid playerId, ICardInstance card)
+        private ActionQuery OnClickedOnCardInHandOnGameStateOpen(Guid requesterId, Guid playerId, ICardInstance card)
         {
             if(Context.CurrentTurnPlayer.Id != playerId)
                 return new ActionQuery(playerId, ActionState.IncorrectPlayer);
@@ -47,7 +47,7 @@ namespace Ygo.Core.Phases
             switch (card.Data.CardType)
             {
                 case CardType.Monster:
-                    return OnClickedOnMonsterInHandOnGameStateOpen(playerId, card);
+                    return OnClickedOnMonsterInHandOnGameStateOpen(requesterId, playerId, card);
                 case CardType.Spell:
                     throw new NotImplementedException();
                 case CardType.Trap:
@@ -57,7 +57,7 @@ namespace Ygo.Core.Phases
             }
         }
 
-        private ActionQuery OnClickedOnMonsterInHandOnGameStateOpen(Guid playerId, ICardInstance card)
+        private ActionQuery OnClickedOnMonsterInHandOnGameStateOpen(Guid requesterId, Guid playerId, ICardInstance card)
         {
             var actionList = new List<IGameAction>();
 
@@ -73,6 +73,23 @@ namespace Ygo.Core.Phases
             actionList.Add(new CancelAction(GameState));
 
             return new ActionQuery(playerId, actionList, new CardInteractionContext(playerId, card));
+        }
+
+        public override ActionQuery ClickedOnNextPhase(Guid requesterId)
+        {
+            if(requesterId != Context.CurrentTurnPlayer.Id)
+                return new ActionQuery(requesterId, ActionState.IncorrectPlayer);
+            if(CurrentStep != GameStep.Open)
+                return new ActionQuery(requesterId, ActionState.IncorrectStep);
+            ChangeStep(GameStep.ProceedToNextPhase);
+            return new ActionQuery(
+                requesterId,
+                new List<IGameAction>()
+                {
+                    new EmptyAction()
+                }, 
+                new NoContext(requesterId)
+                );
         }
         
         public override ActionResult CheckNormalSummon(Guid playerId, ICardInstance card)

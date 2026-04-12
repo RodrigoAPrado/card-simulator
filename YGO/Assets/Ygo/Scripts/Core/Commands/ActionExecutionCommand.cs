@@ -6,11 +6,14 @@ namespace Ygo.Core.Commands
 {
     public class ActionExecutionCommand: IGameCommand
     {
-        public Guid PlayerId { get; }
+
+        public Guid RequesterId { get; }
+        public Guid OwnerId { get; }
         public IGameAction Action { get; }
-        public ActionExecutionCommand(Guid playerId, IGameAction action)
+        public ActionExecutionCommand(Guid requesterId, Guid playerId, IGameAction action)
         {
-            PlayerId = playerId;
+            RequesterId = requesterId;
+            OwnerId = playerId;
             Action = action;
         }
     }

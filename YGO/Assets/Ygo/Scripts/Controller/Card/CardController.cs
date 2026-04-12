@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using UnityEditor;
 using UnityEngine;
 using Ygo.Controller.Component;
 using Ygo.Core.Abstract;
@@ -114,7 +113,7 @@ namespace Ygo.Controller.Card
                 case CardType.Monster:
                     if (!_card.IsValidMonster)
                         throw new InvalidOperationException($"{nameof(_card.Data.MonsterData)} cannot be null.");
-                    switch (_card.Data.MonsterData.Attribute)
+                    switch (_card.Data.MonsterData?.Attribute)
                     {
                         case MonsterAttribute.Dark:
                             return CardIconType.Dark;
@@ -130,7 +129,6 @@ namespace Ygo.Controller.Card
                             return CardIconType.Wind;
                         case MonsterAttribute.Divine:
                             return CardIconType.Divine;
-                        case MonsterAttribute.Unknown:
                         default:
                             throw new ArgumentOutOfRangeException();
                     }

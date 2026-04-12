@@ -49,14 +49,24 @@ namespace Ygo.Core
             _currentPhaseIndex = 0;
         }
 
-        public CommandResponse ClickedOnMainDeck(Guid playerId)
+        public CommandResponse ClickedOnMainDeck(Guid requesterId, Guid ownerId)
         {
-            return ProcessActionQuery(CurrentPhase.ClickedOnMainDeck(playerId));
+            return ProcessActionQuery(CurrentPhase.ClickedOnMainDeck(requesterId, ownerId));
         }
 
-        public CommandResponse ClickCardInHand(Guid playerId, ICardInstance card)
+        public CommandResponse ClickCardInHand(Guid requesterId, Guid playerId, ICardInstance card)
         {
-            return ProcessActionQuery(CurrentPhase.ClickedOnCardInHand(playerId, card));
+            return ProcessActionQuery(CurrentPhase.ClickedOnCardInHand(requesterId, playerId, card));
+        }
+
+        public CommandResponse ClickZone(Guid requesterId, Guid playerId, IBoardZone zone)
+        {
+            return ProcessActionQuery(CurrentPhase.ClickedOnZone(requesterId, playerId, zone));
+        }
+        
+        public CommandResponse ClickNextPhase(Guid requesterId)
+        {
+            return ProcessActionQuery(CurrentPhase.ClickedOnNextPhase(requesterId));
         }
 
         public void InitGame()
@@ -172,6 +182,7 @@ namespace Ygo.Core
         private void TurnChange()
         {
             TurnContext.AdvanceTurn();
+            _gameEventBus.Publish(new PointOfViewUpdateEvent(TurnContext.PointOfViewPlayer.Id, TurnContext.OpponentPlayer.Id));
             _gameEventBus.Publish(new TurnChangeEvent(TurnContext.CurrentTurn, TurnContext.CurrentTurnPlayer.Id));
             StartTurn();
         }

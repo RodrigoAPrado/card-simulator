@@ -6,12 +6,15 @@ namespace Ygo.Core.Commands
 {
     public class CardInHandClickCommand : IGameCommand
     {
-        public Guid PlayerId { get; }
+
+        public Guid RequesterId { get; }
+        public Guid OwnerId { get; }
         public ICardInstance Card { get; }
 
-        public CardInHandClickCommand(Guid playerId, ICardInstance card)
+        public CardInHandClickCommand(Guid requesterId, Guid ownerId, ICardInstance card)
         {
-            PlayerId = playerId;
+            RequesterId = requesterId;
+            OwnerId = ownerId;
             Card = card;
         }
     }

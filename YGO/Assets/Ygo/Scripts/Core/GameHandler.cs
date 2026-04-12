@@ -49,6 +49,7 @@ namespace Ygo.Core
             GameCommandBus.RegisterHandler<CardInHandClickCommand>(CardInHandClickHandler);
             GameCommandBus.RegisterHandler<ActionExecutionCommand>(ActionExecutionHandler);
             GameCommandBus.RegisterHandler<ZoneClickCommand>(ZoneClickHandler);
+            GameCommandBus.RegisterHandler<NextPhaseClickCommand>(NextPhaseClickHandler);
         }
 
         public void Init()
@@ -113,7 +114,7 @@ namespace Ygo.Core
                 return;
             }
             
-            var response = GameState.ClickedOnMainDeck(c.PlayerId);
+            var response = GameState.ClickedOnMainDeck(c.RequesterId, c.OwnerId);
             if (response.Fail)
             {
                 GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.ActionState));
@@ -128,10 +129,10 @@ namespace Ygo.Core
                 return;
             }
             
-            var response = GameState.ClickCardInHand(c.PlayerId, c.Card);
+            var response = GameState.ClickCardInHand(c.RequesterId, c.OwnerId, c.Card);
             if (response.Fail)
             {
-                GameEventBus.Publish(new CommandDeniedEvent(CommandType.MainDeckCLicked, response.ActionState));
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.CardInHandClicked, response.ActionState));
             }
         }
 
@@ -141,7 +142,26 @@ namespace Ygo.Core
                 _currentInteractionState.Handle(c);
                 return;
             }
-            //GameState.ExecuteAction(c.Action);
+            var response = GameState.ClickZone(c.RequesterId, c.OwnerId, c.Zone);
+            if (response.Fail)
+            {
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.ZoneClicked, response.ActionState));
+            }
+        }
+
+        private void NextPhaseClickHandler(NextPhaseClickCommand c)
+        {
+            if (_currentInteractionState != null)
+            {
+                _currentInteractionState.Handle(c);
+                return;
+            }
+            
+            var response = GameState.ClickNextPhase(c.RequesterId);
+            if (response.Fail)
+            {
+                GameEventBus.Publish(new CommandDeniedEvent(CommandType.NextPhaseClicked, response.ActionState));
+            }
         }
 
         private void ActionExecutionHandler(ActionExecutionCommand c)

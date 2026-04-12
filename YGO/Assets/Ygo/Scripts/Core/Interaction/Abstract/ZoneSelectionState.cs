@@ -22,7 +22,7 @@ namespace Ygo.Core.Interaction.Abstract
 
         public void Handle(IGameCommand command)
         {
-            if (_playerId != command.PlayerId)
+            if (_playerId != command.RequesterId)
                 return;
             
             if (command is not ZoneClickCommand zoneClickCommand)

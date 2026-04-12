@@ -17,7 +17,9 @@ namespace Ygo.Controller
         private CardController[] cardControllers;
         [field: SerializeField] 
         private PointOfView pointOfView;
-        private Guid PlayerId { get; set; }
+
+        private Guid _requesterId;
+        private Guid _ownerId;
         private TurnContext _context;
         private Action<ICardInstance> _onClick;
         private CardsHandler _cardsHandler;
@@ -40,27 +42,24 @@ namespace Ygo.Controller
             eventBus.Subscribe<NormalSummonEvent>(OnNormalSummon);
             _onClick = card =>
             {
-                commandBus.Send(new CardInHandClickCommand(PlayerId, card));
+                commandBus.Send(new CardInHandClickCommand(_requesterId, _ownerId, card));
             };
             _context = context;
             _registry = registry;
+            _requesterId = _context.PointOfViewPlayer.Id;
         }
 
         private void OnPointOfViewUpdate(PointOfViewUpdateEvent e)
         {
-            if (pointOfView == PointOfView.Top)
-            {
-                PlayerId = e.OpponentId;
-                SetCardsHandler();
-                return;
-            }
-            PlayerId = e.PointOfViewId;
+            _requesterId = e.PointOfViewId;
+            _ownerId = pointOfView == PointOfView.Top ? e.OpponentId : e.PointOfViewId;
             SetCardsHandler();
+            UpdateHand();
         }
 
         private void SetCardsHandler()
         {
-            var player = _context.Players.FirstOrDefault(x => x.Id == PlayerId);
+            var player = _context.Players.FirstOrDefault(x => x.Id == _ownerId);
             if(player == null)
                 throw new InvalidOperationException("Player not found");
             _cardsHandler = player.CardsHandler;
@@ -73,14 +72,14 @@ namespace Ygo.Controller
         
         private void OnCardDrawn(CardDrawnEvent e)
         {
-            if (e.PlayerId != PlayerId)
+            if (e.PlayerId != _ownerId)
                 return;
             UpdateHand();
         }
         
         private void OnNormalSummon(NormalSummonEvent e)
         {
-            if (e.PlayerId != PlayerId)
+            if (e.PlayerId != _ownerId)
                 return;
             UpdateHand();
         }
@@ -101,7 +100,7 @@ namespace Ygo.Controller
                 }
                 
                 cardControllers[i].Enable();
-                cardControllers[i].UpdateCard(cards[i]);
+                cardControllers[i].UpdateCard(cards[i], pointOfView == PointOfView.Top);
                 _registry.Register(cards[i], cardControllers[i]);
             }
 

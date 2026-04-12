@@ -17,6 +17,10 @@ namespace Ygo.Core.Events
 
     public enum CommandType
     {
-        MainDeckCLicked
+        MainDeckCLicked,
+        CardInHandClicked,
+        CardOnFieldClicked,
+        ZoneClicked,
+        NextPhaseClicked,
     }
 }
