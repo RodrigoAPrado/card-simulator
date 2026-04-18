@@ -126,6 +126,13 @@ namespace Ygo.Core.Phases
             return new ActionResult(ownerId, ActionState.Success);
         }
 
+        public override ActionResult DeclareDirectAttack(Guid ownerId, ICardInstance attacker)
+        {
+            GameState.SetBattleState(new DirectBattleState(GameState, ownerId, Context.OpponentPlayer.Id, attacker));
+            ChangeStep(PhaseStep.Battle);
+            return new ActionResult(ownerId, ActionState.Success);
+        }
+
         public override ActionResult DoTryFlip(Guid ownerId, ICardInstance card)
         {
             if (!card.IsFaceDown) 
@@ -160,5 +167,7 @@ namespace Ygo.Core.Phases
             ChangeStep(PhaseStep.Open);
             return new ActionResult(Guid.Empty, ActionState.Success);
         }
+        
+        
     }
 }

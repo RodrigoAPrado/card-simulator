@@ -6,6 +6,7 @@ using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Enums;
 using Ygo.Core.Events;
+using Ygo.Core.Events.Abstract;
 using Ygo.Core.Interaction.Abstract;
 using Ygo.Core.Phases;
 using Ygo.Core.Phases.Abstract;
@@ -26,7 +27,7 @@ namespace Ygo.Core
         private int _currentPlayerEffectIndex;
         private GameEventBus _gameEventBus;
         private readonly GameHandler _gameHandler;
-        private BattleState _battleState;
+        private IBattleState _battleState;
 
         public GameState(GameHandler gameHandler)
         {
@@ -241,7 +242,7 @@ namespace Ygo.Core
             HandlePhaseProgression();
         }
 
-        public void SetBattleState(BattleState battleState)
+        public void SetBattleState(IBattleState battleState)
         {
             if (_battleState != null)
                 throw new InvalidOperationException("BattleState should be null at this point.");
