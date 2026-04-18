@@ -50,13 +50,14 @@ namespace Ygo.Core
         private void StartOfDamageStep()
         {
             // Effect Trigger
+            Attacker.SetAttacked();
         }
 
         private void BeforeDamageCalculation()
         {
             if(Defender.IsFaceDown)
                 _gameState.DoFlip(_defenderPlayer, Defender);
-            // Effect Trigger
+            // Effect Trigger, passive effects
         }
 
         private void DamageCalculation()
@@ -72,7 +73,7 @@ namespace Ygo.Core
                     OnZeroDamage(attackerValue > 0);
                     break;
                 case < 0:
-                    OnAttackerLoses(damage);
+                    OnAttackerLoses(damage*-1);
                     break;
                 case >0:
                     OnDefenderLoses(damage);
@@ -106,12 +107,14 @@ namespace Ygo.Core
 
         private void AfterDamageCalculation()
         {
-            // Effect Trigger
+            // Effect Trigger FLIP/AfterDmg
         }
 
         private void EndOfDamageStep()
         {
-            
+            _gameState.SendDestroyedCardToGrave();
+            // Effect Trigger, Send to GY effect, destroyed, etc
+            _gameState.ClearDestroyedCards();
         }
     }
 }

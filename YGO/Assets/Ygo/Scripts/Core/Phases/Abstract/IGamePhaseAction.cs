@@ -19,6 +19,6 @@ namespace Ygo.Core.Phases.Abstract
         ActionResult CheckAttack(Guid ownerId, ICardInstance attacker);
         ActionResult DeclareAttack(Guid ownerId, ICardInstance attacker, ICardInstance defender);
         ActionResult DeclareDirectAttack(Guid ownerId, ICardInstance attacker);
-        
+        ActionResult FinishBattleState();
     }
 }

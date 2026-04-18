@@ -8,6 +8,7 @@
         IncorrectPlayer,
         NotOwner,
         IncorrectPhase,
-        CannotDrawFromDeck
+        CannotDrawFromDeck,
+        NoCardsCanBeDestroyed
     }
 }

@@ -151,5 +151,14 @@ namespace Ygo.Core.Phases
                 new NoContext(requesterId)
             );
         }
+
+        public override ActionResult FinishBattleState()
+        {
+            if (CurrentStep != PhaseStep.Battle)
+                return new ActionResult(Guid.Empty, ActionState.IncorrectStep);
+            GameState.ClearBattleState();
+            ChangeStep(PhaseStep.Open);
+            return new ActionResult(Guid.Empty, ActionState.Success);
+        }
     }
 }

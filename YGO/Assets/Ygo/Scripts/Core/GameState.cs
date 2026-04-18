@@ -17,7 +17,6 @@ namespace Ygo.Core
     public class GameState
     {
         public TurnContext TurnContext { get; private set; }
-        public BattleState BattleState { get; private set; }
         public IGamePhase CurrentPhase => _phases[_currentPhaseIndex];
         private List<IGamePhase> _phases;
         private int _currentPhaseIndex;
@@ -26,7 +25,8 @@ namespace Ygo.Core
         private PlayerEffects _currentEffects;
         private int _currentPlayerEffectIndex;
         private GameEventBus _gameEventBus;
-        private GameHandler _gameHandler;
+        private readonly GameHandler _gameHandler;
+        private BattleState _battleState;
 
         public GameState(GameHandler gameHandler)
         {
@@ -179,7 +179,7 @@ namespace Ygo.Core
 
         public void BattleStateChanged()
         {
-            _gameEventBus.Publish(new BattleStateProgressEvent(BattleState.Attacker, BattleState.Defender, BattleState.CurrentStep));
+            _gameEventBus.Publish(new BattleStateProgressEvent(_battleState.Attacker, _battleState.Defender, _battleState.CurrentStep));
             ResolveGameStep();
         }
 
@@ -187,6 +187,12 @@ namespace Ygo.Core
         {
             var player = TurnContext.Players.FirstOrDefault(x => x.Id == playerId);
             player?.ChangeLifePoints(-damage);
+            //remover o info update futuramente:
+            _gameEventBus.Publish(new PlayerInfoUpdateEvent(
+                TurnContext.PointOfViewPlayer.PlayerName, 
+                TurnContext.PointOfViewPlayer.CurrentLifePoints,
+                TurnContext.OpponentPlayer.PlayerName,
+                TurnContext.OpponentPlayer.CurrentLifePoints));
             _gameEventBus.Publish(new PlayerTakenBattleDamageEvent(playerId, damage));
         }
 
@@ -194,6 +200,39 @@ namespace Ygo.Core
         {
             card.DestroyByBattle();
             _gameEventBus.Publish(new CardDestroyedByBattleEvent(playerId, card));
+        }
+
+        public void SendDestroyedCardToGrave()
+        {
+            var destroyedCards = new List<ICardInstance>();
+            foreach (var p in TurnContext.Players)
+            {
+                destroyedCards.AddRange(p.CardsHandler.PlayerCards.Where(x => x.IsDestroyed));
+            }
+            foreach (var dc in destroyedCards)
+            {
+                IBoardZone boardZone = null;
+                if (dc.Zone != null)
+                {
+                    boardZone = dc.Zone;
+                    boardZone.TryRemoveCard();
+                }
+                dc.SendToGraveyard();
+                _gameEventBus.Publish(new CardSentToGraveEvent(dc.OwnerId, boardZone, dc));
+            }
+        }
+        
+        public void ClearDestroyedCards()
+        {
+            var destroyedCards = new List<ICardInstance>();
+            foreach (var p in TurnContext.Players)
+            {
+                destroyedCards.AddRange(p.CardsHandler.PlayerCards.Where(x => x.IsDestroyed));
+            }
+            foreach (var dc in destroyedCards)
+            {
+                dc.ClearDestroyed();
+            }
         }
         
         private void ResolveGameStep()
@@ -204,15 +243,15 @@ namespace Ygo.Core
 
         public void SetBattleState(BattleState battleState)
         {
-            if (BattleState != null)
+            if (_battleState != null)
                 throw new InvalidOperationException("BattleState should be null at this point.");
-            BattleState = battleState;
+            _battleState = battleState;
         }
         public void ClearBattleState()
         {
-            if (BattleState == null)
+            if (_battleState == null)
                 throw new InvalidOperationException("BattleState should not be null at this point.");
-            BattleState = null;
+            _battleState = null;
         }
 
         private CommandResponse ProcessActionQuery(ActionQuery query)
@@ -247,7 +286,16 @@ namespace Ygo.Core
 
         private void HandleBattleProgression()
         {
-            BattleState.ProceedBattleState();
+            if (_battleState.CurrentStep != BattleStep.ReturnToBattlePhase)
+            {
+                _battleState.ProceedBattleState();
+                return;
+            }
+
+            var result = CurrentPhase.FinishBattleState();
+            if (result.ActionState != ActionState.Success)
+                throw new InvalidOperationException($"Not in battle phase {nameof(CurrentPhase)}.");
+            
         }
         
         private void HandleEffectPriority()

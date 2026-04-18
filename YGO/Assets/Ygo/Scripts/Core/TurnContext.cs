@@ -11,7 +11,6 @@ namespace Ygo.Core
         public PlayerContext CurrentTurnPlayer => Players[_currentTurnPlayerIndex];
         public PlayerContext PointOfViewPlayer { get; private set; }
         public PlayerContext OpponentPlayer => Players.FirstOrDefault(x => x != PointOfViewPlayer);
-        public BattleState BattleState { get; private set; }
         
         public int CurrentTurn => _currentTurn;
         private int _currentTurn;
@@ -92,26 +91,6 @@ namespace Ygo.Core
             {
                 throw new NotImplementedException("Massive multiplayer not implemented");
             }
-        }
-
-        public void SubscribeToPointOfViewChanged(Action action)
-        {
-            PointOfViewChanged += action;
-        }
-        
-        public void UnsubscribeToPointOfViewChanged(Action action)
-        {
-            PointOfViewChanged -= action;
-        }
-
-        public void SetBattleContext(ICardInstance attacker, ICardInstance target)
-        {
-            BattleState = new BattleState(attacker, target);
-        }
-
-        public void ClearBattleContext()
-        {
-            BattleState = null;
         }
     }
 }

@@ -93,6 +93,7 @@ namespace Ygo.Controller
             phaseController.Init(_application.GameCommandBus, _application.GameEventBus);
             
             _application.GameEventBus.Subscribe<PlayerInfoUpdateEvent>(OnPlayerInfoUpdate);
+            //_application.GameEventBus.Subscribe<PlayerTakenBattleDamageEvent>();
             _application.GameEventBus.Subscribe<TurnChangeEvent>(OnTurnChange);
             _application.GameEventBus.Subscribe<CommandDeniedEvent>(OnCommandDenied);
             

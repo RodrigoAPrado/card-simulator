@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ygo.Core.Abstract;
 using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Board.Abstract;
@@ -70,5 +71,8 @@ namespace Ygo.Core.Phases.Abstract
             => new(ownerId, ActionState.NotImplemented);
         public virtual ActionResult DeclareDirectAttack(Guid ownerId, ICardInstance attacker)
             => new(ownerId, ActionState.NotImplemented);
+
+        public virtual ActionResult FinishBattleState()
+            => new(Guid.Empty, ActionState.NotImplemented);
     }
 }

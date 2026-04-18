@@ -57,11 +57,14 @@ namespace Ygo.Controller
             }
             eventBus.Subscribe<PointOfViewUpdateEvent>(OnPointOfViewUpdate);
             eventBus.Subscribe<InteractionStateSetEvent>(OnInteractionStateSet);
+            eventBus.Subscribe<AttackDeclarationEvent>(OnAttackDeclaration);
+            eventBus.Subscribe<FlipEvent>(OnCardSwitchedPosition);
             eventBus.Subscribe<NormalSummonEvent>(OnNormalSummon);
             eventBus.Subscribe<NormalSetEvent>(OnNormalSummon);
             eventBus.Subscribe<FlipSummonEvent>(OnCardSwitchedPosition);
             eventBus.Subscribe<SwitchMonsterToAttackEvent>(OnCardSwitchedPosition);
             eventBus.Subscribe<SwitchMonsterToDefenseEvent>(OnCardSwitchedPosition);
+            eventBus.Subscribe<CardSentToGraveEvent>(OnCardSentToGrave);
             _context = context;
             _registry = registry;
         }
@@ -108,6 +111,14 @@ namespace Ygo.Controller
             }
         }
 
+        private void OnAttackDeclaration(AttackDeclarationEvent e)
+        {
+            foreach (var cardController in frontRowCards)
+            {
+                cardController.ToggleHighlight(false);
+            }
+        }
+
         private void OnNormalSummon(NormalSummonEvent e)
         {
             if (e.PlayerId != _ownerId)
@@ -149,6 +160,17 @@ namespace Ygo.Controller
             {
                 card.Disable();
             }
+        }
+
+        private void OnCardSentToGrave(CardSentToGraveEvent e)
+        {
+            if (e.Zone == null)
+                return;
+            var zone = frontRowZones.FirstOrDefault(x => x.Zone == e.Zone);
+            if (zone == null)
+                return;
+            var card = frontRowCards[(int)zone.Position-2];
+            card.Disable();
         }
     }
 }
