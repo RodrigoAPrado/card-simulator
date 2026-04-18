@@ -12,10 +12,7 @@ namespace Ygo.Core.Phases.Abstract
 {
     public abstract class BaseGamePhase : IGamePhase
     {
-        public string Name => Phase.ToString();
         public abstract GamePhase Phase { get; }
-        public IGamePhase NextPhase { get; }
-        public bool HasNextPhase => NextPhase != null;
         public PhaseStep CurrentStep => _currentStep;
         protected TurnContext Context { get; }
         protected GameState GameState { get; }
@@ -52,6 +49,10 @@ namespace Ygo.Core.Phases.Abstract
         public virtual ActionResult CheckNormalSummon(Guid ownerId, ICardInstance card) 
             => new(ownerId, ActionState.NotImplemented);
         public virtual ActionResult CheckNormalSet(Guid ownerId, ICardInstance card) 
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult ConfirmTributeSummon(Guid ownerId, ICardInstance card)
+            => new(ownerId, ActionState.NotImplemented);
+        public virtual ActionResult ConfirmTributeSet(Guid ownerId, ICardInstance card)
             => new(ownerId, ActionState.NotImplemented);
         public virtual ActionResult DoNormalSummon(Guid ownerId, ICardInstance card, IBoardZone boardZone)
             => new(ownerId, ActionState.NotImplemented);

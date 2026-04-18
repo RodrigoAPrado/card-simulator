@@ -41,6 +41,7 @@ namespace Ygo.Core.Abstract
         bool IsDestroyed { get; }
         bool IsDestroyedByBattle { get; }
         bool IsDestroyedByCardEffect { get; }
+        int? TributeCost { get; }
         void Summon(IBoardZone zone);
         void Set(IBoardZone zone);
         void AddToHand();

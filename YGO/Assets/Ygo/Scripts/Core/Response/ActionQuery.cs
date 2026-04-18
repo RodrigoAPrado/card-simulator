@@ -14,14 +14,16 @@ namespace Ygo.Core.Response
         public IInteractionContext Context { get; }
         public ActionState ActionState { get; }
         public bool Success => Actions.Count > 0 && ActionState == ActionState.Success; 
+        public bool ForceChoice { get; }
         
-        public ActionQuery(Guid requesterId, Guid contextPlayerId, IList<IGameAction> actions, IInteractionContext context)
+        public ActionQuery(Guid requesterId, Guid contextPlayerId, IList<IGameAction> actions, IInteractionContext context, bool forceChoice = false)
         {
             RequesterId = requesterId;
             ContextPlayerId = contextPlayerId;
             Actions = actions;
             Context = context;
             ActionState = ActionState.Success;
+            ForceChoice = forceChoice;
         }
 
         public ActionQuery(Guid requesterId, Guid contextPlayerId, ActionState actionState)

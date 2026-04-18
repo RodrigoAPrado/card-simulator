@@ -43,6 +43,10 @@ namespace Ygo.Core
         public bool IsDestroyedByBattle { get; private set; }
         public bool IsDestroyedByCardEffect { get; private set; }
 
+        public int? TributeCost => Data.MonsterData == null ? null :
+            Data.MonsterData.Level > 6 ? 2 :
+            Data.MonsterData.Level > 4 ? 1 : 0;
+
         private int LevelModifier;
         private int AtkModifier;
         private int DefModifier;

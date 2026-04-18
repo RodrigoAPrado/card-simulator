@@ -7,7 +7,6 @@ namespace Ygo.Core.Commands
 {
     public class ZoneClickCommand : IGameCommand
     {
-
         public Guid RequesterId { get; }
         public Guid OwnerId { get; }
         public IBoardZone Zone { get; }

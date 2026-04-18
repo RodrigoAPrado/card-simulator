@@ -61,20 +61,36 @@ namespace Ygo.Core.Phases
 
         private ActionQuery OnClickedOnMonsterInHandOnGameStateOpen(Guid requesterId, Guid ownerId, ICardInstance card)
         {
+
+            var canPlayerNormalSummon = !Context.CurrentTurnPlayer.NormalSummonFlag;
             var actionList = new List<IGameAction>();
 
-            var zoneFrees = Context.CurrentTurnPlayer.BoardHandler.MonsterZones.Any(x => x.IsFree);
-            var canPlayerNormalSummon = !Context.CurrentTurnPlayer.NormalSummonFlag;
+            if (card.TributeCost <= 0)
+            {
+                var zoneFrees = Context.CurrentTurnPlayer.BoardHandler.MonsterZones.Any(x => x.IsFree);
+                if(card.CanNormalSummon && zoneFrees && canPlayerNormalSummon)
+                    actionList.Add(new NormalSummonAction(GameState, ownerId, card));
             
-            if(card.CanNormalSummon && zoneFrees && canPlayerNormalSummon)
-                actionList.Add(new NormalSummonAction(GameState, ownerId, card));
+                if(card.CanNormalSet && zoneFrees && canPlayerNormalSummon)
+                    actionList.Add(new NormalSetAction(GameState, ownerId, card));
+            }
+            else
+            {
+                var monsterAmount = Context.CurrentTurnPlayer.BoardHandler.MonsterZones.Count(x => !x.IsFree);
+                if (monsterAmount >= card.TributeCost)
+                {
+                    if(card.CanNormalSummon && canPlayerNormalSummon)
+                        actionList.Add(new NormalSummonAction(GameState, ownerId, card));
             
-            if(card.CanNormalSet && zoneFrees && canPlayerNormalSummon)
-                actionList.Add(new NormalSetAction(GameState, ownerId, card));
+                    if(card.CanNormalSet && canPlayerNormalSummon)
+                        actionList.Add(new NormalSetAction(GameState, ownerId, card));
+                }   
+            }
+            
             
             actionList.Add(new CancelAction(GameState));
 
-            return new ActionQuery(requesterId, ownerId, actionList, new CardInteractionContext(ownerId, card));
+            return new ActionQuery(requesterId, ownerId, actionList, new CardInteractionContext(ownerId, card), true);
         }
         
         public override ActionQuery ClickedOnCardOnField(Guid requesterId, Guid ownerId, ICardInstance card)
@@ -198,6 +214,16 @@ namespace Ygo.Core.Phases
                     availableZones, 
                     card));
             
+            return new ActionResult(playerId, ActionState.Success);
+        }
+
+        public override ActionResult ConfirmTributeSummon(Guid playerId, ICardInstance card)
+        {
+            if(!card.CanNormalSet)
+                throw new InvalidOperationException("Card cannot be normal set!");
+            ValidateSummonContext(playerId, card);
+            GameState.SetInteractionState(playerId, new TributeSummonConfirmState(playerId, GameState, card));
+
             return new ActionResult(playerId, ActionState.Success);
         }
 

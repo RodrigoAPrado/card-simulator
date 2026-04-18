@@ -103,6 +103,11 @@ namespace Ygo.Core
             CurrentPhase.CheckNormalSet(ownerId, card);
         }
 
+        public void ConfirmTributeSummon(Guid ownerId, ICardInstance card)
+        {
+            CurrentPhase.ConfirmTributeSummon(ownerId, card);
+        }
+
         public void DoNormalSummon(Guid ownerId, ICardInstance card, IBoardZone boardZone)
         {
             CurrentPhase.DoNormalSummon(ownerId, card, boardZone);
@@ -267,7 +272,14 @@ namespace Ygo.Core
                 case <= 0:
                     throw new InvalidOperationException("Invalid success with no Actions.");
                 case 1:
-                    ExecuteAction(query.Actions[0]);
+                    if (query.ForceChoice)
+                    {
+                        _gameEventBus.Publish(new AvailableActionsEvent(query));
+                    }
+                    else
+                    {
+                        ExecuteAction(query.Actions[0]);
+                    }
                     break;
                 default:
                     _gameEventBus.Publish(new AvailableActionsEvent(query));
