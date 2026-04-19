@@ -52,9 +52,10 @@ namespace Ygo.Controller
         
         public void Awake()
         {
-            var service = new CardLoaderService();
-            var data = service.LoadCards();
-            _application = new GameApplication(data);
+            var service = new DataLoaderService();
+            var cardData = service.LoadCards();
+            var effectData = service.LoadEffects();
+            _application = new GameApplication(cardData, effectData);
             _application.Setup();
 
             var registry = new CardControllerRegistry();

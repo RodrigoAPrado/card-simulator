@@ -3,20 +3,20 @@ using Ygo.Core.Actions.Abstract;
 
 namespace Ygo.Core.Actions
 {
-    public class DrawAction : BaseGameAction
+    public class DrawForTurnAction : BaseGameAction
     {
 
         public override string ActionName => "Draw";
         private readonly Guid _playerId;
         
-        public DrawAction(GameState gameState, Guid playerId) : base(gameState)
+        public DrawForTurnAction(GameState gameState, Guid playerId) : base(gameState)
         {
             _playerId = playerId;
         }
 
         public override void Execute()
         {
-            GameState.DrawFromDeck(_playerId);
+            GameState.DrawForTurn(_playerId);
         }
     }
 }

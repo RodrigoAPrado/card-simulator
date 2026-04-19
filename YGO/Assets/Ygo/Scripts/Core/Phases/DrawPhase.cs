@@ -32,7 +32,7 @@ namespace Ygo.Core.Phases
             if (ownerId != Context.CurrentTurnPlayer.Id)
                 return new ActionQuery(requesterId, ownerId, ActionState.IncorrectPlayer);
                 
-            var drawAction = new DrawAction(GameState, ownerId);
+            var drawAction = new DrawForTurnAction(GameState, ownerId);
             return new ActionQuery(
                 requesterId,
                 ownerId, 

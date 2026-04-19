@@ -19,13 +19,11 @@ namespace Ygo.Core
     public class GameState
     {
         public TurnContext TurnContext { get; private set; }
+        public GameCardEffectLibrary EffectLibrary { get; private set; }
         public IGamePhase CurrentPhase => _phases[_currentPhaseIndex];
         public bool GameStatePaused { get; private set; }
         private List<IGamePhase> _phases;
         private int _currentPhaseIndex;
-        private EffectPriorityContext _effectPriorityContext;
-        private List<PlayerEffects> _effectPriority;
-        private PlayerEffects _currentEffects;
         private int _currentPlayerEffectIndex;
         private GameEventBus _gameEventBus;
         private readonly GameHandler _gameHandler;
@@ -38,12 +36,11 @@ namespace Ygo.Core
             _actionQueue = new List<IGameAction>();
         }
         
-        public void Setup(TurnContext turnContext, GameEventBus gameEventBus)
+        public void Setup(TurnContext turnContext, GameEventBus gameEventBus, GameCardEffectLibrary effectLibrary)
         {
             TurnContext = turnContext;
+            EffectLibrary = effectLibrary;
             _gameEventBus = gameEventBus;
-            _effectPriorityContext = new EffectPriorityContext(TurnContext);
-            _effectPriority = new List<PlayerEffects>();
             _phases = new List<IGamePhase>
             {
                 new DrawPhase(TurnContext, this),
@@ -97,7 +94,7 @@ namespace Ygo.Core
             StartTurn();
         }
 
-        public void DrawFromDeck(Guid ownerId)
+        public void DrawForTurn(Guid ownerId)
         {
             var result = CurrentPhase.DrawForTurn(ownerId);
             if (result.ActionState != ActionState.Success)
@@ -106,6 +103,15 @@ namespace Ygo.Core
             }
             
             _gameEventBus.Publish(new CardDrawnEvent(ownerId));
+        }
+
+        public void Draw(Guid ownerId)
+        {
+            var result = TurnContext.GetPlayerById(ownerId).CardsHandler.TryDrawFromDeck();
+            if (result)
+            {
+                _gameEventBus.Publish(new CardDrawnEvent(ownerId));
+            }
         }
 
         public void CheckNormalSummon(Guid ownerId, ICardInstance card, bool isTribute)

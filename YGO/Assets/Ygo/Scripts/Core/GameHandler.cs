@@ -27,7 +27,7 @@ namespace Ygo.Core
         private TurnContext _turnContext;
         private IInteractionState _currentInteractionState;
         
-        public void Setup(ICardRepository repo)
+        public void Setup(ICardRepository cardRepo, ICardEffectRepository effectRepo)
         {
             GameCommandBus = new GameCommandBus();
             GameEventBus = new GameEventBus();
@@ -36,13 +36,14 @@ namespace Ygo.Core
 
             _turnContext = new TurnContext(new List<PlayerContext>()
             {
-                CreatePlayer(repo, "Player1"),
-                CreatePlayer(repo, "Player2")
+                CreatePlayer(cardRepo, "Player1"),
+                CreatePlayer(cardRepo, "Player2")
             });
             
             _turnContext.Init(StartingPLayerIndex, StartingPlayerHand);
+            var cardEffectLibrary = new GameCardEffectLibrary(effectRepo, _turnContext);
             
-            GameState.Setup(_turnContext, GameEventBus);
+            GameState.Setup(_turnContext, GameEventBus, cardEffectLibrary);
             RegisterHandlers();
         }
 
@@ -93,6 +94,7 @@ namespace Ygo.Core
             var cardsHandler = new CardsHandler();
             cardsHandler.Setup(repo, player.Id);
             cardsHandler.ShuffleDeck();
+            cardsHandler.AddCardToDeck(player.Id, repo.GetMainDeckCardById("55144522"), true);
 
             var boardHandler = new BoardHandler();
             boardHandler.Setup(_validators);

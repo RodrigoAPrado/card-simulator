@@ -11,9 +11,10 @@ namespace Ygo.Core
 {
     public class CardsHandler
     {
-        public ICardInstance[] PlayerCards { get; private set; }
+        public IList<ICardInstance> PlayerCards => _playerCards.AsReadOnly();
         public IList<ICardInstance> PlayerHand => _playerHand.AsReadOnly();
         public IList<ICardInstance> MainDeck => _mainDeck.AsReadOnly();
+        private List<ICardInstance> _playerCards;
         private List<ICardInstance> _playerHand;
         private List<ICardInstance> _mainDeck;
 
@@ -21,14 +22,14 @@ namespace Ygo.Core
         {
             _playerHand = new List<ICardInstance>();
             _mainDeck = CreateDeck(repo, 40, ownerId);
-            PlayerCards = new ICardInstance[_mainDeck.Count];
-            for (var i = 0; i < PlayerCards.Length; i++)
+            _playerCards = new List<ICardInstance>();
+            for (var i = 0; i < PlayerCards.Count; i++)
             {
-                PlayerCards[i] = _mainDeck[i];
+                PlayerCards.Add(_mainDeck[i]);
             }
         }
         
-         public void ShuffleDeck()
+        public void ShuffleDeck()
         {
             var rng = new Random();
 
@@ -41,6 +42,30 @@ namespace Ygo.Core
             foreach (var card in _mainDeck)
             {
                 Debug.Log(card.Data.Name);
+            }
+        }
+
+        public void AddCardToDeck(Guid ownerId, CardData cardData, bool top = true)
+        {
+            var card = new CardInstance(cardData, ownerId);
+            _playerCards.Add(card);
+            if (top)
+            {
+                ICardInstance c1 = null;
+                ICardInstance c2 = null;
+                for (var i = 0; i < _mainDeck.Count; i++)
+                {
+                    c2 = _mainDeck[i];
+                    _mainDeck[i] = c1;
+                    c1 = c2;
+                }
+                _mainDeck[0] = card;
+                _mainDeck.Add(c1);
+                var g = "";
+            }
+            else
+            {
+                _mainDeck.Add(card);
             }
         }
         
@@ -76,7 +101,7 @@ namespace Ygo.Core
                 do
                 {
                     data = repo.GetMainDeckCardById(availableIds[rng.Next(0, availableIds.Count)]);
-                    if (data == null) continue;
+                    if (data == null || data.Id == "55144522") continue;
                     
                     if (!cardsIncluded.ContainsKey(data.Id))
                     {

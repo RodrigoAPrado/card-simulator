@@ -7,10 +7,12 @@ using Ygo.Data;
 
 namespace Ygo.Service
 {
-    public class CardLoaderService
+    public class DataLoaderService
     {
         private static readonly string CardDataPath 
             = Application.streamingAssetsPath + "/Ygo/Data/Cards/";
+        private static readonly string EffectDataPath 
+            = Application.streamingAssetsPath + "/Ygo/Data/Effects/";
 
         public ICardRepository LoadCards()
         {
@@ -28,6 +30,24 @@ namespace Ygo.Service
             }
 
             return new CardRepository(cardDictionary);
+        }
+        
+        public ICardEffectRepository LoadEffects()
+        {
+            var files = Directory.GetFiles(EffectDataPath);
+            var effectDictionary = new Dictionary<string, CardEffectData>();
+            
+            foreach (var file in files)
+            {
+                if (file.EndsWith(".meta"))
+                    continue;
+
+                var json = File.ReadAllText(file);
+                var result = JsonConvert.DeserializeObject<CardEffectData>(json);
+                effectDictionary.Add(result.Id, result);
+            }
+
+            return new CardEffectRepository(effectDictionary);
         }
     }
 }

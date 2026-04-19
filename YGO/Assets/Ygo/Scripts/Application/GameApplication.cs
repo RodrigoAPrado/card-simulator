@@ -15,17 +15,19 @@ namespace Ygo.Application
         public IGamePhase CurrentPhase => _gameHandler.GameState.CurrentPhase;
         public TurnContext TurnContext => _gameHandler.GameState.TurnContext;
         private readonly ICardRepository _cardRepository;
+        private readonly ICardEffectRepository _cardEffectRepository;
         private GameHandler _gameHandler;
         
-        public GameApplication(ICardRepository cardRepository)
+        public GameApplication(ICardRepository cardRepository, ICardEffectRepository cardEffectRepository)
         {
             _cardRepository = cardRepository;
+            _cardEffectRepository = cardEffectRepository;
         }
 
         public void Setup()
         {
             _gameHandler = new GameHandler();
-            _gameHandler.Setup(_cardRepository);
+            _gameHandler.Setup(_cardRepository, _cardEffectRepository);
         }
 
         public void Init()
