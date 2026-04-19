@@ -6,6 +6,7 @@ namespace Ygo.Core.Interaction.Abstract
 {
     public abstract class ConfirmationState : IInteractionState
     {
+        public abstract string Message { get; }
         protected readonly Guid _playerId;
         protected readonly GameState _gameState;
         

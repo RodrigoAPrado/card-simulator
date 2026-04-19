@@ -42,6 +42,7 @@ namespace Ygo.Core.Abstract
         bool IsDestroyedByBattle { get; }
         bool IsDestroyedByCardEffect { get; }
         int? TributeCost { get; }
+        bool Tributed { get; }
         void Summon(IBoardZone zone);
         void Set(IBoardZone zone);
         void AddToHand();
@@ -55,5 +56,7 @@ namespace Ygo.Core.Abstract
         void DestroyByCardEffect();
         void SendToGraveyard();
         void ClearDestroyed();
+        void Tribute();
+        void ClearTributed();
     }
 }

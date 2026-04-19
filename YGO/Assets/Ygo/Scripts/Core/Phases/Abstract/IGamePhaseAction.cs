@@ -8,10 +8,10 @@ namespace Ygo.Core.Phases.Abstract
     public interface IGamePhaseAction
     {
         ActionResult DrawForTurn(Guid ownerId);
-        ActionResult CheckNormalSummon(Guid ownerId, ICardInstance card);
-        ActionResult CheckNormalSet(Guid ownerId, ICardInstance card);
-        ActionResult ConfirmTributeSummon(Guid ownerId, ICardInstance card);
-        ActionResult ConfirmTributeSet(Guid ownerId, ICardInstance card);
+        ActionResult CheckNormalSummon(Guid ownerId, ICardInstance card, bool isTribute);
+        ActionResult CheckNormalSet(Guid ownerId, ICardInstance card, bool isTribute);
+        ActionResult RequestTributeSummonOrSet(Guid ownerId, ICardInstance card, bool isSet);
+        ActionResult CheckAvailableTributesForSummonOrSet(Guid ownerId, ICardInstance card, bool isSet);
         ActionResult DoNormalSummon(Guid ownerId, ICardInstance card, IBoardZone boardZone);
         ActionResult DoNormalSet(Guid ownerId, ICardInstance card, IBoardZone boardZone);
         ActionResult DoFlipSummon(Guid ownerId, ICardInstance card);

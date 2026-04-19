@@ -14,7 +14,7 @@ namespace Ygo.Core.Actions
         }
         public override void Execute()
         {
-            GameState.ConfirmTributeSummon(PlayerId, Card);
+            GameState.RequestTributeSummon(PlayerId, Card, false);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Ygo.Core.Events
 {
     public class NormalSetEvent : NormalSummonEvent
     {
-        public NormalSetEvent(Guid playerId, ICardInstance card, IBoardZone zone) : base(playerId, card, zone)
+        public NormalSetEvent(Guid playerId, ICardInstance card, IBoardZone zone, bool isTribute) : base(playerId, card, zone, isTribute)
         {
         }
     }

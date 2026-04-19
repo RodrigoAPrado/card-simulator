@@ -15,7 +15,7 @@ namespace Ygo.Core.Actions
 
         public override void Execute()
         {
-            GameState.CheckNormalSummon(PlayerId, Card);
+            GameState.CheckNormalSummon(PlayerId, Card, false);
         }
     }
 }

@@ -36,6 +36,9 @@ namespace Ygo.Controller
         [Header("Phase")] 
         [field: SerializeField]
         private PhaseController phaseController;
+        [Header("ConfirmationModal")]
+        [field: SerializeField]
+        private ConfirmationController confirmationController;
         
         [Header("Texts")]  
         [field: SerializeField]
@@ -91,6 +94,7 @@ namespace Ygo.Controller
             zoomCard.Init();
             
             phaseController.Init(_application.GameCommandBus, _application.GameEventBus);
+            confirmationController.Init(_application.GameCommandBus, _application.GameEventBus);
             
             _application.GameEventBus.Subscribe<PlayerInfoUpdateEvent>(OnPlayerInfoUpdate);
             //_application.GameEventBus.Subscribe<PlayerTakenBattleDamageEvent>();

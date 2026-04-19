@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ygo.Core.Abstract;
+using Ygo.Core.Actions;
+using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Board;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Board.Validator;
@@ -8,6 +10,7 @@ using Ygo.Core.Commands;
 using Ygo.Core.Events;
 using Ygo.Core.Interaction.Abstract;
 using Ygo.Core.Phases;
+using Ygo.Core.Response.Enum;
 
 namespace Ygo.Core
 {
@@ -51,6 +54,7 @@ namespace Ygo.Core
             GameCommandBus.RegisterHandler<ActionExecutionCommand>(ActionExecutionHandler);
             GameCommandBus.RegisterHandler<ZoneClickCommand>(ZoneClickHandler);
             GameCommandBus.RegisterHandler<NextPhaseClickCommand>(NextPhaseClickHandler);
+            GameCommandBus.RegisterHandler<PlayerConfirmationCommand>(PlayerConfirmationCommandHandler);
         }
 
         public void Init()
@@ -70,9 +74,8 @@ namespace Ygo.Core
 
         public void SetInteractionState(IInteractionState currentInteractionState)
         {
-            if(_currentInteractionState != null)
+            if(_currentInteractionState != null && _currentInteractionState != currentInteractionState)
                 throw new InvalidOperationException("Cannot change interaction state while already set.");
-            ;
             _currentInteractionState = currentInteractionState;
         }
 
@@ -187,7 +190,17 @@ namespace Ygo.Core
                 _currentInteractionState.Handle(c);
                 return;
             }
-            GameState.ExecuteAction(c.Action);
+            GameState.EnqueueActions(new List<IGameAction>{c.Action});
+        }
+
+        private void PlayerConfirmationCommandHandler(PlayerConfirmationCommand c)
+        {
+            if (_currentInteractionState != null)
+            {
+                _currentInteractionState.Handle(c);
+                return;
+            }
+            GameEventBus.Publish(new CommandDeniedEvent(CommandType.PlayerConfirmation, ActionState.IncorrectStep));
         }
     }
 }

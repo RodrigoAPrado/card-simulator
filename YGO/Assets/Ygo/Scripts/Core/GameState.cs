@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ygo.Core.Abstract;
+using Ygo.Core.Actions;
 using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Enums;
@@ -19,6 +20,7 @@ namespace Ygo.Core
     {
         public TurnContext TurnContext { get; private set; }
         public IGamePhase CurrentPhase => _phases[_currentPhaseIndex];
+        public bool GameStatePaused { get; private set; }
         private List<IGamePhase> _phases;
         private int _currentPhaseIndex;
         private EffectPriorityContext _effectPriorityContext;
@@ -28,10 +30,12 @@ namespace Ygo.Core
         private GameEventBus _gameEventBus;
         private readonly GameHandler _gameHandler;
         private IBattleState _battleState;
+        private List<IGameAction> _actionQueue;
 
         public GameState(GameHandler gameHandler)
         {
             _gameHandler = gameHandler;
+            _actionQueue = new List<IGameAction>();
         }
         
         public void Setup(TurnContext turnContext, GameEventBus gameEventBus)
@@ -77,6 +81,17 @@ namespace Ygo.Core
             return ProcessActionQuery(CurrentPhase.ClickedOnNextPhase(requesterId));
         }
 
+        public void PauseGameState(Guid requesterId)
+        {
+            GameStatePaused = true;
+        }
+        
+        public void ResumeGameState(Guid requesterId)
+        {
+            GameStatePaused = false;
+            ResumeActionQueue();
+        }
+
         public void InitGame()
         {
             StartTurn();
@@ -93,31 +108,49 @@ namespace Ygo.Core
             _gameEventBus.Publish(new CardDrawnEvent(ownerId));
         }
 
-        public void CheckNormalSummon(Guid ownerId, ICardInstance card)
+        public void CheckNormalSummon(Guid ownerId, ICardInstance card, bool isTribute)
         {
-            CurrentPhase.CheckNormalSummon(ownerId, card);
+            CurrentPhase.CheckNormalSummon(ownerId, card, isTribute);
         }
         
-        public void CheckNormalSet(Guid ownerId, ICardInstance card)
+        public void CheckNormalSet(Guid ownerId, ICardInstance card, bool isTribute)
         {
-            CurrentPhase.CheckNormalSet(ownerId, card);
+            CurrentPhase.CheckNormalSet(ownerId, card, isTribute);
         }
 
-        public void ConfirmTributeSummon(Guid ownerId, ICardInstance card)
-        {
-            CurrentPhase.ConfirmTributeSummon(ownerId, card);
-        }
-
-        public void DoNormalSummon(Guid ownerId, ICardInstance card, IBoardZone boardZone)
+        public void DoNormalSummon(Guid ownerId, ICardInstance card, IBoardZone boardZone, bool isTribute)
         {
             CurrentPhase.DoNormalSummon(ownerId, card, boardZone);
-            _gameEventBus.Publish(new NormalSummonEvent(ownerId, card, boardZone));
+            _gameEventBus.Publish(new NormalSummonEvent(ownerId, card, boardZone, isTribute));
+            if(isTribute)
+                EnqueueActions(new List<IGameAction>{new DelegatedGameAction(ClearTributedCards)});
         }
 
-        public void DoNormalSet(Guid ownerId, ICardInstance card, IBoardZone boardZone)
+        public void DoNormalSet(Guid ownerId, ICardInstance card, IBoardZone boardZone, bool isTribute)
         {
             CurrentPhase.DoNormalSet(ownerId, card, boardZone);
-            _gameEventBus.Publish(new NormalSetEvent(ownerId, card, boardZone));
+            _gameEventBus.Publish(new NormalSetEvent(ownerId, card, boardZone, isTribute));
+            if(isTribute)
+                EnqueueActions(new List<IGameAction>{new DelegatedGameAction(ClearTributedCards)});
+        }
+
+        public void RequestTributeSummon(Guid ownerId, ICardInstance card, bool isSet)
+        {
+            CurrentPhase.RequestTributeSummonOrSet(ownerId, card, isSet);
+        }
+
+        public void TributeMonster(Guid ownerId, ICardInstance card)
+        {
+            var zone = card.Zone;
+            zone?.TryRemoveCard();
+            card.Tribute();
+            card.SendToGraveyard();
+            _gameEventBus.Publish(new MonsterTributedEvent(ownerId, zone, card));
+        }
+
+        public void CheckAvailableTributesForSummonOrSet(Guid ownerId, ICardInstance card, bool isSet)
+        {
+            CurrentPhase.CheckAvailableTributesForSummonOrSet(ownerId, card, isSet);
         }
 
         public void DoFlipSummon(Guid ownerId, ICardInstance card)
@@ -166,10 +199,37 @@ namespace Ygo.Core
             _gameEventBus.Publish(new ActionCancelEvent());
         }
 
-        public void ExecuteAction(IGameAction action)
+        public void EnqueueActions(IList<IGameAction> actions)
+        {
+            // Se a queue já tiver actions, não faz sentido executar as actions, pois já está em execução.
+            var run = _actionQueue.Count == 0;
+            _actionQueue.AddRange(actions);
+            if(run)
+                ExecuteActionQueue();
+        }
+
+        private void ExecuteActionQueue()
+        {
+            if(!GameStatePaused && _actionQueue.Count > 0)
+                ExecuteAction(_actionQueue[0]);
+        }
+
+        private void ExecuteAction(IGameAction action)
         {
             action.Execute();
             ResolveGameStep();
+            AdvanceActionQueue();
+        }
+
+        private void AdvanceActionQueue()
+        {
+            _actionQueue.RemoveAt(0);
+            ExecuteActionQueue();
+        }
+
+        private void ResumeActionQueue()
+        {
+            ExecuteActionQueue();
         }
 
         public void SetInteractionState(Guid playerId, IInteractionState interactionState)
@@ -224,7 +284,7 @@ namespace Ygo.Core
                     boardZone.TryRemoveCard();
                 }
                 dc.SendToGraveyard();
-                _gameEventBus.Publish(new CardSentToGraveEvent(dc.OwnerId, boardZone, dc));
+                _gameEventBus.Publish(new CardSentToGraveByDestructionEvent(dc.OwnerId, boardZone, dc));
             }
         }
         
@@ -238,6 +298,19 @@ namespace Ygo.Core
             foreach (var dc in destroyedCards)
             {
                 dc.ClearDestroyed();
+            }
+        }
+
+        public void ClearTributedCards()
+        {
+            var tributedCards = new List<ICardInstance>();
+            foreach (var p in TurnContext.Players)
+            {
+                tributedCards.AddRange(p.CardsHandler.PlayerCards.Where(x => x.Tributed));
+            }
+            foreach (var dc in tributedCards)
+            {
+                dc.ClearTributed();
             }
         }
         
@@ -278,7 +351,7 @@ namespace Ygo.Core
                     }
                     else
                     {
-                        ExecuteAction(query.Actions[0]);
+                        EnqueueActions(new List<IGameAction> { query.Actions[0] });
                     }
                     break;
                 default:

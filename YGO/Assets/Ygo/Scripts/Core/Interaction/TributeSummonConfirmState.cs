@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Ygo.Core.Abstract;
+using Ygo.Core.Actions;
+using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Commands.Abstract;
 using Ygo.Core.Interaction.Abstract;
 
@@ -7,23 +10,41 @@ namespace Ygo.Core.Interaction
 {
     public class TributeSummonConfirmState : ConfirmationState
     {
-        public string CardName => _card.Data.Name;
-        public int? TributeCount => _card.TributeCost;
+        public override string Message => $"You need to tribute {TributeCost} monster(s) to Tribute {SummonName} \"{CardName}\". Do you want to continue?";
+        private string CardName => _card.Data.Name;
+        private int? TributeCost => _card.TributeCost;
         private readonly ICardInstance _card;
-        public TributeSummonConfirmState(Guid playerId, GameState gameState, ICardInstance card) 
+        private readonly bool _isSet;
+        private string SummonName => _isSet ? "Set" : "Summon";
+        public TributeSummonConfirmState(Guid playerId, GameState gameState, ICardInstance card, bool isSet) 
             : base(playerId, gameState)
         {
             _card = card;
+            _isSet = isSet;
         }
 
         protected override void HandleAccept()
         {
-            throw new NotImplementedException();
+            _gameState.EnqueueActions(new List<IGameAction>
+            {
+                new DelegatedGameAction(() =>
+                {
+                    _gameState.ClearInteractionState(_playerId);
+                    _gameState.CheckAvailableTributesForSummonOrSet(_card.OwnerId, _card, _isSet);
+                })
+            });
         }
 
         protected override void HandleDecline()
         {
-            throw new NotImplementedException();
+            _gameState.EnqueueActions(new List<IGameAction>
+            {
+                new DelegatedGameAction(() =>
+                {
+                    _gameState.ClearInteractionState(_playerId);
+                    _gameState.CancelAction();
+                })
+            });
         }
     }
 }

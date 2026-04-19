@@ -6,12 +6,12 @@ namespace Ygo.Core.Events
 {
     public class InteractionStateSetEvent : IGameEvent
     {
-        public Guid PlayerId { get; }
+        public Guid RequesterId { get; }
         public IInteractionState InteractionState { get; }
 
-        public InteractionStateSetEvent(Guid playerId, IInteractionState interactionState)
+        public InteractionStateSetEvent(Guid requesterId, IInteractionState interactionState)
         {
-            PlayerId = playerId;
+            RequesterId = requesterId;
             InteractionState = interactionState;
         }
     }

@@ -22,5 +22,6 @@ namespace Ygo.Core.Events
         CardOnFieldClicked,
         ZoneClicked,
         NextPhaseClicked,
+        PlayerConfirmation,
     }
 }

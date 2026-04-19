@@ -99,7 +99,7 @@ namespace Ygo.Core.Phases
             if (!attacker.CanAttack)
                 throw new InvalidOperationException("Card cannot attack");
 
-            IList<ICardInstance> availableCards = Context.OpponentPlayer.BoardHandler.MonsterZones.Where(x => !x.IsFree)
+            List<ICardInstance> availableCards = Context.OpponentPlayer.BoardHandler.MonsterZones.Where(x => !x.IsFree)
                 .Select(x => x.CardInZone).ToList();
 
             if (availableCards.Count <= 0)

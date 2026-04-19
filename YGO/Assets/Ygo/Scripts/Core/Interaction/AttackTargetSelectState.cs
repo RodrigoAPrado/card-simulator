@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Ygo.Core.Abstract;
 using Ygo.Core.Actions;
+using Ygo.Core.Actions.Abstract;
 using Ygo.Core.Board.Abstract;
 using Ygo.Core.Commands;
 using Ygo.Core.Interaction.Abstract;
@@ -15,7 +16,7 @@ namespace Ygo.Core.Interaction
         public AttackTargetSelectState(
             Guid playerId,
             GameState gameState,
-            IList<ICardInstance> availableCards,
+            List<ICardInstance> availableCards,
             ICardInstance cardInstance
         )
             : base(playerId, gameState, availableCards)
@@ -25,13 +26,14 @@ namespace Ygo.Core.Interaction
 
         protected override void InternalHandle(CardOnFieldClickCommand cardOnFieldClickCommand)
         {
-            var gameAction = new DelegatedGameAction("Declare Attack",
-                () =>
+            _gameState.EnqueueActions(new List<IGameAction>
+            {
+                new DelegatedGameAction(() =>
                 {
-                    _gameState.DeclareAttack(_playerId, _attacker, cardOnFieldClickCommand.Card);
                     _gameState.ClearInteractionState(_playerId);
-                });
-            _gameState.ExecuteAction(gameAction);
+                    _gameState.DeclareAttack(_playerId, _attacker, cardOnFieldClickCommand.Card);
+                })
+            });
         }
     }
 }

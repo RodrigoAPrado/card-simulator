@@ -46,13 +46,13 @@ namespace Ygo.Core.Phases.Abstract
 
         public virtual ActionResult DrawForTurn(Guid ownerId) 
             => new(ownerId, ActionState.NotImplemented);
-        public virtual ActionResult CheckNormalSummon(Guid ownerId, ICardInstance card) 
+        public virtual ActionResult CheckNormalSummon(Guid ownerId, ICardInstance card, bool isTribute) 
             => new(ownerId, ActionState.NotImplemented);
-        public virtual ActionResult CheckNormalSet(Guid ownerId, ICardInstance card) 
+        public virtual ActionResult CheckNormalSet(Guid ownerId, ICardInstance card, bool isTribute) 
             => new(ownerId, ActionState.NotImplemented);
-        public virtual ActionResult ConfirmTributeSummon(Guid ownerId, ICardInstance card)
+        public virtual ActionResult RequestTributeSummonOrSet(Guid ownerId, ICardInstance card, bool isSet)
             => new(ownerId, ActionState.NotImplemented);
-        public virtual ActionResult ConfirmTributeSet(Guid ownerId, ICardInstance card)
+        public virtual ActionResult CheckAvailableTributesForSummonOrSet(Guid ownerId, ICardInstance card, bool isSet)
             => new(ownerId, ActionState.NotImplemented);
         public virtual ActionResult DoNormalSummon(Guid ownerId, ICardInstance card, IBoardZone boardZone)
             => new(ownerId, ActionState.NotImplemented);

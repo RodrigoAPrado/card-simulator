@@ -61,7 +61,6 @@ namespace Ygo.Core.Phases
 
         private ActionQuery OnClickedOnMonsterInHandOnGameStateOpen(Guid requesterId, Guid ownerId, ICardInstance card)
         {
-
             var canPlayerNormalSummon = !Context.CurrentTurnPlayer.NormalSummonFlag;
             var actionList = new List<IGameAction>();
 
@@ -80,10 +79,10 @@ namespace Ygo.Core.Phases
                 if (monsterAmount >= card.TributeCost)
                 {
                     if(card.CanNormalSummon && canPlayerNormalSummon)
-                        actionList.Add(new NormalSummonAction(GameState, ownerId, card));
+                        actionList.Add(new TributeSummonAction(GameState, ownerId, card));
             
-                    if(card.CanNormalSet && canPlayerNormalSummon)
-                        actionList.Add(new NormalSetAction(GameState, ownerId, card));
+                    //if(card.CanNormalSet && canPlayerNormalSummon)
+                      //  actionList.Add(new TributeS(GameState, ownerId, card));
                 }   
             }
             
@@ -181,7 +180,7 @@ namespace Ygo.Core.Phases
                 );
         }
         
-        public override ActionResult CheckNormalSummon(Guid playerId, ICardInstance card)
+        public override ActionResult CheckNormalSummon(Guid playerId, ICardInstance card, bool isTribute)
         {
             if(!card.CanNormalSummon)
                 throw new InvalidOperationException("Card cannot be normal summoned!");
@@ -194,12 +193,13 @@ namespace Ygo.Core.Phases
                 new NormalSummonZoneSelectState(playerId, 
                     GameState, 
                     availableZones, 
-                    card));
+                    card,
+                    isTribute));
             
             return new ActionResult(playerId, ActionState.Success);
         }
 
-        public override ActionResult CheckNormalSet(Guid playerId, ICardInstance card)
+        public override ActionResult CheckNormalSet(Guid playerId, ICardInstance card, bool isTribute)
         {
             if(!card.CanNormalSet)
                 throw new InvalidOperationException("Card cannot be normal set!");
@@ -212,19 +212,41 @@ namespace Ygo.Core.Phases
                 new NormalSetZoneSelectState(playerId, 
                     GameState, 
                     availableZones, 
-                    card));
+                    card,
+                    isTribute));
             
             return new ActionResult(playerId, ActionState.Success);
         }
 
-        public override ActionResult ConfirmTributeSummon(Guid playerId, ICardInstance card)
+        public override ActionResult RequestTributeSummonOrSet(Guid playerId, ICardInstance card, bool isSet)
+        {
+            if(!card.CanNormalSummon)
+                throw new InvalidOperationException("Card cannot be normal summon!");
+            ValidateSummonContext(playerId, card);
+            GameState.SetInteractionState(playerId, new TributeSummonConfirmState(playerId, GameState, card, isSet));
+
+            return new ActionResult(playerId, ActionState.Success);
+        }
+        
+        public override ActionResult CheckAvailableTributesForSummonOrSet(Guid ownerId, ICardInstance card, bool isSet)
         {
             if(!card.CanNormalSet)
                 throw new InvalidOperationException("Card cannot be normal set!");
-            ValidateSummonContext(playerId, card);
-            GameState.SetInteractionState(playerId, new TributeSummonConfirmState(playerId, GameState, card));
+            ValidateSummonContext(ownerId, card);
 
-            return new ActionResult(playerId, ActionState.Success);
+            var player = Context.GetPlayerById(ownerId);
+            
+            var cards = player.BoardHandler.MonsterZones
+                .Where(x => !x.IsFree)
+                .Select(x => x.CardInZone)
+                .ToList();
+            
+            if(cards.Count < card.TributeCost)
+                throw new InvalidOperationException($"Player does not have enough cards to tribute summon! " +
+                                                    $"Has {cards.Count} but needs {card.TributeCost}");
+            
+            GameState.SetInteractionState(ownerId, new TributeSelectingState(ownerId, GameState, cards, card, isSet));   
+            return new ActionResult(ownerId, ActionState.Success); 
         }
 
         private void ValidateSummonContext(Guid playerId, ICardInstance card)

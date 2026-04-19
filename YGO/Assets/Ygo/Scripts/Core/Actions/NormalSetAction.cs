@@ -14,7 +14,7 @@ namespace Ygo.Core.Actions
 
         public override void Execute()
         {
-            GameState.CheckNormalSet(PlayerId, Card);
+            GameState.CheckNormalSet(PlayerId, Card, false);
         }
     }
 }

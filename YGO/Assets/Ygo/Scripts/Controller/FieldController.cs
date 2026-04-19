@@ -64,7 +64,8 @@ namespace Ygo.Controller
             eventBus.Subscribe<FlipSummonEvent>(OnCardSwitchedPosition);
             eventBus.Subscribe<SwitchMonsterToAttackEvent>(OnCardSwitchedPosition);
             eventBus.Subscribe<SwitchMonsterToDefenseEvent>(OnCardSwitchedPosition);
-            eventBus.Subscribe<CardSentToGraveEvent>(OnCardSentToGrave);
+            eventBus.Subscribe<CardSentToGraveByDestructionEvent>(OnCardSentToGraveByDestruction);
+            eventBus.Subscribe<MonsterTributedEvent>(OnMonsterTributed);
             _context = context;
             _registry = registry;
         }
@@ -87,22 +88,29 @@ namespace Ygo.Controller
 
         private void OnInteractionStateSet(InteractionStateSetEvent e)
         {
-            if (e.PlayerId != _ownerId)
+            if (e.RequesterId != _ownerId)
                 return;
             
             if (e.InteractionState is ZoneSelectionState zoneState)
             {
+                foreach (var controller in frontRowZones)
+                {
+                    controller.ToggleHighlight(false);
+                }
                 foreach (var zone in zoneState.AvailableZones)
                 {
                     var zoneController = frontRowZones.FirstOrDefault(x => x.Zone == zone);
                     zoneController?.ToggleHighlight(true);
                 }
-
                 return;
             }
 
             if (e.InteractionState is MonsterCardSelectionState monsterState)
             {
+                foreach (var controller in frontRowCards)
+                {
+                    controller.ToggleHighlight(false);
+                }
                 foreach (var card in monsterState.AvailableCards)
                 {
                     var cardController = frontRowCards.FirstOrDefault(x => x.Card == card);
@@ -140,6 +148,7 @@ namespace Ygo.Controller
             foreach (var card in frontRowCards)
             {
                 card.SetDirty();
+                card.ToggleHighlight(false);
             }
             
             foreach (var zone in frontRowZones)
@@ -162,7 +171,18 @@ namespace Ygo.Controller
             }
         }
 
-        private void OnCardSentToGrave(CardSentToGraveEvent e)
+        private void OnCardSentToGraveByDestruction(CardSentToGraveByDestructionEvent e)
+        {
+            if (e.Zone == null)
+                return;
+            var zone = frontRowZones.FirstOrDefault(x => x.Zone == e.Zone);
+            if (zone == null)
+                return;
+            var card = frontRowCards[(int)zone.Position-2];
+            card.Disable();
+        }
+
+        private void OnMonsterTributed(MonsterTributedEvent e)
         {
             if (e.Zone == null)
                 return;

@@ -47,6 +47,8 @@ namespace Ygo.Core
             Data.MonsterData.Level > 6 ? 2 :
             Data.MonsterData.Level > 4 ? 1 : 0;
 
+        public bool Tributed { get; private set; }
+
         private int LevelModifier;
         private int AtkModifier;
         private int DefModifier;
@@ -200,6 +202,16 @@ namespace Ygo.Core
         {
             IsDestroyedByBattle = false;
             IsDestroyedByCardEffect = false;
+        }
+
+        public void Tribute()
+        {
+            Tributed = true;
+        }
+
+        public void ClearTributed()
+        {
+            Tributed = false;
         }
     }
 }

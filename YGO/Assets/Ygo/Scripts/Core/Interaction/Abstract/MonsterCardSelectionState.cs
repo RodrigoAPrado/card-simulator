@@ -9,15 +9,16 @@ namespace Ygo.Core.Interaction.Abstract
 {
     public abstract class MonsterCardSelectionState : IInteractionState
     {
-        public IList<ICardInstance> AvailableCards { get; }
+        public IList<ICardInstance> AvailableCards => _availableCards.AsReadOnly();
+        protected List<ICardInstance> _availableCards;
         protected readonly Guid _playerId;
         protected readonly GameState _gameState;
 
-        protected MonsterCardSelectionState(Guid playerId, GameState gameState, IList<ICardInstance> availableCards)
+        protected MonsterCardSelectionState(Guid playerId, GameState gameState, List<ICardInstance> availableCards)
         {
             _playerId = playerId;
             _gameState = gameState;
-            AvailableCards = availableCards;
+            _availableCards = availableCards;
         }
 
         public void Handle(IGameCommand command)
