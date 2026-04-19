@@ -62,6 +62,8 @@ namespace Ygo.Controller.Card
 
             if (Card.IsValidMonster)
                 InitMonster();
+            if (Card.IsValidSpell)
+                InitSpell();
         }
 
         public void OnDestroy()
@@ -72,10 +74,23 @@ namespace Ygo.Controller.Card
         private void InitMonster()
         {
             view.SetLevel(Card.CurrentLevel.GetValueOrDefault());
+            view.ToggleMonsterBox(true);
+            view.ToggleSpellTrapBox(false);
+            view.ToggleSpellTrapTypeBox(false);
             view.SetMonsterText(cardMode == CardControllerMode.Zoom ? Card.CardText : "");
             view.SetMonsterType(GetMonsterType());
             view.SetMonsterAtk(Card.CurrentAtk.GetValueOrDefault().ToString());
             view.SetMonsterDef(Card.CurrentDef.GetValueOrDefault().ToString());
+        }
+
+        private void InitSpell()
+        {
+            view.SetLevel(0);
+            view.ToggleMonsterBox(false);
+            view.ToggleSpellTrapBox(true);
+            view.ToggleSpellTrapTypeBox(true);
+            view.SetSpellTrapText(cardMode == CardControllerMode.Zoom ? Card.CardText : "");
+            view.SetSpellTrapSubType(false, GetSpellTrapIconType());
         }
 
         private CardFrameType GetCardFrameType()
@@ -138,6 +153,49 @@ namespace Ygo.Controller.Card
                     return CardIconType.Spell;
                 case CardType.Trap:
                     return CardIconType.Trap;
+                case CardType.Unknown:
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private SpellTrapIconType GetSpellTrapIconType()
+        {
+            switch (Card.Data.CardType)
+            {
+                case CardType.Spell:
+                    switch (Card.Data.SpellData.Type)
+                    {
+                        case SpellType.Normal:
+                            return SpellTrapIconType.NoIcon;
+                        case SpellType.Quick:
+                            return SpellTrapIconType.QuickSpell;
+                        case SpellType.Equip:
+                            return SpellTrapIconType.EquipSpell;
+                        case SpellType.Continuous:
+                            return SpellTrapIconType.Continuous;
+                        case SpellType.Ritual:
+                            return SpellTrapIconType.RitualSpell;
+                        case SpellType.Field:
+                            return SpellTrapIconType.FieldSpell;
+                        case SpellType.Unknown:
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                case CardType.Trap:
+                    switch (Card.Data.TrapData.Type)
+                    {
+                        case TrapType.Normal:
+                            return SpellTrapIconType.NoIcon;
+                        case TrapType.Continuous:
+                            return SpellTrapIconType.Continuous;
+                        case TrapType.Counter:
+                            return SpellTrapIconType.CounterTrap;
+                        case TrapType.Unknown:
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                case CardType.Monster:
                 case CardType.Unknown:
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -18,7 +18,7 @@ namespace Ygo.Data
         [JsonProperty("spell_data")][CanBeNull]
         public SpellData SpellData { get; set; }
         [JsonProperty("trap_data")][CanBeNull]
-        public SpellData TrapData { get; set; }
+        public TrapData TrapData { get; set; }
 
         public void Validate()
         {

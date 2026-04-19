@@ -42,6 +42,14 @@ namespace Ygo.Core
             
             _turnContext.Init(StartingPLayerIndex, StartingPlayerHand);
             var cardEffectLibrary = new GameCardEffectLibrary(effectRepo, _turnContext);
+            foreach (var p in _turnContext.Players)
+            {
+                foreach (var c in p.CardsHandler.PlayerCards)
+                {
+                    c.SetText(c.Data.MonsterData?.FlavorText 
+                              ?? cardEffectLibrary.GetCardEffectTextByCardId(c.Data.Id));
+                }
+            }
             
             GameState.Setup(_turnContext, GameEventBus, cardEffectLibrary);
             RegisterHandlers();

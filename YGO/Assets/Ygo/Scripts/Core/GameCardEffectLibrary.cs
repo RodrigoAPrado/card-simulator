@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
 using Ygo.Core.Abstract;
 using Ygo.Core.Effects.Abstract;
 
@@ -35,6 +37,20 @@ namespace Ygo.Core
         {
             var effects = _cardEffects.GetValueOrDefault(cardId);
             return effects ?? new Dictionary<Guid, ICardEffect>();
+        }
+
+        public string GetCardEffectTextByCardId(string cardId)
+        {
+            var effects = _cardEffects.GetValueOrDefault(cardId);
+            if (effects == null)
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            foreach (var val in effects)
+            {
+                sb.Append(val.Value.Description);
+            }
+            return sb.ToString();
         }
 
         public ICardEffect GetCardEffectById(Guid effectId)

@@ -23,9 +23,9 @@ namespace Ygo.Core
             _playerHand = new List<ICardInstance>();
             _mainDeck = CreateDeck(repo, 40, ownerId);
             _playerCards = new List<ICardInstance>();
-            for (var i = 0; i < PlayerCards.Count; i++)
+            foreach (var t in _mainDeck)
             {
-                PlayerCards.Add(_mainDeck[i]);
+                _playerCards.Add(t);
             }
         }
         
@@ -61,7 +61,6 @@ namespace Ygo.Core
                 }
                 _mainDeck[0] = card;
                 _mainDeck.Add(c1);
-                var g = "";
             }
             else
             {

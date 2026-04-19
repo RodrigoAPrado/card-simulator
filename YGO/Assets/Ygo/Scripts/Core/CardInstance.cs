@@ -27,7 +27,7 @@ namespace Ygo.Core
         public bool IsXyz => Data.MonsterData?.Kinds?.Contains(MonsterKind.Xyz) == true;
         public bool IsLink => Data.MonsterData?.Kinds?.Contains(MonsterKind.Link) == true;
         public bool IsEffect => Data.MonsterData?.Kinds?.Contains(MonsterKind.Effect) == true;
-        public string CardText => Data.MonsterData?.FlavorText;
+        public string CardText { get; private set; }
         public bool TreatedAsSpell { get; private set; }
         public bool TreatedAsTrap { get; private set; }
         public bool TreatedAsMonster { get; private set; }
@@ -64,6 +64,11 @@ namespace Ygo.Core
             OwnerId = ownerId;
             ControllerId = ownerId;
             Data = data;
+        }
+
+        public void SetText(string text)
+        {
+            CardText = text;
         }
 
         public void Summon(IBoardZone zone)

@@ -11,7 +11,6 @@ namespace Ygo.View.Card
         [Header("Frame")] 
         [field: SerializeField]
         private Image frameImage;
-        
         [field: SerializeField] 
         private CardFrameDatabase frameDatabase;
 
@@ -22,7 +21,6 @@ namespace Ygo.View.Card
         [Header("Icon")]
         [field: SerializeField] 
         private Image iconImage;
-
         [field: SerializeField] 
         private CardIconDatabase iconDatabase;
         
@@ -33,22 +31,30 @@ namespace Ygo.View.Card
         [Header("Illustration")] 
         [field: SerializeField]
         private Image illustration;
-
         [field: SerializeField] 
         private Sprite emptyIllustrationSprite;
 
-        [Header("CardBox")] 
+        [Header("MonsterBox")]
+        [field: SerializeField]
+        private GameObject monsterBox;
         [field: SerializeField]
         private TextMeshProUGUI monsterType;
-        
         [field: SerializeField]
         private TextMeshProUGUI monsterText;
-        
         [field: SerializeField]
         private TextMeshProUGUI monsterAtk;
-        
         [field: SerializeField]
         private TextMeshProUGUI monsterDef;
+        
+        [Header("SpellTrapBox")]
+        [field: SerializeField]
+        private GameObject spellTrapTypeBox;
+        [field: SerializeField]
+        private SpellTrapTypeView spellTrapType;
+        [field: SerializeField]
+        private GameObject spellTrapBox;
+        [field: SerializeField]
+        private TextMeshProUGUI spellTrapText;
 
         [Header("Field")] 
         [field: SerializeField]
@@ -141,16 +147,19 @@ namespace Ygo.View.Card
 
         public void SetMonsterType(string value)
         {
+            monsterType.gameObject.SetActive(true);
             monsterType.text = value;
         }
 
         public void SetMonsterText(string value)
         {
+            monsterText.gameObject.SetActive(true);
             monsterText.text = value;
         }
 
         public void SetMonsterAtk(string value)
         {
+            monsterAtk.gameObject.SetActive(true);
             monsterAtk.text = value;
             
             if (_fieldEnabled)
@@ -161,12 +170,41 @@ namespace Ygo.View.Card
 
         public void SetMonsterDef(string value)
         {
+            monsterDef.gameObject.SetActive(true);
             monsterDef.text = value;
             
             if (_fieldEnabled)
             {
                 fieldDefText.text = value;
             }
+        }
+
+        public void SetSpellTrapText(string value)
+        {
+            spellTrapText.gameObject.SetActive(true);
+            spellTrapText.text = value;
+        }
+        
+        public void SetSpellTrapSubType(bool isTrap, SpellTrapIconType iconType)
+        {
+            spellTrapType.SetValues(isTrap, iconType != SpellTrapIconType.NoIcon);
+            if(iconType != SpellTrapIconType.NoIcon)
+                spellTrapType.SetIcon(iconType);
+        }
+
+        public void ToggleMonsterBox(bool value)
+        {
+            monsterBox.SetActive(value);
+        }
+        
+        public void ToggleSpellTrapBox(bool value)
+        {
+            spellTrapBox.SetActive(value);
+        }
+        
+        public void ToggleSpellTrapTypeBox(bool value)
+        {
+            spellTrapTypeBox.SetActive(value);
         }
 
         public void ToggleField(bool value)

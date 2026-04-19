@@ -43,6 +43,7 @@ namespace Ygo.Core.Abstract
         bool IsDestroyedByCardEffect { get; }
         int? TributeCost { get; }
         bool Tributed { get; }
+        void SetText(string text);
         void Summon(IBoardZone zone);
         void Set(IBoardZone zone);
         void AddToHand();
