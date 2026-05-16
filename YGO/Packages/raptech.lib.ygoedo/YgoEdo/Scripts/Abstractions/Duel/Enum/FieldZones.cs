@@ -1,0 +1,36 @@
+﻿namespace YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Enum
+{
+    public enum FieldZones
+    {
+        Monster0,
+        Monster1,
+        Monster2,
+        Monster3,
+        Monster4,
+        ExtraMonsterZone0,
+        ExtraMonsterZone1,
+        SpellTrap0,
+        SpellTrap1,
+        SpellTrap2,
+        SpellTrap3,
+        SpellTrap4,
+        FieldZone,
+        Pendulum0,
+        Pendulum1,
+        OpponentMonster0,
+        OpponentMonster1,
+        OpponentMonster2,
+        OpponentMonster3,
+        OpponentMonster4,
+        OpponentExtraMonsterZone0,
+        OpponentExtraMonsterZone1,
+        OpponentSpellTrap0,
+        OpponentSpellTrap1,
+        OpponentSpellTrap2,
+        OpponentSpellTrap3,
+        OpponentSpellTrap4,
+        OpponentFieldZone,
+        OpponentPendulum0,
+        OpponentPendulum1
+    }
+}

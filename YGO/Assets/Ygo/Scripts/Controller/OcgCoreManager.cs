@@ -9,7 +9,7 @@ namespace Ygo.Controller
         public void Awake()
         {
             var teste = new DuelBridge();
-            //teste.Start();
+            teste.Start();
         }
     }
 }

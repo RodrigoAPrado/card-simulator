@@ -1,0 +1,20 @@
+{
+    "name": "raptech.lib.ygoedo.domain",
+    "rootNamespace": "YgoEdo - Domain",
+    "references": [
+        "GUID:2f54daf81260fd9479e6aa8ec54f56ee",
+        "GUID:71c0949966f587649b80e8c2fe6a983d",
+        "GUID:de9dbb3251db39b4eaab854d00f35e35",
+        "GUID:73f7598bb6313ec45825a77ddd7674ec",
+        "GUID:4cb15abd1846aa247a62087bfc6fabf3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

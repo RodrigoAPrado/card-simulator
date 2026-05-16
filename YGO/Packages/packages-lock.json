@@ -288,6 +288,12 @@
       },
       "url": "https://packages.unity.com"
     },
+    "raptech.lib.ygoedo": {
+      "version": "file:raptech.lib.ygoedo",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

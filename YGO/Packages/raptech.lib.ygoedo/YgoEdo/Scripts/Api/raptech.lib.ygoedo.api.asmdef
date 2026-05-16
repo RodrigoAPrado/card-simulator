@@ -1,0 +1,20 @@
+{
+    "name": "raptech.lib.ygoedo.api",
+    "rootNamespace": "YgoEdo - Api",
+    "references": [
+        "GUID:9ce9baf374eb5aa41910cb88aef9864c",
+        "GUID:4cb15abd1846aa247a62087bfc6fabf3",
+        "GUID:71c0949966f587649b80e8c2fe6a983d",
+        "GUID:73f7598bb6313ec45825a77ddd7674ec",
+        "GUID:2f54daf81260fd9479e6aa8ec54f56ee"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

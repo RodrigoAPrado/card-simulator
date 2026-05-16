@@ -1,0 +1,17 @@
+{
+    "name": "raptech.lib.ygoedo.util",
+    "rootNamespace": "YgoEdo - Util",
+    "references": [
+        "GUID:71c0949966f587649b80e8c2fe6a983d",
+        "GUID:2f54daf81260fd9479e6aa8ec54f56ee"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
