@@ -5,10 +5,10 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message.Component.Command.Base
 {
     public abstract class BattleCmdChoice : IBattleCommand
     {
-        protected BattleCmdChoice(PlayerBattleAction action, uint sequence)
+        protected BattleCmdChoice(PlayerBattleAction action, uint index)
         {
             Action = action;
-            Index = sequence;
+            Index = index;
         }
 
         public PlayerBattleAction Action { get; }

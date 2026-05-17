@@ -6,7 +6,7 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message.Component.Command.Battle
 {
     public class BattleCmdToEndPhaseChoice : BattleCmdChoice, IBattleToEndPhase
     {
-        public BattleCmdToEndPhaseChoice(PlayerBattleAction action, uint sequence) : base(action, sequence)
+        public BattleCmdToEndPhaseChoice(PlayerBattleAction action, uint index) : base(action, index)
         {
         }
     }

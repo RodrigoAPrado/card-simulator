@@ -95,6 +95,8 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing
                 { OCG_GameMessage.MissedEffect, basicParser },
                 { OCG_GameMessage.TossCoin, tossCoinDiceParser },
                 { OCG_GameMessage.TossDice, tossCoinDiceParser },
+                { OCG_GameMessage.RockPaperScissors, new RockPaperScissorsParser() },
+                { OCG_GameMessage.HandRes, new HandResParser() },
                 { OCG_GameMessage.AnnounceRace, announceRaceAttributeParser },
                 { OCG_GameMessage.AnnounceAttrib, announceRaceAttributeParser },
                 { OCG_GameMessage.AnnounceCard, new AnnounceCardParser() },

@@ -23,11 +23,11 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Parser
 
             var choices = new List<IIdleCmdChoice>();
 
-            uint index = 0;
 
             // helper local
-            uint ReadCardList(PlayerIdleAction action, uint currentIndex)
+            void ReadCardList(PlayerIdleAction action)
             {
+                uint index = 0;
                 var count = reader.ReadInt32();
 
                 for (var i = count; i > 0; i--)
@@ -116,37 +116,33 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Parser
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(action), action, null);
+
                     }
-
-                    currentIndex++;
+                    index++;
                 }
-
-                return currentIndex;
             }
 
             // ordem FIXA do protocolo
-            index = ReadCardList(PlayerIdleAction.NormalSummon, index);
-            index = ReadCardList(PlayerIdleAction.SpecialSummon, index);
-            index = ReadCardList(PlayerIdleAction.ChangeCardPosition, index);
-            index = ReadCardList(PlayerIdleAction.Set, index);
-            index = ReadCardList(PlayerIdleAction.SpellOrTrapSet, index);
-            index = ReadCardList(PlayerIdleAction.EffectActivation, index);
+            ReadCardList(PlayerIdleAction.NormalSummon);
+            ReadCardList(PlayerIdleAction.SpecialSummon);
+            ReadCardList(PlayerIdleAction.ChangeCardPosition);
+            ReadCardList(PlayerIdleAction.Set);
+            ReadCardList(PlayerIdleAction.SpellOrTrapSet);
+            ReadCardList(PlayerIdleAction.EffectActivation);
 
             // fases
             if (reader.ReadByte() == 1)
             {
-                choices.Add(new IdleCmdToBattlePhase(PlayerIdleAction.GoToBattlePhase, index));
-                index++;
+                choices.Add(new IdleCmdToBattlePhase(PlayerIdleAction.GoToBattlePhase, 0));
             }
 
             if (reader.ReadByte() == 1)
             {
-                choices.Add(new IdleCmdToEndPhase(PlayerIdleAction.GotoEndPhase, index));
-                index++;
+                choices.Add(new IdleCmdToEndPhase(PlayerIdleAction.GotoEndPhase, 0));
             }
 
             if (reader.ReadByte() == 1)
-                choices.Add(new IdleCmdShuffleHand(PlayerIdleAction.ShuffleHand, index));
+                choices.Add(new IdleCmdShuffleHand(PlayerIdleAction.ShuffleHand, 0));
 
             return new SelectIdleCmdMessage(player, choices);
         }

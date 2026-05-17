@@ -9,7 +9,7 @@ using YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message.Component.Command.Base;
 
 namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message
 {
-    public class SelectBattleCmdMessage : IOcgMessage, ISelectBattleCommandMessage
+    public class SelectBattleCmdMessage : ISelectionOcgMessage, ISelectBattleCommandMessage
     {
         private readonly List<BattleCmdChoice> _choices;
 
@@ -48,6 +48,12 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message
             sb.AppendLine($"Player {Player}, input your action:");
             for (var i = 0; i < _choices.Count; i++) sb.AppendLine($"[{i}] => {_choices[i]}");
             return sb.ToString();
+        }
+
+        public bool CanCancel => false;
+        public byte[] Cancel()
+        {
+            return Array.Empty<byte>();
         }
     }
 }
