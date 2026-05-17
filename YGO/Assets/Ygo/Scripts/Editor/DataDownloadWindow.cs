@@ -48,7 +48,7 @@ namespace Ygo.Editor
 
         private static async Task DownloadCards()
         {
-            UnityWebRequest request = UnityWebRequest.Get("https://db.ygoprodeck.com/api/v7/cardinfo.php?&startdate=2000-01-01&enddate=2002-08-23&dateregion=tcg&type=Normal%20Monster");
+            UnityWebRequest request = UnityWebRequest.Get("https://db.ygoprodeck.com/api/v7/cardinfo.php");
             await request.SendWebRequest();
             
             while (!request.isDone)
@@ -60,40 +60,10 @@ namespace Ygo.Editor
             }
             
             var result = JsonConvert.DeserializeObject<CardDataModel>(request.downloadHandler.text);
-            var imgToDownload = new Dictionary<string, string>();
+            var imgToDownload = 
+                result.Data.SelectMany(model => model.CardImages)
+                    .ToDictionary(image => $"{image.Id}", image => image.ImageUrlCropped);
 
-            ClearDataFiles();
-            
-            foreach (var model in result.Data)
-            {
-                var cardData = new CardData();
-                cardData.Name = model.Name;
-                
-                var id = model.Id.ToString();
-                while (id.Length < 8)
-                {
-                    id = "0" + id;
-                }
-                cardData.Id = id;
-                
-                
-                switch (model.Type)
-                {
-                    case "Normal Monster":
-                        cardData.CardType = CardType.Monster;
-                        break;
-                }
-
-                MonsterData monsterData = null;
-                if(cardData.CardType == CardType.Monster)
-                    monsterData = GetMonsterData(model);
-
-                cardData.MonsterData = monsterData;
-                cardData.Validate();
-                SaveCardData(cardData);
-                imgToDownload.Add(id, model.CardImages.FirstOrDefault()?.ImageUrlCropped);
-            }
-            
             ClearImages();
             DownloadCardImages(imgToDownload);
         }
@@ -137,18 +107,6 @@ namespace Ygo.Editor
         private static void ClearImages()
         {
             var files = Directory.GetFiles(Application.dataPath + "/Resources/Card/Illustrations/");
-            foreach (var file in files)
-            {
-                File.Delete(file);
-            }
-        }
-
-        private static void ClearDataFiles()
-        {
-            if (!Directory.Exists(Application.streamingAssetsPath))
-                return;
-            
-            var files = Directory.GetFiles(Application.streamingAssetsPath + "/Ygo/Data/Cards/");
             foreach (var file in files)
             {
                 File.Delete(file);
