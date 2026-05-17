@@ -1,295 +1,136 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using Ygo.Controller.Component;
-using Ygo.Core.Abstract;
-using Ygo.Core.Board.Abstract;
-using Ygo.Data.Enums;
 using Ygo.View.Card;
 using Ygo.View.ScriptableObjects;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card.Enum;
 
 namespace Ygo.Controller.Card
 {
     public class CardController : MonoBehaviour
     {
         [field: SerializeField] 
-        public ZonePosition ZonePosition { get; private set; }
-        
-        [field: SerializeField] 
         private CardView view;
         
-        [field: SerializeField]
-        private CardControllerMode cardMode;
-        [field: SerializeField]
-        private HoverController hoverController;
-        [field: SerializeField]
-        private HighlightController highlightController;
-        
-
-        private Action<ICardInstance, bool> _onEnter;
-        private Action<ICardInstance> _onCLick;
-        
-        public ICardInstance Card { get; private set; }
+        public ICardData CardData { get; private set; }
         public bool Dirty { get; private set; }
-        public bool Enabled { get; private set; }
         private bool Hidden { get; set; }
         
-        public void Init(Action<ICardInstance, bool> onEnter = null, Action<ICardInstance> onClick = null)
+        public void Init(Action<uint, bool> onEnter = null)
         {
-            _onEnter = onEnter;
-            _onCLick = onClick;
-            view.ToggleField(cardMode == CardControllerMode.Field);
-            hoverController.Init(OnClick, OnEnter, OnExit, cardMode == CardControllerMode.Zoom);
-            highlightController.Init();
         }
 
-        public void UpdateCard(ICardInstance cardInstance, bool hidden = false)
+        public void UpdateCard(ICardData cardData)
         {
-            Card = cardInstance;
+            CardData = cardData;
             Dirty = false;
-            Hidden = hidden;
-            view.SetHidden(Hidden || (cardInstance?.IsFaceDown == true && cardMode != CardControllerMode.Zoom));
-            view.ToggleDefenseMode(cardInstance?.IsInDefense == true);
             view.Animate();
-
-            if (Hidden || (cardInstance?.IsFaceDown == true && cardMode != CardControllerMode.Zoom))
-                return;
             
-            view.SetName(Card.Data.Name);
+            view.SetName(CardData.Name);
             view.SetFrame(GetCardFrameType());
             view.SetIcon(GetCardIconType());
             view.SetIllustration(GetIllustrationFileName());
 
-            if (Card.IsValidMonster)
+            if (!CardData.Types.Contains(CardType.Spell) && !CardData.Types.Contains(CardType.Trap))
                 InitMonster();
-            if (Card.IsValidSpell)
-                InitSpell();
+            else
+                InitSpellTrap();
         }
 
         public void OnDestroy()
         {
-            Card = null;
+            CardData = null;
         }
 
         private void InitMonster()
         {
-            view.SetLevel(Card.CurrentLevel.GetValueOrDefault());
+            view.SetLevel(CardData.Level);
             view.ToggleMonsterBox(true);
             view.ToggleSpellTrapBox(false);
             view.ToggleSpellTrapTypeBox(false);
-            view.SetMonsterText(cardMode == CardControllerMode.Zoom ? Card.CardText : "");
+            view.SetMonsterText(CardData.Description);
             view.SetMonsterType(GetMonsterType());
-            view.SetMonsterAtk(Card.CurrentAtk.GetValueOrDefault().ToString());
-            view.SetMonsterDef(Card.CurrentDef.GetValueOrDefault().ToString());
+            view.SetMonsterAtk(CardData.OriginalAttack.ToString());
+            view.SetMonsterDef(CardData.OriginalDefense.ToString());
         }
 
-        private void InitSpell()
+        private void InitSpellTrap()
         {
             view.SetLevel(0);
             view.ToggleMonsterBox(false);
             view.ToggleSpellTrapBox(true);
             view.ToggleSpellTrapTypeBox(true);
-            view.SetSpellTrapText(cardMode == CardControllerMode.Zoom ? Card.CardText : "");
+            view.SetSpellTrapText(CardData.Description);
             view.SetSpellTrapSubType(false, GetSpellTrapIconType());
         }
 
         private CardFrameType GetCardFrameType()
         {
-            switch (Card.Data.CardType)
-            {
-                case CardType.Monster:
-                    if (!Card.IsValidMonster)
-                        throw new InvalidOperationException($"{nameof(Card.Data.MonsterData)} cannot be null.");
-                    if(Card.IsRitual)
-                        return Card.IsPendulum ? CardFrameType.RitualPendulum : CardFrameType.Ritual;
-                    if(Card.IsFusion)
-                        return Card.IsPendulum ? CardFrameType.FusionPendulum : CardFrameType.Fusion;
-                    if(Card.IsSynchro)
-                        return Card.IsPendulum ? CardFrameType.SynchroPendulum : CardFrameType.Synchro;
-                    if(Card.IsXyz)
-                        return Card.IsPendulum ? CardFrameType.XyzPendulum : CardFrameType.Xyz;
-                    if (Card.IsLink)
-                        return CardFrameType.Link;
-                    if (Card.IsEffect)
-                        return Card.IsPendulum ? CardFrameType.EffectPendulum : CardFrameType.Effect;
-                    return Card.IsPendulum ? CardFrameType.NormalPendulum : CardFrameType.Normal;
-                case CardType.Spell:
-                    return CardFrameType.Spell;
-                case CardType.Trap:
-                    return CardFrameType.Trap;
-                case CardType.Unknown:
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return (CardFrameType) CardData.Frame;
         }
 
         private CardIconType GetCardIconType()
         {
-            switch (Card.Data.CardType)
-            {
-                case CardType.Monster:
-                    if (!Card.IsValidMonster)
-                        throw new InvalidOperationException($"{nameof(Card.Data.MonsterData)} cannot be null.");
-                    switch (Card.Data.MonsterData?.Attribute)
-                    {
-                        case MonsterAttribute.Dark:
-                            return CardIconType.Dark;
-                        case MonsterAttribute.Light:
-                            return CardIconType.Light;
-                        case MonsterAttribute.Earth:
-                            return CardIconType.Earth;
-                        case MonsterAttribute.Water:
-                            return CardIconType.Water;
-                        case MonsterAttribute.Fire:
-                            return CardIconType.Fire;
-                        case MonsterAttribute.Wind:
-                            return CardIconType.Wind;
-                        case MonsterAttribute.Divine:
-                            return CardIconType.Divine;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                case CardType.Spell:
-                    return CardIconType.Spell;
-                case CardType.Trap:
-                    return CardIconType.Trap;
-                case CardType.Unknown:
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return (CardIconType) CardData.CardAttribute;
         }
 
         private SpellTrapIconType GetSpellTrapIconType()
         {
-            switch (Card.Data.CardType)
-            {
-                case CardType.Spell:
-                    switch (Card.Data.SpellData.Type)
-                    {
-                        case SpellType.Normal:
-                            return SpellTrapIconType.NoIcon;
-                        case SpellType.Quick:
-                            return SpellTrapIconType.QuickSpell;
-                        case SpellType.Equip:
-                            return SpellTrapIconType.EquipSpell;
-                        case SpellType.Continuous:
-                            return SpellTrapIconType.Continuous;
-                        case SpellType.Ritual:
-                            return SpellTrapIconType.RitualSpell;
-                        case SpellType.Field:
-                            return SpellTrapIconType.FieldSpell;
-                        case SpellType.Unknown:
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                case CardType.Trap:
-                    switch (Card.Data.TrapData.Type)
-                    {
-                        case TrapType.Normal:
-                            return SpellTrapIconType.NoIcon;
-                        case TrapType.Continuous:
-                            return SpellTrapIconType.Continuous;
-                        case TrapType.Counter:
-                            return SpellTrapIconType.CounterTrap;
-                        case TrapType.Unknown:
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                case CardType.Monster:
-                case CardType.Unknown:
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            if (CardData.Types.Contains(CardType.Continuous))
+                return SpellTrapIconType.Continuous;
+            if (CardData.Types.Contains(CardType.Counter))
+                return SpellTrapIconType.CounterTrap;
+            if (CardData.Types.Contains(CardType.Equip))
+                return SpellTrapIconType.EquipSpell;
+            if (CardData.Types.Contains(CardType.Field))
+                return SpellTrapIconType.FieldSpell;
+            if (CardData.Types.Contains(CardType.QuickPlay))
+                return SpellTrapIconType.QuickSpell;
+            if (CardData.Types.Contains(CardType.Ritual))
+                return SpellTrapIconType.RitualSpell;
+            return SpellTrapIconType.NoIcon;
         }
 
         private string GetIllustrationFileName()
         {
-            var id = Card.Data.Id.ToString();
-            var sb = new StringBuilder();
-            for (var i = 6; i > id.Length; i--)
-            {
-                sb.Append("0");
-            }
-
-            sb.Append(id);
-            return sb.ToString();
+            return "";
         }
 
         private string GetMonsterType()
         {
-            var monsterData = Card.Data.MonsterData;
-            if(monsterData == null)
-                throw new InvalidOperationException($"There is no monster data for {Card.Data.Id}");
             var sb = new StringBuilder();
-            sb.Append("[");
-            sb.Append(monsterData.Type.ToString());
-            if (monsterData.Kinds == null || monsterData.Kinds.Count == 0)
+            sb.Append($" {CardData.Type} ");
+            foreach (var cardType in CardData.Types)
             {
-                sb.Append("]");
-                return sb.ToString();
+                switch (cardType)
+                {
+                    case CardType.Effect:
+                    case CardType.Fusion:
+                    case CardType.Ritual:
+                    case CardType.Spirit:
+                    case CardType.Union:
+                    case CardType.Gemini:
+                    case CardType.Tuner:
+                    case CardType.Synchro:
+                    case CardType.Token:
+                    case CardType.Toon:
+                    case CardType.Xyz:
+                    case CardType.Pendulum:
+                    case CardType.Link:
+                        continue;
+                }
+
+                sb.Append($"/ {cardType} ");
             }
-            foreach (var kind in monsterData.Kinds)
-            {
-                if (kind == MonsterKind.Normal)
-                    continue;
-                sb.Append("/");
-                sb.Append(kind.ToString());
-            }
-            sb.Append("]");
             return sb.ToString();
-        }
-
-        public void OnEnter()
-        {
-            if (!Enabled)
-                return;
-            if (cardMode == CardControllerMode.Zoom) 
-                return;
-            
-            _onEnter?.Invoke(Card, Hidden);
-        }
-
-        public void OnExit()
-        {
-            if (!Enabled)
-                return;
-            if (cardMode == CardControllerMode.Zoom) 
-                return;
-        }
-
-        public void OnClick()
-        {
-            if (!Enabled)
-                return;
-            _onCLick?.Invoke(Card);
         }
 
         public void SetDirty()
         {
             Dirty = true;
-        }
-
-        public void Enable()
-        {
-            Enabled = true;
-            gameObject.SetActive(true);
-        }
-
-        public void Disable()
-        {
-            Enabled = false;
-            Card = null;
-            view.Clear();
-            gameObject.SetActive(false);
-            Dirty = false;
-        }
-        
-        public void ToggleHighlight(bool value)
-        {
-            if(value)
-                highlightController.Enable();
-            else
-                highlightController.Disable();
         }
     }
 }

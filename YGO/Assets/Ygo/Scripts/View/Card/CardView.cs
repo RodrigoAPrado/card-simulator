@@ -120,7 +120,7 @@ namespace Ygo.View.Card
             }
         }
 
-        public void SetLevel(int value)
+        public void SetLevel(uint value)
         {
             for (var i = 0; i < levelsContainer.Length; i++)
             {

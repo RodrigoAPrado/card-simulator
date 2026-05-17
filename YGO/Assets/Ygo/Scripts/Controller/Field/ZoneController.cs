@@ -1,8 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Ygo.Controller.Component;
-using Ygo.Core;
-using Ygo.Core.Board.Abstract;
 using Ygo.View.Field;
 
 namespace Ygo.Controller.Field
@@ -13,26 +10,11 @@ namespace Ygo.Controller.Field
         private HoverController hoverController;
         [field: SerializeField] 
         private HighlightController highlightController;
-        
-        [field: SerializeField] 
-        public ZonePosition Position { get; private set; }
         [field: SerializeField] 
         private ZoneView view;
-
-        private Action<IBoardZone> _onClick;
-        public IBoardZone Zone { get; private set; }
         
-        public void Init(Action<IBoardZone> onClick)
+        public void Init()
         {
-            _onClick = onClick;
-            hoverController.Init(onClick: OnClick);
-            view.Init();
-            highlightController.Init();
-        }
-
-        public void SetBoardZone(IBoardZone zone)
-        {
-            Zone = zone;
         }
 
         public void ToggleHighlight(bool value)
@@ -41,11 +23,6 @@ namespace Ygo.Controller.Field
                 highlightController.Enable();
             else
                 highlightController.Disable();
-        }
-
-        private void OnClick()
-        {
-            _onClick?.Invoke(Zone);
         }
     }
 }

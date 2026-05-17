@@ -4,22 +4,22 @@ namespace Ygo.View.ScriptableObjects
 {
     public enum CardFrameType
     {
-        Normal,
-        Effect,
-        Ritual,
-        Fusion,
-        Synchro,
-        Xyz,
-        Link,
-        NormalPendulum,
-        EffectPendulum,
-        RitualPendulum,
-        FusionPendulum,
-        SynchroPendulum,
-        XyzPendulum,
-        Spell,
-        Trap,
-        Token
+        Normal = 0,
+        NormalPendulum = 1,
+        Effect = 2,
+        EffectPendulum = 3,
+        Ritual = 4,
+        RitualPendulum = 5,
+        Fusion = 6,
+        FusionPendulum = 7,
+        Synchro = 8,
+        SynchroPendulum = 9,
+        Xyz = 10,
+        XyzPendulum = 11,
+        Link = 12,
+        Spell = 13,
+        Trap = 14,
+        Token = 15
     }
     
     [CreateAssetMenu(fileName = "CardFrameDatabase", menuName = "Cards/CardFrameDatabase")]

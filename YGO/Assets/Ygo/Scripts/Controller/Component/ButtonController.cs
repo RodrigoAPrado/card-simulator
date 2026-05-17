@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using Ygo.Core.Actions.Abstract;
 using Ygo.View;
 
 namespace Ygo.Controller.Component
