@@ -46,11 +46,58 @@ namespace Ygo.Editor
             }
         }
 
+        private static List<Tuple<string, string>> CardDates = new()
+        {
+            /*new Tuple<string, string>("2000-01-01", "2001-08-03"),
+            new Tuple<string, string>("2001-08-04", "2002-08-03"),
+            new Tuple<string, string>("2002-08-04", "2003-08-03"),
+            new Tuple<string, string>("2003-08-04", "2004-08-03"),
+            new Tuple<string, string>("2004-08-04", "2005-08-03"),
+            new Tuple<string, string>("2005-08-04", "2006-08-03"),
+            new Tuple<string, string>("2006-08-04", "2007-08-03"),
+            new Tuple<string, string>("2007-08-04", "2008-08-03"),
+            new Tuple<string, string>("2008-08-04", "2009-08-03"),
+            new Tuple<string, string>("2009-08-04", "2010-08-03"),
+            new Tuple<string, string>("2010-08-04", "2011-08-03"),
+            new Tuple<string, string>("2011-08-04", "2012-08-03"),
+            new Tuple<string, string>("2012-08-04", "2013-08-03"),
+            new Tuple<string, string>("2013-08-04", "2014-08-03"),
+            new Tuple<string, string>("2014-08-04", "2015-08-03"),
+            new Tuple<string, string>("2015-08-04", "2016-08-03"),*/
+            new Tuple<string, string>("2016-08-04", "2017-08-03"),
+            new Tuple<string, string>("2017-08-04", "2018-08-03"),
+            new Tuple<string, string>("2018-08-04", "2019-08-03"),
+            new Tuple<string, string>("2019-08-04", "2020-08-03"),
+            new Tuple<string, string>("2020-08-04", "2021-08-03"),
+            new Tuple<string, string>("2021-08-04", "2022-08-03"),
+            new Tuple<string, string>("2022-08-04", "2023-08-03"),
+            new Tuple<string, string>("2023-08-04", "2024-08-03"),
+            new Tuple<string, string>("2024-08-04", "2025-08-03"),
+            new Tuple<string, string>("2025-08-04", "2026-08-04")
+        };
+
         private static async Task DownloadCards()
         {
-            UnityWebRequest request = UnityWebRequest.Get("https://db.ygoprodeck.com/api/v7/cardinfo.php");
-            await request.SendWebRequest();
+            Debug.Log("Downloading Cards...");
+            //ClearImages();
+
+            var index = 0f;
+            foreach (var date in CardDates)
+            {
+                var percent = index / (CardDates.Count) * 100;
+                percent = Mathf.Floor(percent * 100f) / 100f;
+                Debug.Log($"Downloading Jsons: {percent}%");
+                await DownloadJsons(date.Item1, date.Item2);
+                index++;
+            }
             
+            //&startdate=2000-01-01&enddate=2002-08-23&dateregion=tcg
+        }
+
+        private static async Task DownloadJsons(string startDate, string endDate)
+        {
+            UnityWebRequest request = UnityWebRequest.Get($"https://db.ygoprodeck.com/api/v7/cardinfo.php?startdate={startDate}&enddate={endDate}&dateregion=tcg");
+            await request.SendWebRequest();
             while (!request.isDone)
                 await Task.Yield();
             
@@ -63,9 +110,7 @@ namespace Ygo.Editor
             var imgToDownload = 
                 result.Data.SelectMany(model => model.CardImages)
                     .ToDictionary(image => $"{image.Id}", image => image.ImageUrlCropped);
-
-            ClearImages();
-            DownloadCardImages(imgToDownload);
+            await DownloadCardImages(imgToDownload);
         }
 
         private static async Task DownloadCardImages(Dictionary<string, string> urlDictionary)
@@ -75,6 +120,11 @@ namespace Ygo.Editor
             float index = 0;
             foreach (var value in urlDictionary)
             {
+                var fileName = value.Key + ".jpg";
+                var fullPath = Path.Combine(path, fileName);
+                if (File.Exists(fullPath))
+                    return;
+                
                 using (UnityWebRequest request = UnityWebRequest.Get(value.Value))
                 {
                     var operation = request.SendWebRequest();
@@ -89,10 +139,6 @@ namespace Ygo.Editor
                     }
                     
                     var data = request.downloadHandler.data;
-
-                    var fileName = value.Key + ".jpg";
-
-                    var fullPath = Path.Combine(path, fileName);
 
                     await File.WriteAllBytesAsync(fullPath, data);
                     index++;
