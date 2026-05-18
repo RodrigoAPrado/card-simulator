@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,22 +57,6 @@ namespace Ygo.View.Card
         [field: SerializeField]
         private TextMeshProUGUI spellTrapText;
 
-        [Header("Field")] 
-        [field: SerializeField]
-        private GameObject fieldBox;
-        [field: SerializeField]
-        private TextMeshProUGUI fieldLevelText;
-        [field: SerializeField]
-        private Transform cardContent;
-        [field: SerializeField]
-        private Transform fieldAtkParent;
-        [field: SerializeField]
-        private Transform fieldDefParent;
-        [field: SerializeField]
-        private TextMeshProUGUI fieldAtkText;
-        [field: SerializeField]
-        private TextMeshProUGUI fieldDefText;
-
         [Header("CardBack")]
         [field: SerializeField]
         private GameObject cardBack;
@@ -86,7 +71,6 @@ namespace Ygo.View.Card
             _isHidden = value;
             cardBack.SetActive(_isHidden);
             cardFront.SetActive(!_isHidden);
-            fieldBox.SetActive(_fieldEnabled && !_isHidden);
         }
         
         public void SetFrame(CardFrameType type)
@@ -126,11 +110,6 @@ namespace Ygo.View.Card
             {
                 levelsContainer[i].SetActive(value > i);
             }
-
-            if (_fieldEnabled)
-            {
-                fieldLevelText.text = value.ToString();
-            }
         }
 
         public void SetIllustration(Sprite value)
@@ -154,22 +133,12 @@ namespace Ygo.View.Card
         {
             monsterAtk.gameObject.SetActive(true);
             monsterAtk.text = value;
-            
-            if (_fieldEnabled)
-            {
-                fieldAtkText.text = value;
-            }
         }
 
         public void SetMonsterDef(string value)
         {
             monsterDef.gameObject.SetActive(true);
             monsterDef.text = value;
-            
-            if (_fieldEnabled)
-            {
-                fieldDefText.text = value;
-            }
         }
 
         public void SetSpellTrapText(string value)
@@ -200,42 +169,31 @@ namespace Ygo.View.Card
             spellTrapTypeBox.SetActive(value);
         }
 
-        public void ToggleField(bool value)
+        public void SetTitleColor(CardFrameType frameType)
         {
-            _fieldEnabled = value;
-            fieldBox.SetActive(_fieldEnabled && !_isHidden);
-        }
-
-        public void ToggleDefenseMode(bool value)
-        {
-            if (!_fieldEnabled)
-                return;
-            cardContent.localRotation = Quaternion.Euler(0f, 0f, value ? 90f : 0f);
-            fieldAtkParent.localScale = new Vector3(value ? 0.7f : 1.1f, value ? 0.7f : 1.1f, 1f);
-            fieldDefParent.localScale = new Vector3(value ? 1.1f : 0.7f, value ? 1.1f : 0.7f, 1f);
-        }
-        
-        public void Clear()
-        {
-            cardContent.DOKill();
-        }
-
-        public void Animate()
-        {
-            if(_fieldEnabled)
-                AnimateFloating();
-        }
-        
-        private void AnimateFloating()
-        {
-            // 1. Garante que qualquer animação anterior no cardContent seja parada para não encavalar
-            cardContent.DOKill();
-
-            // 2. Faz o movimento no eixo Z local
-            // Supondo que 0.1f seja a altura da flutuação
-            cardContent.DOLocalMoveZ(-0.08f, 1.2f) 
-                .SetEase(Ease.InOutSine) // Movimento suave nas extremidades
-                .SetLoops(-1, LoopType.Yoyo); // -1 = Infinito, Yoyo = vai e volta
+            switch (frameType)
+            {
+                case CardFrameType.Normal:
+                case CardFrameType.NormalPendulum:
+                case CardFrameType.Effect:
+                case CardFrameType.EffectPendulum:
+                case CardFrameType.Ritual:
+                case CardFrameType.RitualPendulum:
+                case CardFrameType.Fusion:
+                case CardFrameType.FusionPendulum:
+                case CardFrameType.Synchro:
+                case CardFrameType.SynchroPendulum:
+                case CardFrameType.Token:
+                    cardName.color = Color.black;
+                    break;
+                case CardFrameType.Xyz:
+                case CardFrameType.XyzPendulum:
+                case CardFrameType.Link:
+                case CardFrameType.Spell:
+                case CardFrameType.Trap:
+                    cardName.color = Color.white;
+                    break;
+            }
         }
     }
 }

@@ -32,9 +32,12 @@ namespace Ygo.Controller.Card
             Dirty = false;
             
             view.SetName(_cardData.Name);
-            view.SetFrame(GetCardFrameType());
-            view.SetIcon(GetCardIconType());
+            var cardFrame = GetCardFrameType();
+            
+            view.SetFrame(cardFrame);
+            view.SetTitleColor(cardFrame);
             view.SetIllustration(_cardImageLibrary.GetCardImage(card.Code));
+            view.SetIcon(GetCardIconType());
 
             if (!_cardData.Types.Contains(CardType.Spell) && !_cardData.Types.Contains(CardType.Trap))
                 InitMonster();
@@ -71,12 +74,12 @@ namespace Ygo.Controller.Card
 
         private CardFrameType GetCardFrameType()
         {
-            return (CardFrameType) _cardData.Frame;
+            return (CardFrameType) ((int) _cardData.Frame);
         }
 
         private CardIconType GetCardIconType()
         {
-            return (CardIconType) _cardData.CardAttribute;
+            return (CardIconType) ((int) _cardData.CardAttribute);
         }
 
         private SpellTrapIconType GetSpellTrapIconType()
@@ -99,12 +102,12 @@ namespace Ygo.Controller.Card
         private string GetMonsterType()
         {
             var sb = new StringBuilder();
-            sb.Append($" {_cardData.Type} ");
+            sb.Append($"[ {_cardData.Type} ");
             foreach (var cardType in _cardData.Types)
             {
                 switch (cardType)
                 {
-                    case CardType.Effect:
+                    case CardType.Monster:
                     case CardType.Fusion:
                     case CardType.Ritual:
                     case CardType.Spirit:
@@ -122,6 +125,7 @@ namespace Ygo.Controller.Card
 
                 sb.Append($"/ {cardType} ");
             }
+            sb.Append("]");
             return sb.ToString();
         }
 

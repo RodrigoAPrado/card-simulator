@@ -19,7 +19,7 @@ namespace Ygo.Controller.Handler
         public async UniTask HandleMessage(IDrawMessage message)
         {
             var handController = _handControllers[message.Player];
-            await handController.Draw(message.Cards.Select(x => x.CardCode).ToList());
+            await handController.Draw(message.Cards);
         }
 
         public async UniTask HandleMessage(IDuelMessage message)

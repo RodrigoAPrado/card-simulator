@@ -12,6 +12,7 @@ using Ygo.Controller.Handler.Base;
 using Ygo.Core.Duel;
 using Ygo.Service;
 using Ygo.View;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message.Base;
 
@@ -48,6 +49,8 @@ namespace Ygo.Controller
         private TextViewUI poVPlayerText;
         [field: SerializeField]
         private TextViewUI opponentPlayerText;
+        [field: SerializeField]
+        private AnnouncementController announcementController;
         
         private GameApplication _application;
         private DuelInstance _duelInstance;
@@ -63,10 +66,11 @@ namespace Ygo.Controller
             _smallImageLibrary = new CardImageLibrary(_duelInstance.CardsInDuel, true);
             _smallImageLibrary.LoadImages();
             _croppedImageLibrary = new CardImageLibrary(_duelInstance.CardsInDuel, false);
+            _croppedImageLibrary.LoadImages();
             
             foreach (var handController in handControllers)
             {
-                handController.Init(_smallImageLibrary);
+                handController.Init(_smallImageLibrary, _duelInstance.CardsInDuel, UpdateZoomCard);
             }
             
             foreach (var fieldController in fieldControllers)
@@ -80,9 +84,10 @@ namespace Ygo.Controller
             }
             
             actionController.Init();
-            zoomCard.Init();
+            zoomCard.Init(_croppedImageLibrary);
             phaseController.Init();
             confirmationController.Init();
+            announcementController.Init();
 
             RegisterHandlers();
         }
@@ -92,14 +97,19 @@ namespace Ygo.Controller
             RunDuel();
         }
 
+        private void UpdateZoomCard(ICardData cardData, bool hidden)
+        {
+            zoomCard.UpdateCard(cardData);
+        }
+
         private void RegisterHandlers()
         {
             var handlers = new Dictionary<Type, IHandler>
-            { { typeof(IDrawMessage), new DrawHandler(new Dictionary<int, HandController>()
             {
-                {0, handControllers[0]},
-                {1, handControllers[1]},
-            }) } };
+                { typeof(IDrawMessage), new DrawHandler(new Dictionary<int, HandController>() { {0, handControllers[0]}, {1, handControllers[1]}, }) },
+                { typeof(INewTurnMessage), new NewTurnHandler(announcementController) },
+                { typeof(INewPhaseMessage), new NewPhaseHandler(announcementController) }
+            };
 
             _handlerRegistry = new HandlerRegistry(handlers);
         }
@@ -131,6 +141,12 @@ namespace Ygo.Controller
             {
                 case IDrawMessage drawMessage:
                     await _handlerRegistry.GetHandler<IDrawMessage>().HandleMessage(drawMessage);
+                    break;
+                case INewTurnMessage newTurnMessage:
+                    await _handlerRegistry.GetHandler<INewTurnMessage>().HandleMessage(newTurnMessage);
+                    break;
+                case INewPhaseMessage newPhaseMessage:
+                    await _handlerRegistry.GetHandler<INewPhaseMessage>().HandleMessage(newPhaseMessage);
                     break;
                 default:
                     Debug.Log(duelMessage);

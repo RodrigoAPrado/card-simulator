@@ -7,11 +7,11 @@ namespace Ygo.Controller.Data
 {
     public class CardImageLibrary
     {
-        private readonly IReadOnlyList<ICardData> _cards;
+        private readonly IReadOnlyDictionary<uint, ICardData> _cards;
         private readonly bool _small;
         private Dictionary<uint, Sprite> _cardImages;
         
-        public CardImageLibrary(IReadOnlyList<ICardData> cards, bool small)
+        public CardImageLibrary(IReadOnlyDictionary<uint, ICardData> cards, bool small)
         {
             _cards = cards;
             _small = small;
@@ -22,12 +22,12 @@ namespace Ygo.Controller.Data
             _cardImages = new Dictionary<uint, Sprite>();
             foreach (var card in _cards)
             {
-                if (_cardImages.ContainsKey(card.Code))
+                if (_cardImages.ContainsKey(card.Key))
                     continue;
-                var sprite = ImageLoader.LoadSpriteFromFile(card.Code, _small);
+                var sprite = ImageLoader.LoadSpriteFromFile(card.Key, _small);
                 if(sprite == null)
-                    sprite = ImageLoader.LoadSpriteFromFile(card.Alias, _small);
-                _cardImages.Add(card.Code, sprite);
+                    sprite = ImageLoader.LoadSpriteFromFile(card.Value.Alias, _small);
+                _cardImages.Add(card.Key, sprite);
             }
         }
 

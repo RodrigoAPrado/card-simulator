@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Ygo.Scripts.Data;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
@@ -10,7 +11,7 @@ namespace Ygo.Core.Duel
 {
     public class DuelInstance
     {
-        public IReadOnlyList<ICardData> CardsInDuel { get; private set; }
+        public IReadOnlyDictionary<uint, ICardData> CardsInDuel { get; private set; }
         
         private readonly IDuelManager _duelManager;
         private bool _started;
@@ -37,12 +38,20 @@ namespace Ygo.Core.Duel
 
             var duel = _duelManager.CurrentDuel;
             
-            var cardsInDuel = new List<ICardData>();
-            cardsInDuel.AddRange(duelData.Duelist0.MainDeck);
-            cardsInDuel.AddRange(duelData.Duelist0.ExtraDeck);
-            cardsInDuel.AddRange(duelData.Duelist1.MainDeck);
-            cardsInDuel.AddRange(duelData.Duelist1.ExtraDeck);
-            CardsInDuel = cardsInDuel;
+            var cardsInDuelList = new List<ICardData>();
+            cardsInDuelList.AddRange(duelData.Duelist0.MainDeck);
+            cardsInDuelList.AddRange(duelData.Duelist0.ExtraDeck);
+            cardsInDuelList.AddRange(duelData.Duelist1.MainDeck);
+            cardsInDuelList.AddRange(duelData.Duelist1.ExtraDeck);
+            
+            var cardsInDuelDictionary = new Dictionary<uint, ICardData>();
+
+            foreach (var card in cardsInDuelList.Where(card => !cardsInDuelDictionary.TryAdd(card.Code, card)))
+            {
+                continue;
+            }
+            
+            CardsInDuel = cardsInDuelDictionary;
             
             result = duel.SetupDuelOptions(
                 duelData.DuelMode,

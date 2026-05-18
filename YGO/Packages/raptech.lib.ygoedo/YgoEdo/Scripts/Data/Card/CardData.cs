@@ -102,7 +102,7 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Data.Card
             var types = new List<CardType>();
 
             foreach (OCG_CardType t in Enum.GetValues(typeof(OCG_CardType)))
-                if (((uint)t & Data.type) == 1)
+                if (((uint)t & Data.type) != 0)
                     types.Add(t.ToCardDataType());
 
             return types;

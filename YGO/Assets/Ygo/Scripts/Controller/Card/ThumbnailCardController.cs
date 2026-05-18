@@ -4,6 +4,7 @@ using UnityEngine;
 using Ygo.Controller.Component;
 using Ygo.View.Card;
 using Ygo.View.ScriptableObjects;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card.Enum;
 
 namespace Ygo.Controller.Card
@@ -20,14 +21,14 @@ namespace Ygo.Controller.Card
         [field: SerializeField]
         private HighlightController highlightController;
 
-        private Action<uint, bool> _onEnter;
+        private Action<ICardData, bool> _onEnter;
         
-        public uint CardCode { get; private set; }
+        public ICardData CardData { get; private set; }
         public bool Dirty { get; private set; }
         public bool Enabled { get; private set; }
         private bool Hidden { get; set; }
         
-        public void Init(Action<uint, bool> onEnter = null)
+        public void Init(Action<ICardData, bool> onEnter)
         {
             _onEnter = onEnter;
             view.ToggleField(cardMode == CardControllerMode.Field);
@@ -37,16 +38,16 @@ namespace Ygo.Controller.Card
             gameObject.SetActive(false);
         }
 
-        public void UpdateCard(uint cardCode, Sprite cardImage)
+        public void UpdateCard(ICardData cardData, Sprite cardImage)
         {
-            CardCode = cardCode;
+            CardData = cardData;
             Dirty = false;
             view.SetIllustration(cardImage);
         }
 
         public void OnDestroy()
         {
-            CardCode = 0;
+            CardData = null;
         }
 
         private void InitMonster()
@@ -68,7 +69,7 @@ namespace Ygo.Controller.Card
             if (!Enabled)
                 return;
             
-            _onEnter?.Invoke(CardCode, Hidden);
+            _onEnter?.Invoke(CardData, Hidden);
         }
 
         public void OnExit()
@@ -97,7 +98,7 @@ namespace Ygo.Controller.Card
         public void Disable()
         {
             Enabled = false;
-            CardCode = 0;
+            CardData = null;
             view.Clear();
             gameObject.SetActive(false);
             Dirty = false;
