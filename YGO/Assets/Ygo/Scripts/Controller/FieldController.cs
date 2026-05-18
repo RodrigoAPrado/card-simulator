@@ -20,6 +20,7 @@ namespace Ygo.Controller
         
         public void Init()
         {
+            
         }
     }
 }

@@ -133,16 +133,9 @@ namespace Ygo.View.Card
             }
         }
 
-        public void SetIllustration(string value)
+        public void SetIllustration(Sprite value)
         {
-            var path = "Card/Illustrations/" + value;
-            var sprite = Resources.Load<Sprite>(path);
-            if(sprite != null)
-                illustration.sprite = sprite;
-            else
-            {
-                illustration.sprite = emptyIllustrationSprite;
-            }
+            illustration.sprite = value;
         }
 
         public void SetMonsterType(string value)

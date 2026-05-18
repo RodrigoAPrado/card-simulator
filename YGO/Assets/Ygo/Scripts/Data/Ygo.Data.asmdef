@@ -1,3 +1,16 @@
 {
-	"name": "Ygo.Data"
+    "name": "Ygo.Data",
+    "rootNamespace": "",
+    "references": [
+        "GUID:71c0949966f587649b80e8c2fe6a983d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

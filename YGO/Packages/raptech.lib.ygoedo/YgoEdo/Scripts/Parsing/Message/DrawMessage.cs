@@ -11,13 +11,13 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message
     {
         private readonly List<DrawnCard> _cards;
 
-        public DrawMessage(uint player, List<DrawnCard> cards)
+        public DrawMessage(byte player, List<DrawnCard> cards)
         {
             Player = player;
             _cards = cards;
         }
 
-        public uint Player { get; }
+        public byte Player { get; }
         public IReadOnlyList<IDrawnCard> Cards => _cards;
 
         public override string ToString()

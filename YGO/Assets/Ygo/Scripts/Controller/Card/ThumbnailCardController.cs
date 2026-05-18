@@ -33,13 +33,15 @@ namespace Ygo.Controller.Card
             view.ToggleField(cardMode == CardControllerMode.Field);
             hoverController.Init(OnClick, OnEnter, OnExit);
             highlightController.Init();
+            Enabled = false;
+            gameObject.SetActive(false);
         }
 
-        public void UpdateCard(uint cardCode)
+        public void UpdateCard(uint cardCode, Sprite cardImage)
         {
             CardCode = cardCode;
             Dirty = false;
-            view.SetIllustration(GetIllustrationFileName());
+            view.SetIllustration(cardImage);
         }
 
         public void OnDestroy()

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Ygo.Controller.Component;
+using Ygo.Controller.Data;
 using Ygo.View.Card;
 using Ygo.View.ScriptableObjects;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
@@ -14,27 +15,28 @@ namespace Ygo.Controller.Card
     {
         [field: SerializeField] 
         private CardView view;
-        
-        public ICardData CardData { get; private set; }
+
+        private ICardData _cardData;
         public bool Dirty { get; private set; }
         private bool Hidden { get; set; }
+        private CardImageLibrary _cardImageLibrary;
         
-        public void Init(Action<uint, bool> onEnter = null)
+        public void Init(CardImageLibrary cardImageLibrary)
         {
+            _cardImageLibrary = cardImageLibrary;
         }
 
-        public void UpdateCard(ICardData cardData)
+        public void UpdateCard(ICardData card)
         {
-            CardData = cardData;
+            _cardData = card;
             Dirty = false;
-            view.Animate();
             
-            view.SetName(CardData.Name);
+            view.SetName(_cardData.Name);
             view.SetFrame(GetCardFrameType());
             view.SetIcon(GetCardIconType());
-            view.SetIllustration(GetIllustrationFileName());
+            view.SetIllustration(_cardImageLibrary.GetCardImage(card.Code));
 
-            if (!CardData.Types.Contains(CardType.Spell) && !CardData.Types.Contains(CardType.Trap))
+            if (!_cardData.Types.Contains(CardType.Spell) && !_cardData.Types.Contains(CardType.Trap))
                 InitMonster();
             else
                 InitSpellTrap();
@@ -42,19 +44,19 @@ namespace Ygo.Controller.Card
 
         public void OnDestroy()
         {
-            CardData = null;
+            _cardData = null;
         }
 
         private void InitMonster()
         {
-            view.SetLevel(CardData.Level);
+            view.SetLevel(_cardData.Level);
             view.ToggleMonsterBox(true);
             view.ToggleSpellTrapBox(false);
             view.ToggleSpellTrapTypeBox(false);
-            view.SetMonsterText(CardData.Description);
+            view.SetMonsterText(_cardData.Description);
             view.SetMonsterType(GetMonsterType());
-            view.SetMonsterAtk(CardData.OriginalAttack.ToString());
-            view.SetMonsterDef(CardData.OriginalDefense.ToString());
+            view.SetMonsterAtk(_cardData.OriginalAttack.ToString());
+            view.SetMonsterDef(_cardData.OriginalDefense.ToString());
         }
 
         private void InitSpellTrap()
@@ -63,47 +65,42 @@ namespace Ygo.Controller.Card
             view.ToggleMonsterBox(false);
             view.ToggleSpellTrapBox(true);
             view.ToggleSpellTrapTypeBox(true);
-            view.SetSpellTrapText(CardData.Description);
+            view.SetSpellTrapText(_cardData.Description);
             view.SetSpellTrapSubType(false, GetSpellTrapIconType());
         }
 
         private CardFrameType GetCardFrameType()
         {
-            return (CardFrameType) CardData.Frame;
+            return (CardFrameType) _cardData.Frame;
         }
 
         private CardIconType GetCardIconType()
         {
-            return (CardIconType) CardData.CardAttribute;
+            return (CardIconType) _cardData.CardAttribute;
         }
 
         private SpellTrapIconType GetSpellTrapIconType()
         {
-            if (CardData.Types.Contains(CardType.Continuous))
+            if (_cardData.Types.Contains(CardType.Continuous))
                 return SpellTrapIconType.Continuous;
-            if (CardData.Types.Contains(CardType.Counter))
+            if (_cardData.Types.Contains(CardType.Counter))
                 return SpellTrapIconType.CounterTrap;
-            if (CardData.Types.Contains(CardType.Equip))
+            if (_cardData.Types.Contains(CardType.Equip))
                 return SpellTrapIconType.EquipSpell;
-            if (CardData.Types.Contains(CardType.Field))
+            if (_cardData.Types.Contains(CardType.Field))
                 return SpellTrapIconType.FieldSpell;
-            if (CardData.Types.Contains(CardType.QuickPlay))
+            if (_cardData.Types.Contains(CardType.QuickPlay))
                 return SpellTrapIconType.QuickSpell;
-            if (CardData.Types.Contains(CardType.Ritual))
+            if (_cardData.Types.Contains(CardType.Ritual))
                 return SpellTrapIconType.RitualSpell;
             return SpellTrapIconType.NoIcon;
-        }
-
-        private string GetIllustrationFileName()
-        {
-            return "";
         }
 
         private string GetMonsterType()
         {
             var sb = new StringBuilder();
-            sb.Append($" {CardData.Type} ");
-            foreach (var cardType in CardData.Types)
+            sb.Append($" {_cardData.Type} ");
+            foreach (var cardType in _cardData.Types)
             {
                 switch (cardType)
                 {

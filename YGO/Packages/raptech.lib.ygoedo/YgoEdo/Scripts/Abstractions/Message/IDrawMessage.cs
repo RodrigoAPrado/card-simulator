@@ -6,7 +6,7 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message
 {
     public interface IDrawMessage : IDuelMessage
     {
-        uint Player { get; }
+        byte Player { get; }
         IReadOnlyList<IDrawnCard> Cards { get; }
     }
 }
