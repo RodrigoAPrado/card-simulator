@@ -114,6 +114,11 @@ namespace Ygo.Controller
             _handlerRegistry = new HandlerRegistry(handlers);
         }
 
+        private void SetPlayerResponse(List<int> response)
+        {
+            
+        }
+
         private async UniTask RunDuel()
         {
             bool duelProceed;

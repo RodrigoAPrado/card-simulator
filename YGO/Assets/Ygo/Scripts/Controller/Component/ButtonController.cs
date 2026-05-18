@@ -22,6 +22,11 @@ namespace Ygo.Controller.Component
             Label.SetText(label);
         }
 
+        public void SetAction(Action onClick)
+        {
+            _onClick = onClick;
+        }
+
         public void Disable(bool deactivate)
         {
             IsDirty = false;
