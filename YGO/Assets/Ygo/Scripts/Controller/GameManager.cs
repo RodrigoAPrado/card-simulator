@@ -53,7 +53,7 @@ namespace Ygo.Controller
         private AnnouncementController announcementController;
         
         private GameApplication _application;
-        private DuelInstance _duelInstance;
+        private DuelBridge _duelBridge;
         private HandlerRegistry _handlerRegistry;
         private CardImageLibrary _smallImageLibrary;
         private CardImageLibrary _croppedImageLibrary;
@@ -62,15 +62,15 @@ namespace Ygo.Controller
         {
             _application = new GameApplication();
             _application.Setup();
-            _duelInstance = _application.Init();
-            _smallImageLibrary = new CardImageLibrary(_duelInstance.CardsInDuel, true);
+            _duelBridge = _application.Init();
+            _smallImageLibrary = new CardImageLibrary(_duelBridge.CardsInDuel, true);
             _smallImageLibrary.LoadImages();
-            _croppedImageLibrary = new CardImageLibrary(_duelInstance.CardsInDuel, false);
+            _croppedImageLibrary = new CardImageLibrary(_duelBridge.CardsInDuel, false);
             _croppedImageLibrary.LoadImages();
             
             foreach (var handController in handControllers)
             {
-                handController.Init(_smallImageLibrary, _duelInstance.CardsInDuel, UpdateZoomCard);
+                handController.Init(_smallImageLibrary, _duelBridge.CardsInDuel, UpdateZoomCard);
             }
             
             foreach (var fieldController in fieldControllers)
@@ -124,14 +124,14 @@ namespace Ygo.Controller
             bool duelProceed;
             do
             {
-                duelProceed = _duelInstance.ProceedDuel();
+                duelProceed = _duelBridge.ProceedDuel();
                 bool nextMessage;
                 
                 do
                 {
-                    var duelMessage = _duelInstance.GetMessage();
+                    var duelMessage = _duelBridge.GetMessage();
                     await HandleMessage(duelMessage);
-                    nextMessage = _duelInstance.NextMessage();
+                    nextMessage = _duelBridge.NextMessage();
                 } while (nextMessage);
                 
             } while (duelProceed);

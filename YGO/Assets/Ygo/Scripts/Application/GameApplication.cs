@@ -4,6 +4,7 @@ using Ygo.Scripts.Data;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Enum;
 using YgoSoul.RapTech.Lib.YgoEdo.Api;
+using DuelState = Ygo.Core.Duel.DuelState;
 
 namespace Ygo.Application
 {
@@ -37,13 +38,16 @@ namespace Ygo.Application
                 .WithMainDeck(DummyDeck.CreateDeck(1, true, false, _duelManager.CardLibrary))
                 .WithExtraDeck(DummyDeck.CreateDeck(1, false, true, _duelManager.CardLibrary))
                 .Build();
-            
-            _duelInstance = new DuelInstance(_duelManager);
-            var result = _duelInstance.StartDuel(DuelData.CreateBuilder().WithDuelist0(duelist0).WithDuelist1(duelist1)
-                .WithDuelMode(DuelMode.MasterRule5).Build());
+
+            var duelData = DuelData.CreateBuilder().WithDuelist0(duelist0).WithDuelist1(duelist1)
+                .WithDuelMode(DuelMode.MasterRule5).Build();
+            var duelBridge = new DuelBridge(_duelManager);
+            var result = duelBridge.StartDuel(duelData);
 
             if (!result)
                 throw new Exception("Duel could not start!");
+
+            _duelInstance = new DuelInstance(duelBridge, new DuelState(duelData));
 
             return _duelInstance;
         }
