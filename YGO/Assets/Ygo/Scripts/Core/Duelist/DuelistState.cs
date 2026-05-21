@@ -35,6 +35,25 @@ namespace Ygo.Scripts.Core.Duelist
             Player = player;
         }
 
+        public CardState GetCardByCode(uint cardCode, Location location)
+        {
+            switch (location)
+            {
+                case Location.Deck:
+                    return _mainDeck.FirstOrDefault(x => x.Data.Code == cardCode);
+                case Location.Hand:
+                    return _hand.FirstOrDefault(x => x.Data.Code == cardCode);
+                case Location.Grave:
+                    return _graveyard.FirstOrDefault(x => x.Data.Code == cardCode);
+                case Location.Banishment:
+                    return _banished.FirstOrDefault(x => x.Data.Code == cardCode);
+                case Location.Extra:
+                    return _extraDeck.FirstOrDefault(x => x.Data.Code == cardCode);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(location), location, null);
+            }
+        }
+        
         public void PutCard(CardState card, Location location)
         {
             switch (location)

@@ -66,6 +66,23 @@ namespace Ygo.Core.Duel
             } while (duelProceed);
             
         }
+
+        public async UniTask SetResponse(List<int> response)
+        {
+            if (!_bridge.SetResponse(response))
+            {
+                Debug.LogError("Failed to set response.");
+                var events = await HandleMessage(_state.MessageAwaitingInput);
+                foreach (var e in events)
+                {
+                    EventQueue.EnqueueEvent(e);
+                }
+                return;
+            }
+            
+            _state.ClearMessageAwaitingInput();
+            _ = RunDuel();
+        }
         
         private async UniTask<IReadOnlyList<IEvent>> HandleMessage(IDuelMessage duelMessage)
         {
@@ -75,7 +92,7 @@ namespace Ygo.Core.Duel
             if (handler == null)
             {
                 commands = new List<IEvent>();
-                Debug.Log(duelMessage);
+                Debug.Log($"{duelMessage.GetType()}\n{duelMessage}");
             }
             else
             {

@@ -27,6 +27,7 @@ namespace Ygo.Controller.Card
         public bool Dirty { get; private set; }
         public bool Enabled { get; private set; }
         private bool Hidden { get; set; }
+        private Action _onClickAction;
         
         public void Init(Action<ICardData, bool> onEnter)
         {
@@ -68,6 +69,7 @@ namespace Ygo.Controller.Card
         {
             if (!Enabled)
                 return;
+            _onClickAction?.Invoke();
         }
 
         public void SetDirty()
@@ -88,6 +90,17 @@ namespace Ygo.Controller.Card
             view.Clear();
             gameObject.SetActive(false);
             Dirty = false;
+            ClearAction();
+        }
+
+        public void SetAction(Action onClickAction)
+        {
+            _onClickAction = onClickAction;
+        }
+
+        public void ClearAction()
+        {
+            _onClickAction = null;
         }
         
         public void ToggleHighlight(bool value)

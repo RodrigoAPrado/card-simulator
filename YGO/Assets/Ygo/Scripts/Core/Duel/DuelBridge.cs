@@ -97,5 +97,14 @@ namespace Ygo.Core.Duel
         {
             return _duelManager.CurrentDuel.NextMessage();
         }
+
+        public bool SetResponse(List<int> response)
+        {
+            if (response.Count == 1 && response[0] == -1)
+            {
+                return _duelManager.CurrentDuel.SetCancel();
+            }
+            return _duelManager.CurrentDuel.SetResponse(response);
+        }
     }
 }

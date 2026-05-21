@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Ygo.Application;
 using Ygo.Controller.Card;
 using Ygo.Controller.Data;
 using Ygo.Controller.Field;
+using Ygo.Controller.Modal;
 using Ygo.Core.Duel;
 using Ygo.View;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
@@ -32,6 +34,9 @@ namespace Ygo.Controller
         [Header("ConfirmationModal")]
         [field: SerializeField]
         private ConfirmationController confirmationController;
+        [Header("CardSelectionModal")]
+        [field: SerializeField]
+        private ModalController cardSelectionModal;
         
         [Header("Texts")]  
         [field: SerializeField]
@@ -60,7 +65,7 @@ namespace Ygo.Controller
             
             foreach (var handController in handControllers)
             {
-                handController.Init(_duelInstance, _smallImageLibrary, UpdateZoomCard);
+                handController.Init(_duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard);
             }
             
             foreach (var fieldController in fieldControllers)
@@ -78,6 +83,7 @@ namespace Ygo.Controller
             phaseController.Init();
             confirmationController.Init();
             announcementController.Init(_duelInstance.EventQueue);
+            cardSelectionModal.Init(_duelInstance, _smallImageLibrary);
         }
 
         public void Start()

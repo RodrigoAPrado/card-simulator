@@ -15,7 +15,8 @@ namespace Ygo.Scripts.Core.Handler.Base
             {
                 {typeof(IDrawMessage), new DrawHandler()},
                 {typeof(INewTurnMessage), new NewTurnHandler()},
-                {typeof(INewPhaseMessage), new NewPhaseHandler()}
+                {typeof(INewPhaseMessage), new NewPhaseHandler()},
+                {typeof(ISelectChainMessage), new SelectChainHandler()},
             };
 
             return new HandlerRegistry(handlers);
@@ -40,6 +41,9 @@ namespace Ygo.Scripts.Core.Handler.Base
                     break;
                 case INewPhaseMessage:
                     _handlers.TryGetValue(typeof(INewPhaseMessage), out handler);
+                    break;
+                case ISelectChainMessage:
+                    _handlers.TryGetValue(typeof(ISelectChainMessage), out handler);
                     break;
             }
 

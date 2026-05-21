@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Ygo.Controller.Component;
+using Ygo.Scripts.Core.Event.Base;
 using Ygo.View;
 
 namespace Ygo.Controller
@@ -21,6 +22,7 @@ namespace Ygo.Controller
 
         public void Init()
         {
+            
         }
     }
 }

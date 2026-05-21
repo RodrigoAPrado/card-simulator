@@ -7,6 +7,7 @@ using Ygo.Controller.Data;
 using Ygo.Core.Duel;
 using Ygo.Scripts.Core.Enum;
 using Ygo.Scripts.Core.Event;
+using Ygo.Scripts.Core.Event.Base;
 using Ygo.Scripts.Core.Model;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message.Component;
@@ -20,20 +21,18 @@ namespace Ygo.Controller
         [field: SerializeField] 
         private PointOfView pointOfView;
         private CardImageLibrary _library;
-        private IReadOnlyDictionary<uint, ICardData> _cards;
 
         public void Init(
-            DuelInstance duelInstance,
+            EventQueue eventQueue,
             CardImageLibrary library,
             Action<ICardData, bool> onHover)
         {
             _library = library;
-            _cards = duelInstance.CardsInDuel;
             foreach (var controller in cardControllers)
             {
                 controller.Init(onHover);
             }
-            duelInstance.EventQueue.Subscribe<DrawEvent>(OnDrawEvent);
+            eventQueue.Subscribe<DrawEvent>(OnDrawEvent);
         }
 
         private async UniTask OnDrawEvent(DrawEvent e)
