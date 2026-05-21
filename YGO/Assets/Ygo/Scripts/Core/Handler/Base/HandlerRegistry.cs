@@ -13,6 +13,9 @@ namespace Ygo.Scripts.Core.Handler.Base
         {
             var handlers = new Dictionary<Type, IHandler>
             {
+                {typeof(IDrawMessage), new DrawHandler()},
+                {typeof(INewTurnMessage), new NewTurnHandler()},
+                {typeof(INewPhaseMessage), new NewPhaseHandler()}
             };
 
             return new HandlerRegistry(handlers);
@@ -29,8 +32,14 @@ namespace Ygo.Scripts.Core.Handler.Base
             
             switch (message)
             {
-                case IDrawMessage drawMessage:
-                    _handlers.TryGetValue(drawMessage.GetType(), out handler);
+                case IDrawMessage:
+                    _handlers.TryGetValue(typeof(IDrawMessage), out handler);
+                    break;
+                case INewTurnMessage:
+                    _handlers.TryGetValue(typeof(INewTurnMessage), out handler);
+                    break;
+                case INewPhaseMessage:
+                    _handlers.TryGetValue(typeof(INewPhaseMessage), out handler);
                     break;
             }
 

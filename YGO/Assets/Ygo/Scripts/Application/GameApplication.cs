@@ -19,7 +19,7 @@ namespace Ygo.Application
             _duelManager = YgoEdo.Init(UnityEngine.Application.streamingAssetsPath + "/");
         }
 
-        public DuelInstance Init()
+        public DuelInstance Init(bool playerStarts = true)
         {
             if (_duelInstance != null)
                 return _duelInstance;
@@ -41,14 +41,14 @@ namespace Ygo.Application
                 .Build();
 
             var duelData = DuelData.CreateBuilder().WithDuelist0(duelist0).WithDuelist1(duelist1)
-                .WithDuelMode(DuelMode.MasterRule5).Build();
+                .WithDuelMode(DuelMode.MasterRule5).WithPlayerId((byte)(playerStarts ? 0 : 1)).Build();
             var duelBridge = new DuelBridge(_duelManager);
             var result = duelBridge.StartDuel(duelData);
 
             if (!result)
                 throw new Exception("Duel could not start!");
 
-            _duelInstance = new DuelInstance(duelData, duelBridge, new DuelState(duelData), new EventBus());
+            _duelInstance = new DuelInstance(duelData, duelBridge, new DuelState(duelData), new EventQueue());
 
             return _duelInstance;
         }

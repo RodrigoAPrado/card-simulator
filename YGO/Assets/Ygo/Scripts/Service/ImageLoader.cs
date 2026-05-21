@@ -8,7 +8,7 @@ namespace Ygo.Service
         public static Sprite LoadSpriteFromFile(uint cardCode, bool small)
         {
             var smallPath = small ? "-small" : "";
-            var filePath = Path.Combine(Application.streamingAssetsPath, $"cards/imgs{smallPath}/{cardCode}.jpg");
+            var filePath = $"{Application.streamingAssetsPath}/cards/imgs{smallPath}/{cardCode}.jpg";
             
             
             if (!File.Exists(filePath))

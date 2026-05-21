@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Ygo.Controller.Component;
+using Ygo.Scripts.Core.Enum;
 using Ygo.View;
 
 namespace Ygo.Controller.Field

@@ -13,13 +13,13 @@ namespace Ygo.Core.Duel
     public class DuelInstance
     {
         public IReadOnlyDictionary<uint, ICardData> CardsInDuel { get; } 
-        public EventBus EventBus { get; }
+        public EventQueue EventQueue { get; }
         private readonly DuelBridge _bridge;
         private readonly DuelState _state;
         private readonly DuelData _duelData;
         private readonly HandlerRegistry _handlerRegistry;
 
-        public DuelInstance(DuelData duelData, DuelBridge bridge, DuelState state, EventBus eventBus)
+        public DuelInstance(DuelData duelData, DuelBridge bridge, DuelState state, EventQueue eventQueue)
         {
             _duelData = duelData;
             var cardsInDuelList = new List<ICardData>();
@@ -39,7 +39,7 @@ namespace Ygo.Core.Duel
             
             _bridge = bridge;
             _state = state;
-            EventBus = eventBus;
+            EventQueue = eventQueue;
             
             _handlerRegistry = HandlerRegistry.Create();
         }
@@ -55,8 +55,11 @@ namespace Ygo.Core.Duel
                 do
                 {
                     var duelMessage = _bridge.GetMessage();
-                    var commands = await HandleMessage(duelMessage);
-                    EventBus.PublishMany(commands);
+                    var events = await HandleMessage(duelMessage);
+                    foreach (var e in events)
+                    {
+                        EventQueue.EnqueueEvent(e);
+                    }
                     nextMessage = _bridge.NextMessage();
                 } while (nextMessage);
 

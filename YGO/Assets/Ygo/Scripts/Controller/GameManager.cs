@@ -60,7 +60,7 @@ namespace Ygo.Controller
             
             foreach (var handController in handControllers)
             {
-                handController.Init(_smallImageLibrary, _duelInstance.CardsInDuel, UpdateZoomCard);
+                handController.Init(_duelInstance, _smallImageLibrary, UpdateZoomCard);
             }
             
             foreach (var fieldController in fieldControllers)
@@ -77,7 +77,7 @@ namespace Ygo.Controller
             zoomCard.Init(_croppedImageLibrary);
             phaseController.Init();
             confirmationController.Init();
-            announcementController.Init();
+            announcementController.Init(_duelInstance.EventQueue);
         }
 
         public void Start()

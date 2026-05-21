@@ -33,9 +33,25 @@ namespace Ygo.Core.Duel
             Player0State = new DuelistState(data.Duelist0, 0);
             Player1State = new DuelistState(data.Duelist1, 1);
             CurrentTurn = 0;
-            CurrentTurnPlayer = 0;
+            CurrentTurnPlayer = 1;
             CurrentPhase = DuelPhase.BeforeTheDrawPhase;
             _duelData = data;
+        }
+
+        public IEvent ChangeTurn()
+        {
+            CurrentTurnPlayer++;
+            if (CurrentTurnPlayer > 1)
+                CurrentTurnPlayer = 0;
+            CurrentTurn++;
+            return new NewTurnEvent(CurrentTurn, _duelData.PlayerId == CurrentTurnPlayer 
+                ? PointOfView.Player : PointOfView.Opponent);
+        }
+
+        public IEvent ChangePhase(DuelPhase phase)
+        {
+            CurrentPhase = phase;
+            return new NewPhaseEvent(phase);
         }
 
         public IEvent DrawCard(uint cardCode, byte player)
@@ -55,7 +71,7 @@ namespace Ygo.Core.Duel
                 handBefore.Add(cardModel);
             }
             
-            CardState card = playerState.TakeCard(cardCode, Location.Hand);
+            CardState card = playerState.TakeCard(cardCode, Location.Deck);
             var drawnCard = new CardModel()
             {
                 Data = card.Data,
@@ -81,7 +97,12 @@ namespace Ygo.Core.Duel
                 handAfter.Add(cardModel);
             }
 
-            return new DrawEvent(handBefore, handAfter, drawnCard);
+            return new DrawEvent(
+                handBefore, 
+                handAfter, 
+                drawnCard, 
+                _duelData.PlayerId == player ? PointOfView.Player : PointOfView.Opponent
+                );
         }
     }
 }

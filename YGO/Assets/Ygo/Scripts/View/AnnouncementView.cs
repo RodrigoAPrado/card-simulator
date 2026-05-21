@@ -22,7 +22,7 @@ namespace Ygo.View
             announcementTexts.anchoredPosition = new Vector2(-1000f, originalPosition.y);
 
             // Cria o tween normalmente
-            Tween minhaAnimacao = announcementTexts.DOAnchorPos(originalPosition, 0.3f)
+            Tween minhaAnimacao = announcementTexts.DOAnchorPos(originalPosition, 0.2f)
                 .SetEase(Ease.OutQuad);
 
             await minhaAnimacao.AwaitForComplete();

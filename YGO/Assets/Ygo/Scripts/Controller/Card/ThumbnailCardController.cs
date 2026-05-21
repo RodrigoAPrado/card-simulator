@@ -50,20 +50,6 @@ namespace Ygo.Controller.Card
             CardData = null;
         }
 
-        private void InitMonster()
-        {
-        }
-
-        private void InitSpell()
-        {
-        }
-
-        private string GetIllustrationFileName()
-        {
-            return "";
-            //UnityEngine.Application.streamingAssetsPath + "/" + 
-        }
-
         public void OnEnter()
         {
             if (!Enabled)

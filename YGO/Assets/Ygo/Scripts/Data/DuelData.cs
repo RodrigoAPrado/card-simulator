@@ -8,13 +8,15 @@ namespace Ygo.Scripts.Data
         public DuelMode DuelMode { get; }
         public DuelistData Duelist0 { get; }
         public DuelistData Duelist1 { get; }
+        public byte PlayerId { get; }
 
 
-        private DuelData(DuelMode duelMode, DuelistData duelist0, DuelistData duelist1)
+        private DuelData(DuelMode duelMode, DuelistData duelist0, DuelistData duelist1, byte playerId)
         {
             DuelMode = duelMode;
             Duelist0 = duelist0;
             Duelist1 = duelist1;
+            PlayerId = playerId;
         }
         
         public static DuelDataBuilder CreateBuilder() => new DuelDataBuilder();
@@ -24,6 +26,7 @@ namespace Ygo.Scripts.Data
             public DuelMode DuelMode { get; private set; }
             public DuelistData Duelist0 { get; private set; }
             public DuelistData Duelist1 { get; private set; }
+            public byte PlayerId { get; private set; } = 255;
             
             public DuelData Build()
             {
@@ -31,8 +34,10 @@ namespace Ygo.Scripts.Data
                     throw new InvalidOperationException("Duelist0 cannot be null");
                 if (Duelist1 == null)
                     throw new InvalidOperationException("Duelist1 cannot be null");
+                if (PlayerId > 1)
+                    throw new InvalidOperationException("PlayerId must be 0 or 1");
                 
-                return new DuelData(DuelMode, Duelist0, Duelist1);
+                return new DuelData(DuelMode, Duelist0, Duelist1, PlayerId);
             }
             
             public DuelDataBuilder WithDuelMode(DuelMode value)
@@ -50,6 +55,12 @@ namespace Ygo.Scripts.Data
             public DuelDataBuilder WithDuelist1(DuelistData value)
             {
                 Duelist1 = value;
+                return this;
+            }
+
+            public DuelDataBuilder WithPlayerId(byte value)
+            {
+                PlayerId = value;
                 return this;
             }
         }

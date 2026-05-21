@@ -11065,7 +11065,7 @@ MonoBehaviour:
   - {fileID: 43289384}
   - {fileID: 1506485563}
   - {fileID: 2123182036}
-  pointOfView: 1
+  pointOfView: 0
 --- !u!1 &686163747
 GameObject:
   m_ObjectHideFlags: 0
@@ -15175,7 +15175,7 @@ MonoBehaviour:
   - {fileID: 77604378}
   - {fileID: 262355947}
   - {fileID: 1273218233}
-  pointOfView: 0
+  pointOfView: 1
 --- !u!1 &986029619
 GameObject:
   m_ObjectHideFlags: 0
@@ -26330,7 +26330,7 @@ MonoBehaviour:
   - {fileID: 2009979437}
   - {fileID: 918530722}
   - {fileID: 1604685783}
-  pointOfView: 0
+  pointOfView: 1
 --- !u!1001 &1879309180
 PrefabInstance:
   m_ObjectHideFlags: 0
