@@ -1,5 +1,5 @@
 {
-    "name": "raptech.lib.ygoedo.api",
+    "name": "RapTech.Lib.YgoEdo.Api",
     "rootNamespace": "YgoEdo - Api",
     "references": [
         "GUID:9ce9baf374eb5aa41910cb88aef9864c",

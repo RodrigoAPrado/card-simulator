@@ -1,3 +1,14 @@
-﻿{
-  "name": "raptech.lib.ygoedo.abstractions"
+{
+    "name": "RapTech.Lib.YgoEdo.Abstractions",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

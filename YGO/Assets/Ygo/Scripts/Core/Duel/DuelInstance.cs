@@ -1,14 +1,83 @@
-﻿namespace Ygo.Core.Duel
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using Ygo.Scripts.Core.Command.Base;
+using Ygo.Scripts.Core.Handler.Base;
+using Ygo.Scripts.Data;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message.Base;
+
+namespace Ygo.Core.Duel
 {
     public class DuelInstance
     {
-        private DuelBridge _bridge;
-        private DuelState _state;
+        public IReadOnlyDictionary<uint, ICardData> CardsInDuel { get; private set; }
+        private readonly DuelBridge _bridge;
+        private readonly DuelState _state;
+        private readonly DuelData _duelData;
+        private readonly HandlerRegistry _handlerRegistry;
+        private readonly EventBus _eventBus;
 
-        public DuelInstance(DuelBridge bridge, DuelState state)
+        public DuelInstance(DuelData duelData, DuelBridge bridge, DuelState state, EventBus eventBus)
         {
+            _duelData = duelData;
+            var cardsInDuelList = new List<ICardData>();
+            cardsInDuelList.AddRange(duelData.Duelist0.MainDeck);
+            cardsInDuelList.AddRange(duelData.Duelist0.ExtraDeck);
+            cardsInDuelList.AddRange(duelData.Duelist1.MainDeck);
+            cardsInDuelList.AddRange(duelData.Duelist1.ExtraDeck);
+            
+            var cardsInDuelDictionary = new Dictionary<uint, ICardData>();
+
+            foreach (var card in cardsInDuelList.Where(card => !cardsInDuelDictionary.TryAdd(card.Code, card)))
+            {
+                continue;
+            }
+            
+            CardsInDuel = cardsInDuelDictionary;
+            
             _bridge = bridge;
             _state = state;
+            
+            _handlerRegistry = HandlerRegistry.Create();
+        }
+        
+        public async UniTask RunDuel()
+        {
+            bool duelProceed;
+            do
+            {
+                duelProceed = _bridge.ProceedDuel();
+                bool nextMessage;
+
+                do
+                {
+                    var duelMessage = _bridge.GetMessage();
+                    var commands = await HandleMessage(duelMessage);
+                    nextMessage = _bridge.NextMessage();
+                } while (nextMessage);
+
+            } while (duelProceed);
+            
+        }
+        
+        private async UniTask<IReadOnlyList<ICommand>> HandleMessage(IDuelMessage duelMessage)
+        {
+            IReadOnlyList<ICommand> commands;
+            IHandler handler = _handlerRegistry.GetHandler(duelMessage);
+            
+            if (handler == null)
+            {
+                commands = new List<ICommand>();
+                Debug.Log(duelMessage);
+            }
+            else
+            {
+                commands = await handler.HandleMessage(duelMessage, _state);
+            }
+            
+            return commands;
         }
     }
 }

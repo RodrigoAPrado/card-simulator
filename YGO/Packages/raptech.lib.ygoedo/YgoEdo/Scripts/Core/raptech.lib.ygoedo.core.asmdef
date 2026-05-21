@@ -1,4 +1,14 @@
-﻿{
-  "name": "raptech.lib.ygoedo.core",
-  "rootNamespace": "YgoEdo - Core"
+{
+    "name": "RapTech.Lib.YgoEdo.Core",
+    "rootNamespace": "YgoEdo - Core",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

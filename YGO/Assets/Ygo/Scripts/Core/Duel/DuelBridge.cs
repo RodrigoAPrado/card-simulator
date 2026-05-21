@@ -11,10 +11,8 @@ namespace Ygo.Core.Duel
 {
     public class DuelBridge
     {
-        public IReadOnlyDictionary<uint, ICardData> CardsInDuel { get; private set; }
-        
         private readonly IDuelManager _duelManager;
-        private bool _started;
+        private DuelData _duelData;
         
         public DuelBridge(IDuelManager duelManager)
         {
@@ -23,7 +21,7 @@ namespace Ygo.Core.Duel
         
         public bool StartDuel(DuelData duelData)
         {
-            if (_started)
+            if (_duelData != null)
             {
                 return false;
             }
@@ -37,21 +35,6 @@ namespace Ygo.Core.Duel
             }
 
             var duel = _duelManager.CurrentDuel;
-            
-            var cardsInDuelList = new List<ICardData>();
-            cardsInDuelList.AddRange(duelData.Duelist0.MainDeck);
-            cardsInDuelList.AddRange(duelData.Duelist0.ExtraDeck);
-            cardsInDuelList.AddRange(duelData.Duelist1.MainDeck);
-            cardsInDuelList.AddRange(duelData.Duelist1.ExtraDeck);
-            
-            var cardsInDuelDictionary = new Dictionary<uint, ICardData>();
-
-            foreach (var card in cardsInDuelList.Where(card => !cardsInDuelDictionary.TryAdd(card.Code, card)))
-            {
-                continue;
-            }
-            
-            CardsInDuel = cardsInDuelDictionary;
             
             result = duel.SetupDuelOptions(
                 duelData.DuelMode,
@@ -93,8 +76,8 @@ namespace Ygo.Core.Duel
                 Debug.Log("Failed to start duel.");
                 return false;
             }
-
-            _started = true;
+            
+            _duelData = duelData;
             return true;
         }
 

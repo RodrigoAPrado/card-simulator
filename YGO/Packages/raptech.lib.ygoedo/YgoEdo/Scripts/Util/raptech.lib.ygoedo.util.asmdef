@@ -1,5 +1,5 @@
 {
-    "name": "raptech.lib.ygoedo.util",
+    "name": "RapTech.Lib.YgoEdo.Util",
     "rootNamespace": "YgoEdo - Util",
     "references": [
         "GUID:71c0949966f587649b80e8c2fe6a983d",

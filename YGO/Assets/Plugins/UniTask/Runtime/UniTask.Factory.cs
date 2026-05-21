@@ -47,7 +47,7 @@ namespace Cysharp.Threading.Tasks
             return new UniTask<T>(new ExceptionResultSource<T>(ex), 0);
         }
 
-        public static UniTask<T> FromResult<T>(T value)
+        public static UniTask FromResult<T>(T value)
         {
             return new UniTask<T>(value);
         }

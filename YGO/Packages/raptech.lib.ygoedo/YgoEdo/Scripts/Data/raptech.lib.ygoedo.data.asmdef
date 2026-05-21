@@ -1,5 +1,5 @@
 {
-    "name": "raptech.lib.ygoedo.data",
+    "name": "RapTech.Lib.YgoEdo.Data",
     "rootNamespace": "YgoEdo - Data",
     "references": [
         "GUID:2f54daf81260fd9479e6aa8ec54f56ee",

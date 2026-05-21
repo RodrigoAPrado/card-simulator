@@ -1,5 +1,5 @@
 {
-    "name": "raptech.lib.ygoedo.parsing",
+    "name": "RapTech.Lib.YgoEdo.Parsing",
     "rootNamespace": "YgoEdo - Parsing",
     "references": [
         "GUID:71c0949966f587649b80e8c2fe6a983d",

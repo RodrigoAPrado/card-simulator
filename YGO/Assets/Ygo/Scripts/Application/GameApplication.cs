@@ -47,7 +47,7 @@ namespace Ygo.Application
             if (!result)
                 throw new Exception("Duel could not start!");
 
-            _duelInstance = new DuelInstance(duelBridge, new DuelState(duelData));
+            _duelInstance = new DuelInstance(duelData, duelBridge, new DuelState(duelData));
 
             return _duelInstance;
         }

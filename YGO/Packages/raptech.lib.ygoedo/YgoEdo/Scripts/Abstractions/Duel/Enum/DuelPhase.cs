@@ -2,6 +2,7 @@
 {
     public enum DuelPhase
     {
+        BeforeTheDrawPhase = 0x0,
         DrawPhase = 0x1,
         StandbyPhase = 0x2,
         MainPhase1 = 0x4,
