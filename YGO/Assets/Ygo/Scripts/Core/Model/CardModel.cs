@@ -5,7 +5,7 @@ using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Flag;
 
 namespace Ygo.Scripts.Core.Model
 {
-    public class CardModel
+    public class  CardModel
     {
         public ICardData Data { get; set; }
         public byte Sequence { get; set; }

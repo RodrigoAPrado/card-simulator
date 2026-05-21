@@ -2,7 +2,7 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Ygo.Scripts.Core.Command.Base;
+using Ygo.Scripts.Core.Event.Base;
 using Ygo.Scripts.Core.Handler.Base;
 using Ygo.Scripts.Data;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
@@ -12,12 +12,12 @@ namespace Ygo.Core.Duel
 {
     public class DuelInstance
     {
-        public IReadOnlyDictionary<uint, ICardData> CardsInDuel { get; private set; }
+        public IReadOnlyDictionary<uint, ICardData> CardsInDuel { get; } 
+        public EventBus EventBus { get; }
         private readonly DuelBridge _bridge;
         private readonly DuelState _state;
         private readonly DuelData _duelData;
         private readonly HandlerRegistry _handlerRegistry;
-        private readonly EventBus _eventBus;
 
         public DuelInstance(DuelData duelData, DuelBridge bridge, DuelState state, EventBus eventBus)
         {
@@ -39,6 +39,7 @@ namespace Ygo.Core.Duel
             
             _bridge = bridge;
             _state = state;
+            EventBus = eventBus;
             
             _handlerRegistry = HandlerRegistry.Create();
         }
@@ -55,6 +56,7 @@ namespace Ygo.Core.Duel
                 {
                     var duelMessage = _bridge.GetMessage();
                     var commands = await HandleMessage(duelMessage);
+                    EventBus.PublishMany(commands);
                     nextMessage = _bridge.NextMessage();
                 } while (nextMessage);
 
@@ -62,14 +64,14 @@ namespace Ygo.Core.Duel
             
         }
         
-        private async UniTask<IReadOnlyList<ICommand>> HandleMessage(IDuelMessage duelMessage)
+        private async UniTask<IReadOnlyList<IEvent>> HandleMessage(IDuelMessage duelMessage)
         {
-            IReadOnlyList<ICommand> commands;
+            IReadOnlyList<IEvent> commands;
             IHandler handler = _handlerRegistry.GetHandler(duelMessage);
             
             if (handler == null)
             {
-                commands = new List<ICommand>();
+                commands = new List<IEvent>();
                 Debug.Log(duelMessage);
             }
             else

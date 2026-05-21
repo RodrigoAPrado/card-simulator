@@ -1,5 +1,6 @@
 ﻿using System;
 using Ygo.Core.Duel;
+using Ygo.Scripts.Core.Event.Base;
 using Ygo.Scripts.Data;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Enum;
@@ -47,7 +48,7 @@ namespace Ygo.Application
             if (!result)
                 throw new Exception("Duel could not start!");
 
-            _duelInstance = new DuelInstance(duelData, duelBridge, new DuelState(duelData));
+            _duelInstance = new DuelInstance(duelData, duelBridge, new DuelState(duelData), new EventBus());
 
             return _duelInstance;
         }

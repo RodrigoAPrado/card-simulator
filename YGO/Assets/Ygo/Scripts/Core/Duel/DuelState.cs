@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Ygo.Scripts.Core.Card;
-using Ygo.Scripts.Core.Command;
-using Ygo.Scripts.Core.Command.Base;
 using Ygo.Scripts.Core.Duelist;
 using Ygo.Scripts.Core.Enum;
+using Ygo.Scripts.Core.Event;
+using Ygo.Scripts.Core.Event.Base;
 using Ygo.Scripts.Core.Handler.Base;
 using Ygo.Scripts.Core.Model;
 using Ygo.Scripts.Data;
@@ -38,7 +38,7 @@ namespace Ygo.Core.Duel
             _duelData = data;
         }
 
-        public ICommand DrawCard(uint cardCode, byte player)
+        public IEvent DrawCard(uint cardCode, byte player)
         {
             DuelistState playerState = player == 0 ? Player0State : Player1State;
             List<CardModel> handBefore = new List<CardModel>();
@@ -81,7 +81,7 @@ namespace Ygo.Core.Duel
                 handAfter.Add(cardModel);
             }
 
-            return new DrawCommand(handBefore, handAfter, drawnCard);
+            return new DrawEvent(handBefore, handAfter, drawnCard);
         }
     }
 }
