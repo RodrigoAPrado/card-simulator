@@ -36,7 +36,7 @@ namespace Ygo.Controller
         private ConfirmationController confirmationController;
         [Header("CardSelectionModal")]
         [field: SerializeField]
-        private ModalController cardSelectionModal;
+        private CardSelectionModalController cardSelectionModal;
         
         [Header("Texts")]  
         [field: SerializeField]

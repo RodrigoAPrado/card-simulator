@@ -12,7 +12,7 @@ using Ygo.View;
 
 namespace Ygo.Controller.Modal
 {
-    public class ModalController : MonoBehaviour
+    public class CardSelectionModalController : MonoBehaviour
     {
         [field: SerializeField]
         private TextViewUI title;
@@ -54,8 +54,15 @@ namespace Ygo.Controller.Modal
         {
             gameObject.SetActive(true);
             cancelButton.gameObject.SetActive(e.CanCancel);
-            if(e.CanCancel)
+            if (e.CanCancel)
+            {
                 cancelButton.SetAction(() => SelectCard(-1));
+                title.SetText($"Player {e.Player}, do you want to activate an effect?");
+            }
+            else
+            {
+                title.SetText($"Player {e.Player}, please activate the following effects...");
+            }
             SetupControllers(e.Cards);
         }
 

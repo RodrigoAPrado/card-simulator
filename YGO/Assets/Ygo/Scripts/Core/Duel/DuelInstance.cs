@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -46,8 +47,8 @@ namespace Ygo.Core.Duel
         
         public async UniTask RunDuel()
         {
-            bool duelProceed;
-            do
+            var duelProceed = _bridge.ProceedDuel();;
+            while (duelProceed)
             {
                 bool nextMessage;
 
@@ -63,8 +64,7 @@ namespace Ygo.Core.Duel
                 } while (nextMessage);
 
                 duelProceed = _bridge.ProceedDuel();
-            } while (duelProceed);
-            
+            }
         }
 
         public async UniTask SetResponse(List<int> response)
@@ -81,18 +81,16 @@ namespace Ygo.Core.Duel
                 }
                 return;
             }
-            
-            _bridge.ProceedDuel();
             _state.ClearMessageAwaitingInput();
             _ = RunDuel();
         }
         
         private async UniTask<IReadOnlyList<IEvent>> HandleMessage(IDuelMessage duelMessage)
         {
-            if(duelMessage == null)
-                return new List<IEvent>();
+            if (duelMessage == null)
+                throw new InvalidOperationException("Duel message is null.");
             IReadOnlyList<IEvent> events;
-            IHandler handler = _handlerRegistry.GetHandler(duelMessage);
+            var handler = _handlerRegistry.GetHandler(duelMessage);
             
             if (handler == null)
             {

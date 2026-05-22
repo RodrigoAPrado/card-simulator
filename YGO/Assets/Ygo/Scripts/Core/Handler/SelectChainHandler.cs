@@ -32,7 +32,7 @@ namespace Ygo.Scripts.Core.Handler
             duelState.SetMessageAwaitingInput(message);
 
             return new UniTask<IReadOnlyList<IEvent>>(new List<IEvent>
-                { new SelectChainEvent(cards, !message.Forced, duelState.GetPointOfView(message.Player)) });
+                { new SelectChainEvent(cards, !message.Forced, duelState.GetPointOfView(message.Player), message.Player) });
         }
     }
 }
