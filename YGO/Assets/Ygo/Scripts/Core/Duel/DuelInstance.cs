@@ -49,7 +49,6 @@ namespace Ygo.Core.Duel
             bool duelProceed;
             do
             {
-                duelProceed = _bridge.ProceedDuel();
                 bool nextMessage;
 
                 do
@@ -63,6 +62,7 @@ namespace Ygo.Core.Duel
                     nextMessage = _bridge.NextMessage();
                 } while (nextMessage);
 
+                duelProceed = _bridge.ProceedDuel();
             } while (duelProceed);
             
         }
@@ -72,7 +72,9 @@ namespace Ygo.Core.Duel
             if (!_bridge.SetResponse(response))
             {
                 Debug.LogError("Failed to set response.");
-                var events = await HandleMessage(_state.MessageAwaitingInput);
+                var message = _state.MessageAwaitingInput;
+                _state.ClearMessageAwaitingInput();
+                var events = await HandleMessage(message);
                 foreach (var e in events)
                 {
                     EventQueue.EnqueueEvent(e);
@@ -80,26 +82,29 @@ namespace Ygo.Core.Duel
                 return;
             }
             
+            _bridge.ProceedDuel();
             _state.ClearMessageAwaitingInput();
             _ = RunDuel();
         }
         
         private async UniTask<IReadOnlyList<IEvent>> HandleMessage(IDuelMessage duelMessage)
         {
-            IReadOnlyList<IEvent> commands;
+            if(duelMessage == null)
+                return new List<IEvent>();
+            IReadOnlyList<IEvent> events;
             IHandler handler = _handlerRegistry.GetHandler(duelMessage);
             
             if (handler == null)
             {
-                commands = new List<IEvent>();
+                events = new List<IEvent>();
                 Debug.Log($"{duelMessage.GetType()}\n{duelMessage}");
             }
             else
             {
-                commands = await handler.HandleMessage(duelMessage, _state);
+                events = await handler.HandleMessage(duelMessage, _state);
             }
             
-            return commands;
+            return events;
         }
     }
 }
