@@ -2,6 +2,7 @@
 using System.Text;
 using UnityEngine;
 using Ygo.Controller.Component;
+using Ygo.Scripts.Core.Model;
 using Ygo.View.Card;
 using Ygo.View.ScriptableObjects;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
@@ -21,15 +22,15 @@ namespace Ygo.Controller.Card
         [field: SerializeField]
         private HighlightController highlightController;
 
-        private Action<ICardData, bool> _onEnter;
+        private Action<CardModel, bool> _onEnter;
         
-        public ICardData CardData { get; private set; }
+        public CardModel CardModel { get; private set; }
         public bool Dirty { get; private set; }
         public bool Enabled { get; private set; }
         private bool Hidden { get; set; }
         private Action _onClickAction;
         
-        public void Init(Action<ICardData, bool> onEnter)
+        public void Init(Action<CardModel, bool> onEnter)
         {
             _onEnter = onEnter;
             view.ToggleField(cardMode == CardControllerMode.Field);
@@ -39,16 +40,16 @@ namespace Ygo.Controller.Card
             gameObject.SetActive(false);
         }
 
-        public void UpdateCard(ICardData cardData, Sprite cardImage)
+        public void UpdateCard(CardModel cardModel, Sprite cardImage)
         {
-            CardData = cardData;
+            CardModel = cardModel;
             Dirty = false;
             view.SetIllustration(cardImage);
         }
 
         public void OnDestroy()
         {
-            CardData = null;
+            CardModel = null;
         }
 
         public void OnEnter()
@@ -56,7 +57,7 @@ namespace Ygo.Controller.Card
             if (!Enabled)
                 return;
             
-            _onEnter?.Invoke(CardData, Hidden);
+            _onEnter?.Invoke(CardModel, Hidden);
         }
 
         public void OnExit()
@@ -86,7 +87,7 @@ namespace Ygo.Controller.Card
         public void Disable()
         {
             Enabled = false;
-            CardData = null;
+            CardModel = null;
             view.Clear();
             gameObject.SetActive(false);
             Dirty = false;

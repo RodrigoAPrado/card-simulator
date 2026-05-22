@@ -123,7 +123,7 @@ namespace Ygo.View.Card
             monsterType.text = value;
         }
 
-        public void SetMonsterText(string value)
+        public void SetMonsterText(string value, bool italic)
         {
             monsterText.gameObject.SetActive(true);
             monsterText.text = value;

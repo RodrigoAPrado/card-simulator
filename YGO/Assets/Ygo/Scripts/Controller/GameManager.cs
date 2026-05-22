@@ -6,6 +6,7 @@ using Ygo.Controller.Data;
 using Ygo.Controller.Field;
 using Ygo.Controller.Modal;
 using Ygo.Core.Duel;
+using Ygo.Scripts.Core.Model;
 using Ygo.View;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
 
@@ -37,6 +38,9 @@ namespace Ygo.Controller
         [Header("CardSelectionModal")]
         [field: SerializeField]
         private CardSelectionModalController cardSelectionModal;
+        [Header("ConfirmEffectModal")]
+        [field: SerializeField]
+        private ConfirmEffectModalController confirmEffectModal;
         
         [Header("Texts")]  
         [field: SerializeField]
@@ -84,6 +88,7 @@ namespace Ygo.Controller
             confirmationController.Init();
             announcementController.Init(_duelInstance.EventQueue);
             cardSelectionModal.Init(_duelInstance, _smallImageLibrary);
+            confirmEffectModal.Init(_smallImageLibrary);
         }
 
         public void Start()
@@ -91,9 +96,9 @@ namespace Ygo.Controller
             _ = _duelInstance.RunDuel();
         }
 
-        private void UpdateZoomCard(ICardData cardData, bool hidden)
+        private void UpdateZoomCard(CardModel cardModel, bool hidden)
         {
-            zoomCard.UpdateCard(cardData);
+            zoomCard.UpdateCard(cardModel.Data);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Ygo.Controller.Card
             view.SetIcon(GetCardIconType());
 
             if (!_cardData.Types.Contains(CardType.Spell) && !_cardData.Types.Contains(CardType.Trap))
-                InitMonster();
+                InitMonster(cardFrame);
             else
                 InitSpellTrap();
         }
@@ -50,13 +50,13 @@ namespace Ygo.Controller.Card
             _cardData = null;
         }
 
-        private void InitMonster()
+        private void InitMonster(CardFrameType cardFrameType)
         {
             view.SetLevel(_cardData.Level);
             view.ToggleMonsterBox(true);
             view.ToggleSpellTrapBox(false);
             view.ToggleSpellTrapTypeBox(false);
-            view.SetMonsterText(_cardData.Description);
+            view.SetMonsterText(_cardData.Description, cardFrameType == CardFrameType.Normal);
             view.SetMonsterType(GetMonsterType());
             view.SetMonsterAtk(_cardData.OriginalAttack.ToString());
             view.SetMonsterDef(_cardData.OriginalDefense.ToString());

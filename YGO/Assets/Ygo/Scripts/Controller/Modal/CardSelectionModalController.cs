@@ -22,6 +22,8 @@ namespace Ygo.Controller.Modal
         private ButtonController cancelButton;
         [field: SerializeField] 
         private ThumbnailCardController[] cardControllers;
+        [field: SerializeField] 
+        private ConfirmEffectModalController confirmEffectModal;
         private CardImageLibrary _library;
         private DuelInstance _duelInstance;
 
@@ -37,6 +39,16 @@ namespace Ygo.Controller.Modal
             cancelButton.Init(() => {}, "Cancel");
             Hide();
             _duelInstance.EventQueue.Subscribe<SelectChainEvent>(OnSelectChainEvent);
+        }
+
+        private void SoftHide()
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void SoftShow()
+        {
+            gameObject.SetActive(true);
         }
 
         private void Hide()
@@ -56,7 +68,7 @@ namespace Ygo.Controller.Modal
             cancelButton.gameObject.SetActive(e.CanCancel);
             if (e.CanCancel)
             {
-                cancelButton.SetAction(() => SelectCard(-1));
+                cancelButton.SetAction(Cancel);
                 title.SetText($"Player {e.Player}, do you want to activate an effect?");
             }
             else
@@ -80,10 +92,11 @@ namespace Ygo.Controller.Modal
                     Debug.Log("Mais carta do que tem controller instanciado. Fazer esquema para resolver isso depois");
                     break;
                 }
-                cardControllers[i].UpdateCard(cards[i].Data, _library.GetCardImage(cards[i].Data.Code));
-                cardControllers[i].Enable();
+                var cardModel = cards[i];
                 var index = i;
-                cardControllers[i].SetAction(() => SelectCard(index));
+                cardControllers[i].UpdateCard(cards[i], _library.GetCardImage(cards[i].Data.Code));
+                cardControllers[i].Enable();
+                cardControllers[i].SetAction(() => SelectCard(index, cardModel));
             }
 
             foreach (var controller in cardControllers)
@@ -93,10 +106,27 @@ namespace Ygo.Controller.Modal
             }
         }
 
-        private void SelectCard(int index)
+        private void SelectCard(int index, CardModel cardModel)
+        {
+            SoftHide();
+            confirmEffectModal.ShowSelectedCard(cardModel, () => ConfirmSelection(index), CancelSelection);
+        }
+
+        private void ConfirmSelection(int index)
         {
             Hide();
             _ = _duelInstance.SetResponse(new List<int>() { index });
+        }
+
+        private void CancelSelection()
+        {
+            SoftShow();
+        }
+
+        private void Cancel()
+        {
+            Hide();
+            _ = _duelInstance.SetResponse(new List<int>() { -1 });
         }
     }
 }

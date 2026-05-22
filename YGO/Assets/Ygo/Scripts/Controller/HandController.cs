@@ -25,7 +25,7 @@ namespace Ygo.Controller
         public void Init(
             EventQueue eventQueue,
             CardImageLibrary library,
-            Action<ICardData, bool> onHover)
+            Action<CardModel, bool> onHover)
         {
             _library = library;
             foreach (var controller in cardControllers)
@@ -60,7 +60,7 @@ namespace Ygo.Controller
                     Debug.Log("Mais carta do que tem controller instanciado. Fazer esquema para resolver isso depois");
                     break;
                 }
-                cardControllers[i].UpdateCard(cards[i].Data, _library.GetCardImage(cards[i].Data.Code));
+                cardControllers[i].UpdateCard(cards[i], _library.GetCardImage(cards[i].Data.Code));
                 cardControllers[i].Enable();
             }
 
