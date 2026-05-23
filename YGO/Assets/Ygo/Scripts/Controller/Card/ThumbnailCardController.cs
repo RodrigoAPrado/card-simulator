@@ -4,6 +4,7 @@ using UnityEngine;
 using Ygo.Controller.Component;
 using Ygo.Scripts.Core.Model;
 using Ygo.View.Card;
+using Ygo.View.Component;
 using Ygo.View.ScriptableObjects;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card.Enum;
@@ -14,13 +15,11 @@ namespace Ygo.Controller.Card
     {
         [field: SerializeField] 
         private ThumbCardView view;
+        [field: SerializeField] 
+        private HoverView hoverView;
         
         [field: SerializeField]
         private CardControllerMode cardMode;
-        [field: SerializeField]
-        private HoverController hoverController;
-        [field: SerializeField]
-        private HighlightController highlightController;
 
         private Action<CardModel, bool> _onEnter;
         
@@ -34,10 +33,9 @@ namespace Ygo.Controller.Card
         {
             _onEnter = onEnter;
             view.ToggleField(cardMode == CardControllerMode.Field);
-            hoverController.Init(OnClick, OnEnter, OnExit);
-            highlightController.Init();
             Enabled = false;
             gameObject.SetActive(false);
+            hoverView.ToggleEnable(true);
         }
 
         public void UpdateCard(CardModel cardModel, Sprite cardImage)
@@ -45,6 +43,7 @@ namespace Ygo.Controller.Card
             CardModel = cardModel;
             Dirty = false;
             view.SetIllustration(cardImage);
+            hoverView.ToggleEnable(true);
         }
 
         public void OnDestroy()
@@ -82,6 +81,7 @@ namespace Ygo.Controller.Card
         {
             Enabled = true;
             gameObject.SetActive(true);
+            hoverView.ToggleEnable(true);
         }
 
         public void Disable()
@@ -102,14 +102,6 @@ namespace Ygo.Controller.Card
         public void ClearAction()
         {
             _onClickAction = null;
-        }
-        
-        public void ToggleHighlight(bool value)
-        {
-            if(value)
-                highlightController.Enable();
-            else
-                highlightController.Disable();
         }
     }
 }

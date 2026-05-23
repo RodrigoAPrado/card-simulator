@@ -72,16 +72,6 @@ namespace Ygo.Controller
                 handController.Init(_duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard);
             }
             
-            foreach (var fieldController in fieldControllers)
-            {
-                fieldController.Init();
-            }
-
-            foreach (var mainDeckController in mainDeckControllers)
-            {
-                mainDeckController.Init();
-            }
-            
             actionController.Init();
             zoomCard.Init(_croppedImageLibrary);
             phaseController.Init();
