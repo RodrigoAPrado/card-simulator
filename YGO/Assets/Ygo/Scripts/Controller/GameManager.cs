@@ -19,7 +19,7 @@ namespace Ygo.Controller
         private HandController[] handControllers;
         [Header("Field")] 
         [field: SerializeField]
-        private FieldController[] fieldControllers;
+        private FieldController fieldController;
         [Header("MainDeck")]
         [field: SerializeField]
         private MainDeckController[] mainDeckControllers;
@@ -72,6 +72,7 @@ namespace Ygo.Controller
                 handController.Init(_duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard);
             }
             
+            fieldController.Init();
             actionController.Init();
             zoomCard.Init(_croppedImageLibrary);
             phaseController.Init();

@@ -17,6 +17,8 @@ namespace Ygo.Controller.Card
         private ThumbCardView view;
         [field: SerializeField] 
         private HoverView hoverView;
+        [field: SerializeField] 
+        private SelectableView selectableView;
         
         [field: SerializeField]
         private CardControllerMode cardMode;
@@ -36,6 +38,16 @@ namespace Ygo.Controller.Card
             Enabled = false;
             gameObject.SetActive(false);
             hoverView.ToggleEnable(true);
+        }
+
+        public void Highlight()
+        {
+            selectableView.Animate();
+        }
+
+        public void StopHighlight()
+        {
+            selectableView.StopAnimating();
         }
 
         public void UpdateCard(CardModel cardModel, Sprite cardImage)

@@ -240,6 +240,7 @@ RectTransform:
   m_Children:
   - {fileID: 6796646206319007006}
   - {fileID: 1871446398699269384}
+  - {fileID: 2061491019557652977}
   m_Father: {fileID: 5514231236121518539}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -485,6 +486,7 @@ GameObject:
   - component: {fileID: 7019857138879447999}
   - component: {fileID: 4447994305840712280}
   - component: {fileID: 4158253943717571137}
+  - component: {fileID: 8731787073042951007}
   m_Layer: 5
   m_Name: ThumbCardController
   m_TagString: Untagged
@@ -548,6 +550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Card.ThumbnailCardController
   view: {fileID: 4447994305840712280}
   hoverView: {fileID: 4158253943717571137}
+  selectableView: {fileID: 4961255564164442486}
   cardMode: 0
 --- !u!114 &4447994305840712280
 MonoBehaviour:
@@ -577,6 +580,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.Component.HoverView
   content: {fileID: 6025296258823011687}
+--- !u!114 &8731787073042951007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4767479400902733549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4158253943717571137}
+          m_TargetAssemblyTypeName: Ygo.View.Component.HoverView, Ygo.View
+          m_MethodName: OnEnter
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4158253943717571137}
+          m_TargetAssemblyTypeName: Ygo.View.Component.HoverView, Ygo.View
+          m_MethodName: OnExit
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &4969588997701481936
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,6 +700,103 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &5100689327965407432
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2061491019557652977}
+  - component: {fileID: 8389855392509640714}
+  - component: {fileID: 8083934857670824921}
+  - component: {fileID: 4961255564164442486}
+  m_Layer: 5
+  m_Name: Selectable
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2061491019557652977
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5100689327965407432}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6025296258823011687}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8389855392509640714
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5100689327965407432}
+  m_CullTransparentMesh: 1
+--- !u!114 &8083934857670824921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5100689327965407432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -2132956935838155565, guid: a95dbec0b63739944aeb7391dc45a38b, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4961255564164442486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5100689327965407432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5376dda5304f5cb0ec1d0b0bdde9c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Ygo.View::Ygo.View.Component.SelectableView
+  image: {fileID: 8083934857670824921}
+  colorNotAnimation: {r: 0, g: 0, b: 0, a: 0}
+  colorAnim:
+  - {r: 0, g: 0.33711356, b: 0.7830189, a: 1}
+  - {r: 0, g: 0.9150943, b: 0.62188923, a: 1}
+  - {r: 0.32204124, g: 0.8396226, b: 0, a: 1}
+  - {r: 0.8773585, g: 0.50863785, b: 0, a: 1}
+  - {r: 0.8207547, g: 0, b: 0.10340261, a: 1}
+  - {r: 0.4885565, g: 0, b: 0.81960785, a: 1}
 --- !u!1 &5368826177128373844
 GameObject:
   m_ObjectHideFlags: 0
@@ -1467,7 +1612,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1871446398699269384
 RectTransform:
   m_ObjectHideFlags: 0

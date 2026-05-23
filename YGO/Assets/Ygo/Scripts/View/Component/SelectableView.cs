@@ -17,12 +17,7 @@ namespace Ygo.View.Component
 
         private Sequence curSequence;
         
-        private void Awake()
-        {
-            Animate();
-        }
-
-        private void Animate()
+        public void Animate()
         {
             curSequence?.Kill();
             if (colorAnim.Length <= 0)

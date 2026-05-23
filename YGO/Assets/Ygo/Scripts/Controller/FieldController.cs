@@ -10,18 +10,14 @@ namespace Ygo.Controller
     public class FieldController : MonoBehaviour
     {
         [field:SerializeField]
-        private ZoneController[] frontRowZones;
-        [field:SerializeField]
-        private CardController[] frontRowCards;
-        [field: SerializeField] 
-        private PointOfView pointOfView;
-
-        private Guid _requesterId;
-        private Guid _ownerId;
+        private FieldZoneController[] fieldZones;
         
         public void Init()
         {
-            
+            foreach (var fieldZone in fieldZones)
+            {
+                fieldZone.Init();
+            }
         }
     }
 }
