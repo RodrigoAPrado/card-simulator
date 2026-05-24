@@ -3007,7 +3007,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf8764b948e246e18d93eb16710aef2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.TextViewUI
-  text: {fileID: 0}
+  text: {fileID: 20824475}
 --- !u!1001 &468770030
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6642,6 +6642,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02494bc4f93d484fb40fd8e76e70e8b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Card.ThumbnailCardController
+--- !u!114 &819530477 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 1154985651}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &829522240
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6861,7 +6872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf8764b948e246e18d93eb16710aef2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.TextViewUI
-  text: {fileID: 0}
+  text: {fileID: 831710869}
 --- !u!114 &831710869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8100,7 +8111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf8764b948e246e18d93eb16710aef2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.TextViewUI
-  text: {fileID: 0}
+  text: {fileID: 161509636}
 --- !u!114 &964300537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8373,7 +8384,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -219}
+  m_AnchoredPosition: {x: 0, y: -195}
   m_SizeDelta: {x: 0, y: 130}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &968872347
@@ -10257,6 +10268,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 819530477}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11770,6 +11785,17 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1364725631 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 1507659115}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1381244415
 GameObject:
   m_ObjectHideFlags: 0
@@ -11823,7 +11849,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf8764b948e246e18d93eb16710aef2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.TextViewUI
-  text: {fileID: 0}
+  text: {fileID: 1174779983}
 --- !u!114 &1381244418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12218,7 +12244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf8764b948e246e18d93eb16710aef2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.TextViewUI
-  text: {fileID: 0}
+  text: {fileID: 517502570}
 --- !u!1001 &1427521449
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12394,7 +12420,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 336}
+  m_AnchoredPosition: {x: 0, y: 355}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1430564941
@@ -13151,6 +13177,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 1364725631}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

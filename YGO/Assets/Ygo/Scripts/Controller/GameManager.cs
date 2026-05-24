@@ -22,7 +22,7 @@ namespace Ygo.Controller
         private FieldController fieldController;
         [Header("MainDeck")]
         [field: SerializeField]
-        private MainDeckController[] mainDeckControllers;
+        private DeckController[] mainDeckControllers;
         [Header("ActionMenu")]
         [field: SerializeField]
         private ActionController actionController;
@@ -72,7 +72,7 @@ namespace Ygo.Controller
                 handController.Init(_duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard);
             }
             
-            fieldController.Init();
+            fieldController.Init(_duelInstance, _smallImageLibrary);
             actionController.Init();
             zoomCard.Init(_croppedImageLibrary);
             phaseController.Init();

@@ -2,7 +2,7 @@
 
 namespace Ygo.View.Field
 {
-    public class MainDeckView : MonoBehaviour
+    public class DeckView : MonoBehaviour
     {
         [field: SerializeField] 
         private GameObject[] deckGraphics;

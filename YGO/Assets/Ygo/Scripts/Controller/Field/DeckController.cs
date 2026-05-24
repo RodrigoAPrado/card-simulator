@@ -7,10 +7,10 @@ using Ygo.View.Field;
 
 namespace Ygo.Controller.Field
 {
-    public class MainDeckController : MonoBehaviour
+    public class DeckController : MonoBehaviour
     {
         [field: SerializeField] 
-        private MainDeckView view;
+        private DeckView view;
         [field: SerializeField] 
         private PointOfView pointOfView;
         

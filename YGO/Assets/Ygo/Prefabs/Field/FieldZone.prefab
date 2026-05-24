@@ -1470,6 +1470,7 @@ GameObject:
   - component: {fileID: 3035265929097342172}
   - component: {fileID: 1711298559833427234}
   - component: {fileID: 8808604655460038484}
+  - component: {fileID: 2116838299844911822}
   m_Layer: 0
   m_Name: FieldZone
   m_TagString: Untagged
@@ -1576,9 +1577,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b71c6b184044036b3e8cbd40159abce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Field.FieldZoneController
+  view: {fileID: 2116838299844911822}
   hoverView: {fileID: 1711298559833427234}
+  selectableView: {fileID: 2475434066484172610}
+  fieldCard: {fileID: 3616874525106274146}
   fieldZone: 0
   pointOfView: 0
+--- !u!114 &2116838299844911822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6457367524792941866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 584c8c0e88c44b8c92d51ea45b55b706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Ygo.View::Ygo.View.Field.FieldZoneView
   content: {fileID: 3656032128976043734}
 --- !u!1 &6785363243000148276
 GameObject:
@@ -1646,7 +1662,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Card.ThumbnailFieldCardController
   view: {fileID: 7576202661008180655}
-  statsView: {fileID: 0}
+  statsView: {fileID: 435616420330069971}
 --- !u!1 &6987205276243727420
 GameObject:
   m_ObjectHideFlags: 0
