@@ -77,7 +77,7 @@ namespace Ygo.Core.Duel
             return new NewPhaseEvent(phase);
         }
 
-        public IEvent DrawCard(uint cardCode, byte player)
+        public List<IEvent> DrawCard(uint cardCode, byte player)
         {
             DuelistState playerState = player == 0 ? Player0State : Player1State;
             List<CardModel> handBefore = new List<CardModel>();
@@ -93,6 +93,8 @@ namespace Ygo.Core.Duel
                 };
                 handBefore.Add(cardModel);
             }
+
+            var deckAmountBefore = playerState.MainDeck.Count;
             
             CardState card = playerState.TakeCard(cardCode, Location.Deck);
             var drawnCard = new CardModel()
@@ -120,12 +122,22 @@ namespace Ygo.Core.Duel
                 handAfter.Add(cardModel);
             }
 
-            return new DrawEvent(
-                handBefore, 
-                handAfter, 
-                drawnCard, 
-                GetPointOfView(player)
-                );
+            var pov = GetPointOfView(player);
+
+            return new List<IEvent>()
+            {
+                new DrawDeckEvent(
+                    deckAmountBefore,
+                    playerState.MainDeck.Count,
+                    pov
+                    ),
+                new DrawHandEvent(
+                    handBefore,
+                    handAfter,
+                    drawnCard,
+                    pov
+                )
+            };
         }
 
         public void SetMessageAwaitingInput(IDuelMessage message)

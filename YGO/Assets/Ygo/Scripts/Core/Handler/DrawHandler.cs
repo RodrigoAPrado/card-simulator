@@ -12,14 +12,14 @@ namespace Ygo.Scripts.Core.Handler
     {
         public override UniTask<IReadOnlyList<IEvent>> HandleMessage(IDrawMessage message, DuelState duelState)
         {
-            List<IEvent> commands = new List<IEvent>();
+            List<IEvent> events = new List<IEvent>();
             
             foreach (var card in message.Cards)
             {
-                commands.Add(duelState.DrawCard(card.CardCode, message.Player));
+                events.AddRange(duelState.DrawCard(card.CardCode, message.Player));
             }
 
-            return new UniTask<IReadOnlyList<IEvent>>(commands);
+            return new UniTask<IReadOnlyList<IEvent>>(events);
         }
     }
 }

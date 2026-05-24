@@ -2,6 +2,8 @@
 using UnityEngine;
 using Ygo.Controller.Component;
 using Ygo.Scripts.Core.Enum;
+using Ygo.Scripts.Core.Event.Base;
+using Ygo.Scripts.Data;
 using Ygo.View;
 using Ygo.View.Field;
 
@@ -9,14 +11,21 @@ namespace Ygo.Controller.Field
 {
     public class DeckController : MonoBehaviour
     {
-        [field: SerializeField] 
-        private DeckView view;
-        [field: SerializeField] 
-        private PointOfView pointOfView;
+        public PointOfView PointOfView => pointOfView;
         
-        public void Init(int deckSize)
+        [field: SerializeField] 
+        protected DeckView view;
+        [field: SerializeField] 
+        protected PointOfView pointOfView;
+        
+        public virtual void Init(int deckCount, EventQueue eventQueue)
         {
-            view.SetSize(deckSize);
+            view.SetSize(deckCount);
+        }
+
+        protected void SetDeckCount(int deckCount)
+        {
+            view.SetSize(deckCount);
         }
     }
 }

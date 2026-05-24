@@ -6,14 +6,14 @@ using Ygo.Scripts.Core.Model;
 
 namespace Ygo.Scripts.Core.Event
 {
-    public class DrawEvent : IEvent
+    public class DrawHandEvent : IEvent
     {
         public IReadOnlyList<CardModel> HandBefore { get; }
         public IReadOnlyList<CardModel> HandAfter { get; }
         public CardModel DrawnCard { get; }
         public PointOfView PointOfView { get; }
 
-        public DrawEvent(
+        public DrawHandEvent(
             IReadOnlyList<CardModel> handBefore, 
             IReadOnlyList<CardModel> handAfter, 
             CardModel drawCard,

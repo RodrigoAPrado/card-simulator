@@ -32,16 +32,15 @@ namespace Ygo.Controller
             {
                 controller.Init(onHover);
             }
-            eventQueue.Subscribe<DrawEvent>(OnDrawEvent);
+            eventQueue.Subscribe<DrawHandEvent>(OnDrawEvent);
         }
 
-        private async UniTask OnDrawEvent(DrawEvent e)
+        private async UniTask OnDrawEvent(DrawHandEvent e)
         {
             if (e.PointOfView != pointOfView)
                 return;
 
             SetState(e.HandBefore);
-            //TODO: Fazer animação
             await UniTask.DelayFrame(6);
             SetState(e.HandAfter);
         }

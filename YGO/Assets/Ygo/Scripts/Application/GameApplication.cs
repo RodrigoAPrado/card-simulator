@@ -28,7 +28,7 @@ namespace Ygo.Application
                 .WithStartingLp(8000)
                 .WithStartingHand(5)
                 .WithCardsPerDraw(1)
-                .WithMainDeck(DummyDeck.CreateDeck(0, true, false, _duelManager.CardLibrary))
+                .WithMainDeck(DummyDeck.CreateDeck(0, false, false, _duelManager.CardLibrary))
                 .WithExtraDeck(DummyDeck.CreateDeck(0, false, true, _duelManager.CardLibrary))
                 .Build();
             
@@ -36,7 +36,7 @@ namespace Ygo.Application
                 .WithStartingLp(8000)
                 .WithStartingHand(5)
                 .WithCardsPerDraw(1)
-                .WithMainDeck(DummyDeck.CreateDeck(1, true, false, _duelManager.CardLibrary))
+                .WithMainDeck(DummyDeck.CreateDeck(1, false, false, _duelManager.CardLibrary))
                 .WithExtraDeck(DummyDeck.CreateDeck(1, false, true, _duelManager.CardLibrary))
                 .Build();
 

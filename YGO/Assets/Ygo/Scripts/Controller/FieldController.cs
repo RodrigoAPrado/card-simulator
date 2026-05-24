@@ -48,8 +48,9 @@ namespace Ygo.Controller
                 .ToDictionary(x => x.Key,
                 x => (IReadOnlyDictionary<FieldZones, FieldZoneController>)x.Value);
             
-            _duelInstance.EventQueue.Subscribe<SelectPlaceEvent>(OnSelectPlaceEvent);
+            duelInstance.EventQueue.Subscribe<SelectPlaceEvent>(OnSelectPlaceEvent);
             _showOpponent = showOpponent;
+            _duelInstance = duelInstance;
         }
 
         private async UniTask OnSelectPlaceEvent(SelectPlaceEvent e)
@@ -62,7 +63,7 @@ namespace Ygo.Controller
             var choiceIndex = 0;
             foreach (var choice in e.Choices)
             {
-                var pointOfView = (int) choice >= 100 ? PointOfView.Opponent : PointOfView.Player;
+                var pointOfView = (int) choice >= 100 ? opponentPointOfView : e.PointOfView;
                 var actualChoice = (int) choice >= 100 ? choice - 100 : choice;
                 var fieldZone = _fieldZonesDict[pointOfView][actualChoice];
                 var actualChoiceIndex = choiceIndex;

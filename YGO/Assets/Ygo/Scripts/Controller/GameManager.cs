@@ -6,6 +6,7 @@ using Ygo.Controller.Data;
 using Ygo.Controller.Field;
 using Ygo.Controller.Modal;
 using Ygo.Core.Duel;
+using Ygo.Scripts.Core.Enum;
 using Ygo.Scripts.Core.Model;
 using Ygo.View;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
@@ -70,6 +71,21 @@ namespace Ygo.Controller
             foreach (var handController in handControllers)
             {
                 handController.Init(_duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard);
+            }
+            
+            foreach (var deckController in mainDeckControllers)
+            {
+                var player = deckController.PointOfView == PointOfView.Player
+                    ? _duelInstance.DuelData.PlayerId
+                    : _duelInstance.DuelData.PlayerId + 1;
+
+                if (player > 1)
+                    player = 0;
+
+                deckController.Init(
+                    player == 0
+                        ? _duelInstance.DuelData.Duelist0.MainDeck.Count
+                        : _duelInstance.DuelData.Duelist1.MainDeck.Count, _duelInstance.EventQueue);
             }
             
             fieldController.Init(_duelInstance, _smallImageLibrary);

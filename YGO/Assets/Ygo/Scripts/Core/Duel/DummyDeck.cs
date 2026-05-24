@@ -9,6 +9,8 @@ namespace Ygo.Core.Duel
     {
         private static readonly List<uint> _brandedMain = new ()
         {
+            36637374, // 29 Branded Opening
+            30271097, // 12 F&V
             68468459, // 01 Albaz
             19304410, // 02 Tri Springans Kitt
             73819701, // 03 Albaz Branco
@@ -20,7 +22,6 @@ namespace Ygo.Core.Duel
             45883110, // 09 Quem
             95515789, // 10 Cartesia
             95515789, // 11 Cartesia
-            30271097, // 12 F&V
             30271097, // 13 F&V
             30271097, // 14 F&V
             29948294, // 15 High Spirits
@@ -36,7 +37,6 @@ namespace Ygo.Core.Duel
             25451383, // 26 Albion Preto
             19096726, // 27 Mercourier
             36637374, // 28 Branded Opening
-            36637374, // 29 Branded Opening
             36637374, // 29 Branded Opening
             18973184, // 30 Branded Lost
             6763530, // 31 Branded Banishment
@@ -135,6 +135,7 @@ namespace Ygo.Core.Duel
 
         private static readonly List<uint> _utopiaMain = new()
         {
+            14558127, // 35 Ash Blossom
             62880279, // 01 W. Dodododo
             62880279, // 02 W. Dodododo
             62880279, // 03 W. Dodododo
@@ -169,7 +170,6 @@ namespace Ygo.Core.Duel
             59438930, // 32 Ghost Ogre
             59438930, // 33 Ghost Ogre
             14558127, // 34 Ash Blossom
-            14558127, // 35 Ash Blossom
             94145021, // 36 Droll & Lock Bird
             94145021, // 37 Droll & Lock Bird
             32807846, // 38 ROTA

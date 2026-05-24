@@ -15,14 +15,14 @@ namespace Ygo.Core.Duel
     {
         public IReadOnlyDictionary<uint, ICardData> CardsInDuel { get; } 
         public EventQueue EventQueue { get; }
+        public DuelData DuelData { get; }
         private readonly DuelBridge _bridge;
         private readonly DuelState _state;
-        private readonly DuelData _duelData;
         private readonly HandlerRegistry _handlerRegistry;
 
         public DuelInstance(DuelData duelData, DuelBridge bridge, DuelState state, EventQueue eventQueue)
         {
-            _duelData = duelData;
+            DuelData = duelData;
             var cardsInDuelList = new List<ICardData>();
             cardsInDuelList.AddRange(duelData.Duelist0.MainDeck);
             cardsInDuelList.AddRange(duelData.Duelist0.ExtraDeck);
