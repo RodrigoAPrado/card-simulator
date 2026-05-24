@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Ygo.Controller.Card;
 using Ygo.Controller.Data;
 using Ygo.Scripts.Core.Enum;
@@ -11,8 +12,11 @@ using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Enum;
 
 namespace Ygo.Controller.Field
 {
-    public class FieldZoneController : MonoBehaviour
+    public class FieldZoneController : MonoBehaviour, IPointerClickHandler
     {
+        public FieldZones FieldZone => fieldZone;
+        public PointOfView PointOfView => pointOfView;
+        
         [field: SerializeField] 
         private FieldZoneView view;
         [field: SerializeField] 
@@ -27,6 +31,7 @@ namespace Ygo.Controller.Field
         private PointOfView pointOfView;
 
         private CardImageLibrary _library;
+        private Action _action;
         
         public void Init(CardImageLibrary library)
         {
@@ -52,6 +57,16 @@ namespace Ygo.Controller.Field
             fieldCard.ShowCard(card.Position == CardPosition.FaceUp);
         }
 
+        public void SetAction(Action action)
+        {
+            _action = action;
+        }
+
+        public void ClearAction()
+        {
+            _action = null;
+        }
+
         public void ToggleHighlight(bool toggle)
         {
             if(toggle)
@@ -68,6 +83,12 @@ namespace Ygo.Controller.Field
         private void FlipStraight()
         {
             view.FlipStraight();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if(eventData.button == PointerEventData.InputButton.Left)
+                _action?.Invoke();
         }
     }
 }
