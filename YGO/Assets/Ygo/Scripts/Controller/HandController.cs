@@ -16,6 +16,8 @@ namespace Ygo.Controller
 {
     public class HandController : MonoBehaviour
     {
+        public PointOfView PointOfView => pointOfView;
+        
         [field:SerializeField]
         private ThumbnailCardController[] cardControllers;
         [field: SerializeField] 
@@ -68,6 +70,11 @@ namespace Ygo.Controller
                 if(controller.Dirty)
                     controller.Disable();
             }
+        }
+
+        public async UniTask MoveCardAway(Transform targetPosition, AnimatingCardController animatingCard, CardModel card)
+        {
+            //
         }
     }
 }

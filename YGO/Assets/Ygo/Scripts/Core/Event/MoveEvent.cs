@@ -1,4 +1,7 @@
-﻿using Ygo.Scripts.Core.Event.Base;
+﻿using Ygo.Scripts.Core.Card;
+using Ygo.Scripts.Core.Enum;
+using Ygo.Scripts.Core.Event.Base;
+using Ygo.Scripts.Core.Model;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card.Flag;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Enum;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Flag;
@@ -14,12 +17,16 @@ namespace Ygo.Scripts.Core.Event
         public FieldZones BeginFieldZone { get; }
         public byte BeginController { get; }
         public CardPosition BeginCardPosition { get; }
+        public PointOfView BeginPointOfView { get; }
+        
         
         public Location EndLocation { get; }
         public int EndSequence { get; }
         public FieldZones EndFieldZone { get; }
         public byte EndController { get; }
         public CardPosition EndCardPosition { get; }
+        public PointOfView EndPointOfView { get; }
+        public CardModel CardModel { get; }
 
         public MoveEvent(
             uint cardCode, 
@@ -28,11 +35,14 @@ namespace Ygo.Scripts.Core.Event
             FieldZones beginFieldZone,
             byte beginController,
             CardPosition beginCardPosition, 
+            PointOfView beginPointOfView,
             Location endLocation, 
             int endSequence, 
             FieldZones endFieldZone,
             byte endController,
-            CardPosition endCardPosition)
+            CardPosition endCardPosition,
+            PointOfView endPointOfView,
+            CardModel cardModel)
         {
             CardCode = cardCode;
             BeginLocation = beginLocation;
@@ -40,11 +50,14 @@ namespace Ygo.Scripts.Core.Event
             BeginFieldZone = beginFieldZone;
             BeginController = beginController;
             BeginCardPosition = beginCardPosition;
+            BeginPointOfView = beginPointOfView;
             EndLocation = endLocation;
             EndSequence = endSequence;
             EndFieldZone = endFieldZone;
             EndController = endController;
             EndCardPosition = endCardPosition;
+            EndPointOfView = endPointOfView;
+            CardModel = cardModel;
         }
     }
 }

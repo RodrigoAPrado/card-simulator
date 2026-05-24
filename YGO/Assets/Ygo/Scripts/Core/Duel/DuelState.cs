@@ -61,7 +61,7 @@ namespace Ygo.Core.Duel
             if(cardState == null)
                 throw new ArgumentOutOfRangeException(nameof(cardCode), cardCode, null);
             
-            return cardState?.Data;
+            return cardState.Data;
         }
 
         public IEvent ChangeTurn()
@@ -172,13 +172,33 @@ namespace Ygo.Core.Duel
             }
             
             cardState.UpdateState(after);
-
+            var fieldStateAfter = _fieldState.GetFieldZone(after, _duelData.PlayerId);
+            
             return new List<IEvent>()
             {
-                new MoveEvent(cardCode, before.Location, (int)before.Sequence,
-                _fieldState.GetFieldZone(before, _duelData.PlayerId), before.Controller, before.Position,
-                after.Location, (int)after.Sequence, _fieldState.GetFieldZone(after, _duelData.PlayerId),
-                after.Controller, after.Position)
+                new MoveEvent(cardCode, 
+                    before.Location, 
+                    (int)before.Sequence,
+                    _fieldState.GetFieldZone(before, _duelData.PlayerId), 
+                    before.Controller, 
+                    before.Position, 
+                    GetPointOfView(before.Controller),
+                    after.Location, 
+                    (int)after.Sequence, 
+                    fieldStateAfter,
+                    after.Controller, 
+                    after.Position, 
+                    GetPointOfView(after.Controller), 
+                    new CardModel()
+                    {
+                        Data = cardState.Data, 
+                        Sequence = cardState.Sequence, 
+                        Position = cardState.Position,
+                        CardLocation = cardState.CardLocation,
+                        CardFieldZone = fieldStateAfter,
+                        Controller = after.Controller,
+                        Description = cardState.Data.Description
+                    })
             };
         }
     }
