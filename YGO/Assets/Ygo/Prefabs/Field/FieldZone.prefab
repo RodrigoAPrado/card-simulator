@@ -217,6 +217,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Field.FieldZoneController
   hoverView: {fileID: 1711298559833427234}
+  fieldZone: 0
+  pointOfView: 0
+  content: {fileID: 3656032128976043734}
 --- !u!1 &8196871577853541788
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,11 +6,11 @@ namespace Ygo.View
     public class TextViewUI : MonoBehaviour
     {
         [field: SerializeField] 
-        private TextMeshProUGUI Text;
+        protected TextMeshProUGUI text;
 
-        public void SetText(string text)
+        public virtual void SetText(string value)
         {
-            Text.text = text;
+            text.text = value;
         }
     }
 }

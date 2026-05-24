@@ -16,6 +16,11 @@ namespace Ygo.View.Component
         private Color[] colorAnim;
 
         private Sequence curSequence;
+
+        public void Init()
+        {
+            image.color = colorNotAnimation;
+        }
         
         public void Animate()
         {

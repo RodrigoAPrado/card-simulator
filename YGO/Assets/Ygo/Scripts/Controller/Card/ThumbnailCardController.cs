@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Ygo.Controller.Component;
 using Ygo.Scripts.Core.Model;
 using Ygo.View.Card;
@@ -11,7 +12,7 @@ using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card.Enum;
 
 namespace Ygo.Controller.Card
 {
-    public class ThumbnailCardController : MonoBehaviour
+    public class ThumbnailCardController : MonoBehaviour, IPointerClickHandler
     {
         [field: SerializeField] 
         private ThumbCardView view;
@@ -19,9 +20,6 @@ namespace Ygo.Controller.Card
         private HoverView hoverView;
         [field: SerializeField] 
         private SelectableView selectableView;
-        
-        [field: SerializeField]
-        private CardControllerMode cardMode;
 
         private Action<CardModel, bool> _onEnter;
         
@@ -34,10 +32,10 @@ namespace Ygo.Controller.Card
         public void Init(Action<CardModel, bool> onEnter)
         {
             _onEnter = onEnter;
-            view.ToggleField(cardMode == CardControllerMode.Field);
             Enabled = false;
             gameObject.SetActive(false);
             hoverView.ToggleEnable(true);
+            selectableView.Init();
         }
 
         public void Highlight()
@@ -63,27 +61,6 @@ namespace Ygo.Controller.Card
             CardModel = null;
         }
 
-        public void OnEnter()
-        {
-            if (!Enabled)
-                return;
-            
-            _onEnter?.Invoke(CardModel, Hidden);
-        }
-
-        public void OnExit()
-        {
-            if (!Enabled)
-                return;
-        }
-
-        public void OnClick()
-        {
-            if (!Enabled)
-                return;
-            _onClickAction?.Invoke();
-        }
-
         public void SetDirty()
         {
             Dirty = true;
@@ -100,7 +77,6 @@ namespace Ygo.Controller.Card
         {
             Enabled = false;
             CardModel = null;
-            view.Clear();
             gameObject.SetActive(false);
             Dirty = false;
             ClearAction();
@@ -114,6 +90,14 @@ namespace Ygo.Controller.Card
         public void ClearAction()
         {
             _onClickAction = null;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!Enabled)
+                return;
+            if(eventData.button == PointerEventData.InputButton.Left)
+                _onClickAction?.Invoke();
         }
     }
 }
