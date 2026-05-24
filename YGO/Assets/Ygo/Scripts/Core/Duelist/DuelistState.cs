@@ -5,6 +5,7 @@ using Ygo.Scripts.Core.Card;
 using Ygo.Scripts.Data;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Flag;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message.Component;
 
 namespace Ygo.Scripts.Core.Duelist
 {
@@ -78,45 +79,41 @@ namespace Ygo.Scripts.Core.Duelist
             }
         }
 
-        public CardState TakeCard(uint cardCode, Location location)
+        public CardState TakeCard(uint cardCode, Location location, int sequence)
         {
             CardState card;
+            List<CardState> list;
+
             switch (location)
             {
                 case Location.Deck:
-                    card = _mainDeck.FirstOrDefault(x => x.Data.Code == cardCode);
-                    if (card == null)
-                        break;
-                    _mainDeck.Remove(card);
+                    list = _mainDeck;
                     break;
                 case Location.Hand:
-                    card = _hand.FirstOrDefault(x => x.Data.Code == cardCode);
-                    if (card == null)
-                        break;
-                    _hand.Remove(card);
+                    list = _hand;
                     break;
                 case Location.Grave:
-                    card = _graveyard.FirstOrDefault(x => x.Data.Code == cardCode);
-                    if (card == null)
-                        break;
-                    _graveyard.Remove(card);
+                    list = _graveyard;
                     break;
                 case Location.Banishment:
-                    card = _banished.FirstOrDefault(x => x.Data.Code == cardCode);
-                    if (card == null)
-                        break;
-                    _banished.Remove(card);
+                    list = _banished;
                     break;
                 case Location.Extra:
-                    card = _extraDeck.FirstOrDefault(x => x.Data.Code == cardCode);
-                    if (card == null)
-                        break;
-                    _extraDeck.Remove(card);
+                    list = _extraDeck;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(location), location, null);
             }
-
+            
+            card = location == Location.Deck ? list.FirstOrDefault(x => x.Data.Code == cardCode) : list[sequence];
+            
+            if (card == null)
+                throw new InvalidOperationException("No card found");
+            if (card.Data.Code != cardCode)
+                throw new InvalidOperationException($"Given card does not match! Sequence:{sequence}, Code:{cardCode}, ActualCard:{card.Data.Code}");
+            
+            list.Remove(card);
+            
             return card;
         }
     }

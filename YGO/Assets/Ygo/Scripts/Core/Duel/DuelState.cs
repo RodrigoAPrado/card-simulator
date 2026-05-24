@@ -11,10 +11,12 @@ using Ygo.Scripts.Core.Handler.Base;
 using Ygo.Scripts.Core.Model;
 using Ygo.Scripts.Data;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card.Flag;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Enum;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Flag;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message.Base;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message.Component;
 
 namespace Ygo.Core.Duel
 {
@@ -96,7 +98,7 @@ namespace Ygo.Core.Duel
 
             var deckAmountBefore = playerState.MainDeck.Count;
             
-            CardState card = playerState.TakeCard(cardCode, Location.Deck);
+            CardState card = playerState.TakeCard(cardCode, Location.Deck, -1);
             var drawnCard = new CardModel()
             {
                 Data = card.Data,
@@ -107,6 +109,7 @@ namespace Ygo.Core.Duel
             };
             
             playerState.PutCard(card, Location.Hand);
+            card.UpdateState(CardPosition.FaceDown, Location.Hand, player);
             
             List<CardModel> handAfter = new List<CardModel>();
             foreach (var cardInHand in playerState.Hand)
@@ -150,6 +153,33 @@ namespace Ygo.Core.Duel
         public void ClearMessageAwaitingInput()
         {
             MessageAwaitingInput = null;
+        }
+
+        public List<IEvent> MoveCard(uint cardCode, IFullLocationReference before, IFullLocationReference after)
+        {
+            var playerState = before.Controller == 0 ? Player0State : Player1State;
+            var cardState = before.Location == Location.OnField
+                ? _fieldState.TakeCard(cardCode, before, _duelData.PlayerId)
+                : playerState.TakeCard(cardCode, before.Location, (int) before.Sequence);
+            
+            if (after.Location == Location.OnField)
+            {
+                _fieldState.PutCard(cardState, after, _duelData.PlayerId);
+            }
+            else
+            {
+                playerState.PutCard(cardState, after.Location);
+            }
+            
+            cardState.UpdateState(after);
+
+            return new List<IEvent>()
+            {
+                new MoveEvent(cardCode, before.Location, (int)before.Sequence,
+                _fieldState.GetFieldZone(before, _duelData.PlayerId), before.Controller, before.Position,
+                after.Location, (int)after.Sequence, _fieldState.GetFieldZone(after, _duelData.PlayerId),
+                after.Controller, after.Position)
+            };
         }
     }
 }
