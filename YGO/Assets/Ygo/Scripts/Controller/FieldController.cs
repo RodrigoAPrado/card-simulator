@@ -10,6 +10,7 @@ using Ygo.Core.Duel;
 using Ygo.Scripts.Core.Enum;
 using Ygo.Scripts.Core.Event;
 using Ygo.Scripts.Core.Event.Base;
+using Ygo.Scripts.Core.Model;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Enum;
 
 namespace Ygo.Controller
@@ -23,6 +24,7 @@ namespace Ygo.Controller
         
         private DuelInstance _duelInstance;
         private bool _showOpponent;
+        private CardImageLibrary _library;
         
         public void Init(DuelInstance duelInstance, CardImageLibrary library, bool showOpponent = true)
         {
@@ -51,6 +53,7 @@ namespace Ygo.Controller
             duelInstance.EventQueue.Subscribe<SelectPlaceEvent>(OnSelectPlaceEvent);
             _showOpponent = showOpponent;
             _duelInstance = duelInstance;
+            _library = library;
         }
 
         private async UniTask OnSelectPlaceEvent(SelectPlaceEvent e)
@@ -82,6 +85,25 @@ namespace Ygo.Controller
             }
 
             _ = _duelInstance.SetResponse(new List<int>() { index });
+        }
+
+        public async UniTask MoveCardFromHand(RectTransform originalPosition, FieldZones toFieldZone, 
+            AnimatingCardController animatingCard, CardModel card, PointOfView pointOfView)
+        {
+            animatingCard.Show(_library.GetCardImage(card.Data.Code));
+            animatingCard.transform.position = new Vector3(originalPosition.transform.position.x,
+                originalPosition.transform.position.y, originalPosition.transform.position.z);
+            var animatingCardRect = animatingCard.GetComponent<RectTransform>();
+
+            animatingCardRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, originalPosition.rect.width);
+            animatingCardRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, originalPosition.rect.height);
+            
+            var fieldZone = _fieldZonesDict[pointOfView][toFieldZone];
+            await animatingCard.MoveCardField(fieldZone.Content.transform, animatingCardRect,
+                fieldZone.Content);
+            fieldZone.InitCard(card);
+            animatingCard.Hide();
+            await UniTask.Delay(30);
         }
     }
 }

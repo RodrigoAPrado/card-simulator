@@ -37,16 +37,24 @@ namespace Ygo.Controller.Card
             if (value)
             {
                 view.ShowFront();
-                statsView.SetStats(
-                    CardModel.Data.OriginalAttack.ToString(),
-                    CardModel.Data.OriginalDefense.ToString(),
-                    CardModel.Data.Level.ToString());
             }
             else
             {
                 view.ShowBack();
-                statsView.Disable();
             }
+
+            Enable();
+        }
+
+        public void ShowStats(bool value)
+        {
+            if(value)
+                statsView.SetStats(
+                CardModel.Data.OriginalAttack.ToString(),
+                CardModel.Data.OriginalDefense.ToString(),
+                CardModel.Data.Level.ToString());
+            else
+                statsView.Disable();
         }
 
         public void ToggleAtkDefMode(bool isDefMode)

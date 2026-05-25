@@ -14,7 +14,7 @@ namespace Ygo.View.Field
         
         public void Flip90()
         {
-            content.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            content.localRotation = Quaternion.Euler(0f, 0f, 90f);
         }
 
         public void FlipStraight()

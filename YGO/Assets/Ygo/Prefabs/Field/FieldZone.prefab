@@ -1577,6 +1577,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b71c6b184044036b3e8cbd40159abce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Field.FieldZoneController
+  content: {fileID: 988415454175069821}
   view: {fileID: 2116838299844911822}
   hoverView: {fileID: 1711298559833427234}
   selectableView: {fileID: 2475434066484172610}

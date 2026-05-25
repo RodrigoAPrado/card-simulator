@@ -80,10 +80,11 @@ namespace Ygo.Controller
         {
             var index = 0;
             var targetController = 0;
-            var animatingList = new List<AnimatingCardController>();
-            var animatingTransform = new List<RectTransform>();
+            var animatingList = new Dictionary<int, AnimatingCardController>();
+            var animatingTransform = new Dictionary<int, RectTransform>();
+            var realCardsTransform = new Dictionary<int, RectTransform>();
             RectTransform animatingCardTransform = null;
-            
+            var realCardsModel = new List<CardModel>();
             
             foreach (var cardController in cardControllers)
             {
@@ -104,7 +105,7 @@ namespace Ygo.Controller
                     animatingCardTransform = rectAnimating;
                     continue;
                 }
-                index++;
+                realCardsModel.Add(cardController.CardModel);
                 var animatingGhostCard = Instantiate(animatingCardControllerPrefab, animatingLayer);
                 animatingGhostCard.transform.position = cardController.transform.position;
                 rectAnimating = animatingGhostCard.GetComponent<RectTransform>();
@@ -112,19 +113,42 @@ namespace Ygo.Controller
                 rectAnimating.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rectController.rect.width);
                 rectAnimating.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rectController.rect.height);
                 
-                animatingList.Add(animatingGhostCard);
+                animatingList.Add(index, animatingGhostCard);
                 cardController.HideView();
                 animatingGhostCard.Init();
                 animatingGhostCard.Show(_library.GetCardImage(cardController.CardModel.Data.Code));
-                animatingTransform.Add(rectAnimating);
+                animatingTransform.Add(index, rectAnimating);
+                realCardsTransform.Add(index, rectController);
+                index++;
             }
             animatingCard.transform.SetAsLastSibling();
             cardControllers[targetController].Disable();
 
             if (animatingCardTransform == null)
                 throw new InvalidOperationException("No animating card transform");
+
+            // esperar as cartas de verdade se moverem.
+            await UniTask.DelayFrame(3);
             
-            await animatingCard.MoveCard(animatingCardTransform, targetPosition);
+            var tasks = new List<UniTask>();
+            tasks.Add(animatingCard.MoveCardHand(animatingCardTransform, targetPosition));
+
+            foreach (var animating in animatingList)
+            {
+                tasks.Add(
+                    animating.Value.MoveCardHandX(animatingTransform[animating.Key], realCardsTransform[animating.Key]));
+            }
+            
+            await UniTask.WhenAll(tasks);
+            
+            SetState(realCardsModel);
+            animatingTransform.Clear();
+
+            foreach (var anim in animatingList)
+            {
+                Destroy(anim.Value.gameObject);
+            }
+            animatingList.Clear();
         }
     }
 }

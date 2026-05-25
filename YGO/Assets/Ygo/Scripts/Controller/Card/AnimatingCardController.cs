@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Ygo.View.Card;
 
@@ -27,9 +28,20 @@ namespace Ygo.Controller.Card
             gameObject.SetActive(false);
         }
 
-        public async UniTask MoveCard(RectTransform thisPosition, RectTransform targetPosition)
+        public async UniTask MoveCardHand(RectTransform thisPosition, RectTransform targetPosition)
         {
             await animateView.MoveCard(thisPosition, targetPosition);
+        }
+
+        public async UniTask MoveCardHandX(RectTransform thisPosition, RectTransform targetPosition)
+        {
+            await animateView.MoveCardX(thisPosition, targetPosition);
+        }
+
+        public async UniTask MoveCardField(Transform targetPosition,
+            RectTransform thisPositionRect, RectTransform targetPositionRect)
+        {
+            await animateView.MoveCardField(targetPosition, thisPositionRect, targetPositionRect);
         }
     }
 }

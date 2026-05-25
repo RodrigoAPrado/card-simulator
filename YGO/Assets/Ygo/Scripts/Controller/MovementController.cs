@@ -52,7 +52,6 @@ namespace Ygo.Controller
             if (e.BeginLocation == Location.Hand || e.EndLocation == Location.Hand)
             {
                 await OnMoveHand(e);
-                return;
             }
         }
 
@@ -61,6 +60,19 @@ namespace Ygo.Controller
             if (e.BeginLocation == Location.Hand)
             {
                 await OnMoveHandBegin(e);
+            }
+            else
+            {
+                //TODO: Anim
+            }
+
+            if (e.EndLocation == Location.Hand)
+            {
+                //TODO: Anim
+            }
+            else
+            {
+                await OnMoveFieldFromHand(e);
             }
         }
 
@@ -75,6 +87,18 @@ namespace Ygo.Controller
                 throw new InvalidOperationException("No hand controller found");
             
             await handController.MoveCardAway(neutralPosition, animatingCardCanvas, e.CardModel);
+        }
+
+        private async UniTask OnMoveFieldFromHand(MoveEvent e)
+        {
+            animatingCardCanvas.Hide();
+            
+            var neutralPosition = e.EndPointOfView == PointOfView.Player
+                ? neutralPositionWorldPlayer
+                : neutralPositionWorldOpponent;
+
+            await _fieldController.MoveCardFromHand(neutralPosition, e.EndFieldZone, animatingCardWorld, e.CardModel,
+                e.EndPointOfView);
         }
     }
 }

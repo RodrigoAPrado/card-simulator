@@ -289,7 +289,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 960, y: -674}
-  m_SizeDelta: {x: 168.61, y: 232.8}
+  m_SizeDelta: {x: 168.61, y: 243.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &37770091
 GameObject:
@@ -16977,11 +16977,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 208789228636110339, guid: 4380b27d9e43f414da25244689fed4c0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 126.3
+      value: 168.61
       objectReference: {fileID: 0}
     - target: {fileID: 208789228636110339, guid: 4380b27d9e43f414da25244689fed4c0, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 178
+      value: 243.2
       objectReference: {fileID: 0}
     - target: {fileID: 208789228636110339, guid: 4380b27d9e43f414da25244689fed4c0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17013,11 +17013,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 208789228636110339, guid: 4380b27d9e43f414da25244689fed4c0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1012.4
+      value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 208789228636110339, guid: 4380b27d9e43f414da25244689fed4c0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -266
+      value: -674
       objectReference: {fileID: 0}
     - target: {fileID: 208789228636110339, guid: 4380b27d9e43f414da25244689fed4c0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -17038,6 +17038,10 @@ PrefabInstance:
     - target: {fileID: 5195255843572612311, guid: 4380b27d9e43f414da25244689fed4c0, type: 3}
       propertyPath: m_Name
       value: ThumbCanvasAnimating
+      objectReference: {fileID: 0}
+    - target: {fileID: 5195255843572612311, guid: 4380b27d9e43f414da25244689fed4c0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

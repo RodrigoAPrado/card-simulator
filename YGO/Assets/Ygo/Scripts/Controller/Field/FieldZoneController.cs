@@ -16,7 +16,10 @@ namespace Ygo.Controller.Field
     {
         public FieldZones FieldZone => fieldZone;
         public PointOfView PointOfView => pointOfView;
-        
+        public RectTransform Content => content;
+
+        [field: SerializeField] 
+        private RectTransform content;
         [field: SerializeField] 
         private FieldZoneView view;
         [field: SerializeField] 
@@ -45,7 +48,7 @@ namespace Ygo.Controller.Field
         public void InitCard(CardModel card)
         {
             fieldCard.UpdateCard(card, _library.GetCardImage(card.Data.Code));
-            if (card.Position == CardPosition.Defense)
+            if (card.Position is CardPosition.FaceDownDefense or CardPosition.FaceUpDefense or CardPosition.Defense)
             {
                 Flip90();
             }
@@ -54,7 +57,8 @@ namespace Ygo.Controller.Field
                 FlipStraight();
             }
             
-            fieldCard.ShowCard(card.Position == CardPosition.FaceUp);
+            fieldCard.ShowCard(card.Position is CardPosition.FaceUpAttack or CardPosition.FaceUpDefense or CardPosition.FaceUp);
+            fieldCard.ShowStats(card.Position is CardPosition.FaceUpAttack or CardPosition.FaceUpDefense);
         }
 
         public void SetAction(Action action)
