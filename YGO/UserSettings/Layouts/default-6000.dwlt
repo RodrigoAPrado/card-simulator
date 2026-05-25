@@ -617,19 +617,19 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 55090
-    - m_Data: 55092
-    - m_Data: 55094
-    - m_Data: 55096
-    - m_Data: 55098
-    - m_Data: 55100
-    - m_Data: 55102
-    - m_Data: 55104
-    - m_Data: 55106
-    - m_Data: 55108
-    - m_Data: 55110
-    - m_Data: 55112
-    - m_Data: 55114
+    - m_Data: 55020
+    - m_Data: 55022
+    - m_Data: 55024
+    - m_Data: 55026
+    - m_Data: 55028
+    - m_Data: 55030
+    - m_Data: 55032
+    - m_Data: 55034
+    - m_Data: 55036
+    - m_Data: 55038
+    - m_Data: 55040
+    - m_Data: 55042
+    - m_Data: 55044
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -663,19 +663,19 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 55090
-    - m_Data: 55092
-    - m_Data: 55094
-    - m_Data: 55096
-    - m_Data: 55098
-    - m_Data: 55100
-    - m_Data: 55102
-    - m_Data: 55104
-    - m_Data: 55106
-    - m_Data: 55108
-    - m_Data: 55110
-    - m_Data: 55112
-    - m_Data: 55114
+    - m_Data: 55020
+    - m_Data: 55022
+    - m_Data: 55024
+    - m_Data: 55026
+    - m_Data: 55028
+    - m_Data: 55030
+    - m_Data: 55032
+    - m_Data: 55034
+    - m_Data: 55036
+    - m_Data: 55038
+    - m_Data: 55040
+    - m_Data: 55042
+    - m_Data: 55044
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -831,8 +831,7 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs:
-      - m_Data: -9822
+      m_SelectedIDs: []
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs: []
@@ -1373,9 +1372,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 201.60008, y: 206.83568, z: -213.33437}
+    m_Target: {x: 57.462917, y: 178.40964, z: 666.8776}
     speed: 2
-    m_Value: {x: 0, y: 0, z: 0}
+    m_Value: {x: 57.462917, y: 178.40964, z: 666.8776}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1422,13 +1421,13 @@ MonoBehaviour:
     m_gridOpacity: 0.5
     m_NearestPlaneToHandleMode: 0
   m_Rotation:
-    m_Target: {x: -0.33729884, y: -0.079815, z: 0.028677661, w: -0.9376562}
+    m_Target: {x: -0.028604815, y: 0.11728204, z: -0.0034169059, w: -0.9927688}
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 289.93994
+    m_Target: 774.13763
     speed: 2
-    m_Value: 10
+    m_Value: 774.13763
   m_Ortho:
     m_Target: 0
     speed: 2

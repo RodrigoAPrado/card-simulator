@@ -28,5 +28,11 @@ namespace Ygo.View.Card
             CardBack.gameObject.SetActive(false);
             CardFrontImage.gameObject.SetActive(true);
         }
+
+        public void HideAll()
+        {
+            CardBack.gameObject.SetActive(false);
+            CardFrontImage.gameObject.SetActive(false);
+        }
     }
 }

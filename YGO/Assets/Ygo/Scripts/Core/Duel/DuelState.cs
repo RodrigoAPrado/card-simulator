@@ -51,7 +51,7 @@ namespace Ygo.Core.Duel
 
         public ICardData GetCardData(uint cardCode, byte player, Location location)
         {
-            if ((location & Location.OnField) == Location.OnField)
+            if ((location & Location.OnField) != 0)
             {
                 return _fieldState.TryGetCardStateFromCardCode(cardCode)?.Data;
             }
@@ -158,11 +158,11 @@ namespace Ygo.Core.Duel
         public List<IEvent> MoveCard(uint cardCode, IFullLocationReference before, IFullLocationReference after)
         {
             var playerState = before.Controller == 0 ? Player0State : Player1State;
-            var cardState = before.Location == Location.OnField
+            var cardState = (before.Location & Location.OnField) != 0
                 ? _fieldState.TakeCard(cardCode, before, _duelData.PlayerId)
                 : playerState.TakeCard(cardCode, before.Location, (int) before.Sequence);
             
-            if (after.Location == Location.OnField)
+            if ((after.Location & Location.OnField) != 0)
             {
                 _fieldState.PutCard(cardState, after, _duelData.PlayerId);
             }

@@ -99,5 +99,10 @@ namespace Ygo.Controller.Card
             if(eventData.button == PointerEventData.InputButton.Left)
                 _onClickAction?.Invoke();
         }
+
+        public void HideView()
+        {
+            view.HideAll();
+        }
     }
 }

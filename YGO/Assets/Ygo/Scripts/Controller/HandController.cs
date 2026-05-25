@@ -22,6 +22,10 @@ namespace Ygo.Controller
         private ThumbnailCardController[] cardControllers;
         [field: SerializeField] 
         private PointOfView pointOfView;
+        [field:SerializeField]
+        private AnimatingCardController animatingCardControllerPrefab;
+        [field: SerializeField] 
+        private Transform animatingLayer;
         private CardImageLibrary _library;
 
         public void Init(
@@ -72,9 +76,55 @@ namespace Ygo.Controller
             }
         }
 
-        public async UniTask MoveCardAway(Transform targetPosition, AnimatingCardController animatingCard, CardModel card)
+        public async UniTask MoveCardAway(RectTransform targetPosition, AnimatingCardController animatingCard, CardModel card)
         {
-            //
+            var index = 0;
+            var targetController = 0;
+            var animatingList = new List<AnimatingCardController>();
+            var animatingTransform = new List<RectTransform>();
+            RectTransform animatingCardTransform = null;
+            
+            
+            foreach (var cardController in cardControllers)
+            {
+                if (!cardController.Enabled)
+                    continue;
+                var rectController = cardController.GetComponent<RectTransform>();
+                RectTransform rectAnimating;
+                if (cardController.CardModel.Data == card.Data)
+                {
+                    targetController = index;
+                    rectAnimating = animatingCard.GetComponent<RectTransform>();
+                    rectAnimating.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rectController.rect.width);
+                    rectAnimating.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rectController.rect.height);
+                    animatingCard.transform.position = new Vector3(cardController.transform.position.x,
+                        cardController.transform.position.y, cardController.transform.position.z);
+                    animatingCard.Init();
+                    animatingCard.Show(_library.GetCardImage(cardController.CardModel.Data.Code));
+                    animatingCardTransform = rectAnimating;
+                    continue;
+                }
+                index++;
+                var animatingGhostCard = Instantiate(animatingCardControllerPrefab, animatingLayer);
+                animatingGhostCard.transform.position = cardController.transform.position;
+                rectAnimating = animatingGhostCard.GetComponent<RectTransform>();
+                
+                rectAnimating.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rectController.rect.width);
+                rectAnimating.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rectController.rect.height);
+                
+                animatingList.Add(animatingGhostCard);
+                cardController.HideView();
+                animatingGhostCard.Init();
+                animatingGhostCard.Show(_library.GetCardImage(cardController.CardModel.Data.Code));
+                animatingTransform.Add(rectAnimating);
+            }
+            animatingCard.transform.SetAsLastSibling();
+            cardControllers[targetController].Disable();
+
+            if (animatingCardTransform == null)
+                throw new InvalidOperationException("No animating card transform");
+            
+            await animatingCard.MoveCard(animatingCardTransform, targetPosition);
         }
     }
 }

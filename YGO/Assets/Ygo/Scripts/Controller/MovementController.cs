@@ -16,15 +16,15 @@ namespace Ygo.Controller
         [field: SerializeField]
         private AnimatingCardController animatingCardCanvas;
         [field: SerializeField]
-        private Transform neutralPositionCanvasPlayer;
+        private RectTransform neutralPositionCanvasPlayer;
         [field: SerializeField]
-        private Transform neutralPositionCanvasOpponent;
+        private RectTransform neutralPositionCanvasOpponent;
         [field: SerializeField]
         private AnimatingCardController animatingCardWorld;
         [field: SerializeField]
-        private Transform neutralPositionWorldPlayer;
+        private RectTransform neutralPositionWorldPlayer;
         [field: SerializeField]
-        private Transform neutralPositionWorldOpponent;
+        private RectTransform neutralPositionWorldOpponent;
         
         private HandController[] _handControllers;
         private FieldController _fieldController;
@@ -54,8 +54,6 @@ namespace Ygo.Controller
                 await OnMoveHand(e);
                 return;
             }
-            
-            
         }
 
         private async UniTask OnMoveHand(MoveEvent e)

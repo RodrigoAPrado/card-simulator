@@ -9,8 +9,6 @@ namespace Ygo.Core.Duel
     {
         private static readonly List<uint> _brandedMain = new ()
         {
-            36637374, // 29 Branded Opening
-            30271097, // 12 F&V
             68468459, // 01 Albaz
             19304410, // 02 Tri Springans Kitt
             73819701, // 03 Albaz Branco
@@ -34,7 +32,6 @@ namespace Ygo.Core.Duel
             6637331, // 22 Druis
             60242223, // 23 Saronir
             36577931, // 24 Despian Tragedy
-            25451383, // 26 Albion Preto
             19096726, // 27 Mercourier
             36637374, // 28 Branded Opening
             36637374, // 29 Branded Opening
@@ -48,7 +45,10 @@ namespace Ygo.Core.Duel
             48130397, // 37 Superpoly
             48130397, // 38 Superpoly
             81439173, // 39 Foolish Burial
-            75500286 // 40 Gold Sarcophagus
+            75500286, // 40 Gold Sarcophagus
+            25451383, // 26 Albion Preto
+            36637374, // 29 Branded Opening
+            30271097 // 12 F&V
         };
 
         private static readonly List<uint> _brandedExtra = new()
@@ -135,7 +135,6 @@ namespace Ygo.Core.Duel
 
         private static readonly List<uint> _utopiaMain = new()
         {
-            14558127, // 35 Ash Blossom
             62880279, // 01 W. Dodododo
             62880279, // 02 W. Dodododo
             62880279, // 03 W. Dodododo
@@ -174,7 +173,8 @@ namespace Ygo.Core.Duel
             94145021, // 37 Droll & Lock Bird
             32807846, // 38 ROTA
             24224830, // 39 Called by
-            65681983 // 40 Crossout Designator
+            65681983, // 40 Crossout Designator
+            14558127 // 35 Ash Blossom
         };
 
         private static readonly List<uint> _utopiaExtra = new()

@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using Ygo.Scripts.Core.Model;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using Ygo.View.Card;
 
 namespace Ygo.Controller.Card
@@ -8,6 +8,8 @@ namespace Ygo.Controller.Card
     {
         [field: SerializeField]
         private ThumbCardView view;
+        [field: SerializeField]
+        private ThumbCardAnimateView animateView;
 
         public void Init()
         {
@@ -23,6 +25,11 @@ namespace Ygo.Controller.Card
         public void Hide()
         {
             gameObject.SetActive(false);
+        }
+
+        public async UniTask MoveCard(RectTransform thisPosition, RectTransform targetPosition)
+        {
+            await animateView.MoveCard(thisPosition, targetPosition);
         }
     }
 }

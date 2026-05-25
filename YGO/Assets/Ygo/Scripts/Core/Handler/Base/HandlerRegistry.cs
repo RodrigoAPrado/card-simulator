@@ -17,7 +17,8 @@ namespace Ygo.Scripts.Core.Handler.Base
                 {typeof(INewTurnMessage), new NewTurnHandler()},
                 {typeof(INewPhaseMessage), new NewPhaseHandler()},
                 {typeof(ISelectChainMessage), new SelectChainHandler()},
-                {typeof(ISelectPlaceMessage), new SelectPlaceHandler()}
+                {typeof(ISelectPlaceMessage), new SelectPlaceHandler()},
+                {typeof(IMoveMessage), new MoveHandler()}
             };
 
             return new HandlerRegistry(handlers);
@@ -48,6 +49,9 @@ namespace Ygo.Scripts.Core.Handler.Base
                     break;
                 case ISelectPlaceMessage:
                     _handlers.TryGetValue(typeof(ISelectPlaceMessage), out handler);
+                    break;
+                case IMoveMessage:
+                    _handlers.TryGetValue(typeof(IMoveMessage), out handler);
                     break;
             }
 
