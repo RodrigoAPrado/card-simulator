@@ -97,7 +97,7 @@ namespace Ygo.Controller
                 ? neutralPositionWorldPlayer
                 : neutralPositionWorldOpponent;
 
-            await _fieldController.MoveCardFromHand(neutralPosition, e.EndFieldZone, animatingCardWorld, e.CardModel,
+            await _fieldController.MoveCardFromHandToField(neutralPosition, e.EndFieldZone, animatingCardWorld, e.CardModel,
                 e.EndPointOfView);
         }
     }

@@ -21,7 +21,6 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message
 
         public SelectChainMessage(
             byte player,
-            bool cancelable,
             bool forced,
             List<ChainOption> effects,
             List<OCG_HintTiming> timing,
@@ -29,7 +28,6 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message
         )
         {
             Player = player;
-            CanCancel = cancelable;
             Forced = forced;
             _effects = effects;
             _timing = timing;
@@ -46,7 +44,7 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Message
         public int InputCount => _effects.Count;
         public InputType Input => InputType.SelectChain;
 
-        public bool CanCancel { get; }
+        public bool CanCancel => !Forced;
 
         public byte[] GetResponse(List<int> input)
         {

@@ -52,7 +52,6 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Parsing.Parser
 
             return new SelectChainMessage(
                 playerId,
-                cancelable == 0,
                 forced != 0,
                 chains,
                 timingList,

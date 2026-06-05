@@ -87,7 +87,7 @@ namespace Ygo.Controller
             _ = _duelInstance.SetResponse(new List<int>() { index });
         }
 
-        public async UniTask MoveCardFromHand(RectTransform originalPosition, FieldZones toFieldZone, 
+        public async UniTask MoveCardFromHandToField(RectTransform originalPosition, FieldZones toFieldZone, 
             AnimatingCardController animatingCard, CardModel card, PointOfView pointOfView)
         {
             animatingCard.Show(_library.GetCardImage(card.Data.Code));

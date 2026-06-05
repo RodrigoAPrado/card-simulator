@@ -11,9 +11,9 @@ namespace Ygo.View.Card
         {
             _sequence.Kill();
             _sequence = DOTween.Sequence(); 
-            _sequence.Join(thisPosition.DOSizeDelta(targetPosition.sizeDelta, 0.3f));
-            _sequence.Join(thisPosition.DOAnchorPos(targetPosition.anchoredPosition, 0.3f));
-            _sequence.SetEase(Ease.InOutQuad);
+            _sequence.Join(thisPosition.DOSizeDelta(targetPosition.sizeDelta, 0.25f));
+            _sequence.Join(thisPosition.DOAnchorPos(targetPosition.anchoredPosition, 0.25f));
+            _sequence.SetEase(Ease.Linear);
             await _sequence.Play();
         }
         
@@ -21,7 +21,7 @@ namespace Ygo.View.Card
         {
             _sequence.Kill();
             _sequence = DOTween.Sequence(); 
-            _sequence.Join(thisPosition.DOAnchorPosX(targetPosition.anchoredPosition.x, 0.2f));
+            _sequence.Join(thisPosition.DOAnchorPosX(targetPosition.anchoredPosition.x, 0.25f));
             _sequence.SetEase(Ease.InOutQuad);
             await _sequence.Play();
         }
@@ -31,10 +31,10 @@ namespace Ygo.View.Card
         {
             _sequence.Kill();
             _sequence = DOTween.Sequence(); 
-            _sequence.Join(transform.DOMove(targetPosition.position, 0.2f));
-            _sequence.Join(thisPositionRect.DOSizeDelta(targetPositionRect.sizeDelta, 0.4f));
-            _sequence.Join(transform.DORotate(targetPosition.eulerAngles, 0.4f));
-            _sequence.SetEase(Ease.InOutQuad);
+            _sequence.Join(transform.DOMove(targetPosition.position, 0.25f));
+            _sequence.Join(thisPositionRect.DOSizeDelta(targetPositionRect.sizeDelta, 0.25f));
+            _sequence.Join(transform.DORotate(targetPosition.eulerAngles, 0.25f));
+            _sequence.SetEase(Ease.InCirc);
             await _sequence.Play();
         }
     }
