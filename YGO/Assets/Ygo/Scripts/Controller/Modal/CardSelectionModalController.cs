@@ -62,8 +62,12 @@ namespace Ygo.Controller.Modal
             gameObject.SetActive(false);
         }
 
-        private async UniTask OnSelectChainEvent(SelectChainEvent e)
+        private UniTask OnSelectChainEvent(SelectChainEvent e)
         {
+            if (e.Cards.Count == 0)
+            {
+                return _duelInstance.SetResponse(new List<int>() { -1 });
+            }
             gameObject.SetActive(true);
             cancelButton.gameObject.SetActive(e.CanCancel);
             if (e.CanCancel)
@@ -76,6 +80,8 @@ namespace Ygo.Controller.Modal
                 title.SetText($"Player {e.Player}, please activate the following effects...");
             }
             SetupControllers(e.Cards);
+            
+            return UniTask.CompletedTask;
         }
 
         private void SetupControllers(IReadOnlyList<CardModel> cards)

@@ -53,8 +53,17 @@ namespace Ygo.Controller
             {
                 await OnMoveHand(e);
             }
+            else
+            {
+                await OnMoveFieldOnly(e);
+            }
         }
 
+        private async UniTask OnMoveFieldOnly(MoveEvent e)
+        {
+            await _fieldController.MoveCardFromZoneToAnother(animatingCardWorld, e);
+        }
+        
         private async UniTask OnMoveHand(MoveEvent e)
         {
             if (e.BeginLocation == Location.Hand)
@@ -63,12 +72,14 @@ namespace Ygo.Controller
             }
             else
             {
-                //TODO: Anim
+                Debug.Log(e);
+                throw new NotImplementedException();
             }
 
             if (e.EndLocation == Location.Hand)
             {
-                //TODO: Anim
+                Debug.Log(e);
+                throw new NotImplementedException();
             }
             else
             {
@@ -97,8 +108,16 @@ namespace Ygo.Controller
                 ? neutralPositionWorldPlayer
                 : neutralPositionWorldOpponent;
 
-            await _fieldController.MoveCardFromHandToField(neutralPosition, e.EndFieldZone, animatingCardWorld, e.CardModel,
-                e.EndPointOfView);
+            if (e.EndLocation is Location.MonsterZone or Location.SpellTrapZone)
+            {
+                await _fieldController.MoveCardFromHandToFieldZone(neutralPosition, e.EndFieldZone, animatingCardWorld, e.CardModel,
+                    e.EndPointOfView);
+            }
+            else
+            {
+                await _fieldController.MoveCardFromHandToFieldArea(neutralPosition, e.EndLocation, animatingCardWorld, e.CardModel,
+                    e.EndPointOfView);
+            }
         }
     }
 }

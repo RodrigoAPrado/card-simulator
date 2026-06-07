@@ -59,5 +59,22 @@ namespace Ygo.Scripts.Core.Event
             EndPointOfView = endPointOfView;
             CardModel = cardModel;
         }
+
+        public override string ToString()
+        {
+            return $"[Move Event=[CardCode={CardCode}, " +
+                   $"BeginLocation={BeginLocation}, " +
+                   $"BeginSequence={BeginSequence}, " +
+                   $"BeginFieldZone={BeginFieldZone}, " +
+                   $"BeginController={BeginController}, " +
+                   $"BeginCardPosition={BeginCardPosition}, " +
+                   $"BeginPointOfView={BeginPointOfView}, " +
+                   $"EndLocation={EndLocation}, " +
+                   $"EndSequence={EndSequence}, " +
+                   $"EndFieldZone={EndFieldZone}, " +
+                   $"EndController={EndController}, " +
+                   $"EndCardPosition={EndCardPosition}, " +
+                   $"EndPointOfView={EndPointOfView}]]";
+        }
     }
 }

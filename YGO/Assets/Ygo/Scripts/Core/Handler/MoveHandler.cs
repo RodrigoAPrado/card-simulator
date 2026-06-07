@@ -12,12 +12,6 @@ namespace Ygo.Scripts.Core.Handler
     {
         public override UniTask<IReadOnlyList<IEvent>> HandleMessage(IMoveMessage message, DuelState duelState)
         {
-            Debug.Log("[MoveMessage]");
-            foreach (var r in message.Reasons)
-            {
-                Debug.Log($"Reason: {r}");
-            }
-
             return UniTask.FromResult<IReadOnlyList<IEvent>>(duelState.MoveCard(
                 message.CardCode, 
                 message.OldLocation,

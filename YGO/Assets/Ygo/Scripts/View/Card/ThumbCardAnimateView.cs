@@ -37,5 +37,15 @@ namespace Ygo.View.Card
             _sequence.SetEase(Ease.InCirc);
             await _sequence.Play();
         }
+        
+        public async UniTask MoveCardFieldOnly(Transform targetPosition)
+        {
+            _sequence.Kill();
+            _sequence = DOTween.Sequence(); 
+            _sequence.Join(transform.DOMove(targetPosition.position, 0.25f));
+            _sequence.Join(transform.DORotate(targetPosition.eulerAngles, 0.25f));
+            _sequence.SetEase(Ease.InCirc);
+            await _sequence.Play();
+        }
     }
 }

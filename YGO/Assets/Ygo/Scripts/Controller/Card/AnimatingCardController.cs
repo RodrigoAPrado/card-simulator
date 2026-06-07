@@ -43,5 +43,10 @@ namespace Ygo.Controller.Card
         {
             await animateView.MoveCardField(targetPosition, thisPositionRect, targetPositionRect);
         }
+
+        public async UniTask MoveCardFieldOnly(Transform targetPosition)
+        {
+            await animateView.MoveCardFieldOnly(targetPosition);
+        }
     }
 }
