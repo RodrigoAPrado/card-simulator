@@ -18,7 +18,8 @@ namespace Ygo.Scripts.Core.Handler.Base
                 {typeof(INewPhaseMessage), new NewPhaseHandler()},
                 {typeof(ISelectChainMessage), new SelectChainHandler()},
                 {typeof(ISelectPlaceMessage), new SelectPlaceHandler()},
-                {typeof(IMoveMessage), new MoveHandler()}
+                {typeof(IMoveMessage), new MoveHandler()},
+                {typeof(ISelectIdleCommandMessage), new SelectIdleCommandHandler()}
             };
 
             return new HandlerRegistry(handlers);
@@ -53,6 +54,9 @@ namespace Ygo.Scripts.Core.Handler.Base
                 case IMoveMessage:
                     _handlers.TryGetValue(typeof(IMoveMessage), out handler);
                     break;
+                //case ISelectIdleCommandMessage:
+                    //_handlers.TryGetValue(typeof(ISelectIdleCommandMessage), out handler);
+                    //break;
             }
 
             return handler;
