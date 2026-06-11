@@ -26,10 +26,10 @@ namespace Ygo.Controller
         [field: SerializeField]
         private RectTransform neutralPositionWorldOpponent;
         
+        private DuelInstance _duelInstance;
         private HandController[] _handControllers;
         private FieldController _fieldController;
         private DeckController[] _deckControllers;
-        private DuelInstance _duelInstance;
         
         public void Init(
             DuelInstance duelInstance,

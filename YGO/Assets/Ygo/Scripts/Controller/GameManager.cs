@@ -30,6 +30,9 @@ namespace Ygo.Controller
         [Header("MovementAnimator")]
         [field: SerializeField]
         private MovementController movementController;
+        [Header("Commands")]
+        [field: SerializeField]
+        private IdleCommandController idleCommandController;
         [Header("ZoomCard")]
         [field: SerializeField]
         private CardController zoomCard;
@@ -100,6 +103,7 @@ namespace Ygo.Controller
             cardSelectionModal.Init(_duelInstance, _smallImageLibrary);
             confirmEffectModal.Init(_smallImageLibrary);
             movementController.Init(_duelInstance, handControllers, fieldController, mainDeckControllers);
+            idleCommandController.Init(_duelInstance, handControllers, fieldController, mainDeckControllers);
         }
 
         public void Start()
