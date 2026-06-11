@@ -15,6 +15,9 @@ namespace Ygo.Controller
 {
     public class GameManager : MonoBehaviour
     {
+        [Header("Canvas")] 
+        [field: SerializeField]
+        private RectTransform canvasRect;
         [Header("Hands")] 
         [field: SerializeField]
         private HandController[] handControllers;
@@ -76,7 +79,7 @@ namespace Ygo.Controller
             
             foreach (var handController in handControllers)
             {
-                handController.Init(_duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard);
+                handController.Init(canvasRect.rect.width, _duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard);
             }
             
             foreach (var deckController in mainDeckControllers)

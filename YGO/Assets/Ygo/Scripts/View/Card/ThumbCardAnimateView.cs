@@ -17,11 +17,11 @@ namespace Ygo.View.Card
             await _sequence.Play();
         }
         
-        public async UniTask MoveCardX(RectTransform thisPosition, RectTransform targetPosition)
+        public async UniTask MoveCardX(RectTransform thisPosition, float targetPosition)
         {
             _sequence.Kill();
             _sequence = DOTween.Sequence(); 
-            _sequence.Join(thisPosition.DOAnchorPosX(targetPosition.anchoredPosition.x, 0.25f));
+            _sequence.Join(thisPosition.DOAnchorPosX(targetPosition, 0.25f));
             _sequence.SetEase(Ease.InOutQuad);
             await _sequence.Play();
         }

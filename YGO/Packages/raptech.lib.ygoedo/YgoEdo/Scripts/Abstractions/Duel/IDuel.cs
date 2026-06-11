@@ -47,6 +47,7 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel
         /// <param name="player2Lp"></param>
         /// <param name="player2Hand"></param>
         /// <param name="player2Draw"></param>
+        /// <param name="seed0"></param>
         /// <returns></returns>
         bool SetupDuelOptions(
             DuelMode duelMode,
@@ -55,7 +56,11 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel
             uint player1Draw,
             uint player2Lp,
             uint player2Hand,
-            uint player2Draw
+            uint player2Draw,
+            ulong seed0,
+            ulong seed1 = 0,
+            ulong seed2 = 0,
+            ulong seed3 = 0
         );
 
         /// <summary>

@@ -201,5 +201,43 @@ namespace Ygo.Core.Duel
                     })
             };
         }
+
+        public List<IEvent> ShuffleHand(byte player, IReadOnlyList<uint> cards)
+        {
+            var playerState = player == 0 ? Player0State : Player1State;
+            var handBefore = new List<CardModel>();
+            foreach (var cardInHand in playerState.Hand)
+            {
+                var cardModel = new CardModel()
+                {
+                    Data = cardInHand.Data,
+                    Sequence = cardInHand.Sequence,
+                    Position = cardInHand.Position,
+                    CardLocation = cardInHand.CardLocation,
+                    Controller = cardInHand.Controller,
+                };
+                handBefore.Add(cardModel);
+            }
+            playerState.ChangeHandOrder(cards);
+            
+            var handAfter = new List<CardModel>();
+            foreach (var cardInHand in playerState.Hand)
+            {
+                var cardModel = new CardModel()
+                {
+                    Data = cardInHand.Data,
+                    Sequence = cardInHand.Sequence,
+                    Position = cardInHand.Position,
+                    CardLocation = cardInHand.CardLocation,
+                    Controller = cardInHand.Controller,
+                };
+                handAfter.Add(cardModel);
+            }
+            
+            return new List<IEvent>()
+            {
+                new ShuffleHandEvent(player, GetPointOfView(player), handBefore, handAfter)
+            };
+        }
     }
 }

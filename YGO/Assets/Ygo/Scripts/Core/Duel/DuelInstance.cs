@@ -95,7 +95,7 @@ namespace Ygo.Core.Duel
             if (handler == null)
             {
                 events = new List<IEvent>();
-                Debug.Log($"{duelMessage.GetType()}\n{duelMessage}");
+                Debug.LogWarning($"Unhandled message: {duelMessage.GetType()}\n{duelMessage}");
             }
             else
             {

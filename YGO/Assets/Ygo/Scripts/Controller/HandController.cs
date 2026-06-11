@@ -27,8 +27,10 @@ namespace Ygo.Controller
         [field: SerializeField] 
         private Transform animatingLayer;
         private CardImageLibrary _library;
-
+        private float _centerX;
+        
         public void Init(
+            float centerX,
             EventQueue eventQueue,
             CardImageLibrary library,
             Action<CardModel, bool> onHover)
@@ -39,6 +41,75 @@ namespace Ygo.Controller
                 controller.Init(onHover);
             }
             eventQueue.Subscribe<DrawHandEvent>(OnDrawEvent);
+            eventQueue.Subscribe<ShuffleHandEvent>(OnShuffleHandEvent);
+            _centerX = centerX;
+        }
+
+        private async UniTask OnShuffleHandEvent(ShuffleHandEvent e)
+        {
+            if (e.PointOfView != pointOfView)
+                return;
+
+            SetState(e.HandBefore);
+
+            var index = 0;
+            var animatingList = new Dictionary<int, AnimatingCardController>();
+            var animatingTransform = new Dictionary<int, RectTransform>();
+            var realCardsTransform = new Dictionary<int, RectTransform>();
+            var realCardsModel = new List<CardModel>();
+
+            foreach (var cardController in cardControllers)
+            {
+                if (!cardController.Enabled)
+                    continue;
+                
+                var rectController = cardController.GetComponent<RectTransform>();
+                realCardsModel.Add(cardController.CardModel);
+                var animatingGhostCard = Instantiate(animatingCardControllerPrefab, animatingLayer);
+                animatingGhostCard.transform.position = cardController.transform.position;
+                var rectAnimating = animatingGhostCard.GetComponent<RectTransform>();
+                
+                rectAnimating.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rectController.rect.width);
+                rectAnimating.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rectController.rect.height);
+                
+                animatingList.Add(index, animatingGhostCard);
+                cardController.HideView();
+                animatingGhostCard.Init();
+                animatingGhostCard.Show(_library.GetCardImage(cardController.CardModel.Data.Code));
+                animatingTransform.Add(index, rectAnimating);
+                realCardsTransform.Add(index, rectController);
+                index++;
+            }
+
+            var tasks = new List<UniTask>();
+
+            foreach (var animating in animatingList)
+            {
+                tasks.Add(
+                    animating.Value.MoveCardHandX(animatingTransform[animating.Key], _centerX));
+            }
+            
+            await UniTask.WhenAll(tasks);
+            
+            tasks = new List<UniTask>();
+            
+            foreach (var animating in animatingList)
+            {
+                animating.Value.Show(_library.GetCardImage(e.HandAfter[animating.Key].Data.Code));
+                tasks.Add(
+                    animating.Value.MoveCardHandX(animatingTransform[animating.Key], 
+                        realCardsTransform[animating.Key].anchoredPosition.x));
+            }
+            
+            await UniTask.WhenAll(tasks);
+            
+            SetState(e.HandAfter);
+
+            foreach (var anim in animatingList)
+            {
+                Destroy(anim.Value.gameObject);
+            }
+            animatingList.Clear();
         }
 
         private async UniTask OnDrawEvent(DrawHandEvent e)
@@ -136,7 +207,8 @@ namespace Ygo.Controller
             foreach (var animating in animatingList)
             {
                 tasks.Add(
-                    animating.Value.MoveCardHandX(animatingTransform[animating.Key], realCardsTransform[animating.Key]));
+                    animating.Value.MoveCardHandX(animatingTransform[animating.Key], 
+                        realCardsTransform[animating.Key].anchoredPosition.x));
             }
             
             await UniTask.WhenAll(tasks);

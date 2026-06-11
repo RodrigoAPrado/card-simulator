@@ -19,7 +19,8 @@ namespace Ygo.Scripts.Core.Handler.Base
                 {typeof(ISelectChainMessage), new SelectChainHandler()},
                 {typeof(ISelectPlaceMessage), new SelectPlaceHandler()},
                 {typeof(IMoveMessage), new MoveHandler()},
-                {typeof(ISelectIdleCommandMessage), new SelectIdleCommandHandler()}
+                {typeof(ISelectIdleCommandMessage), new SelectIdleCommandHandler()},
+                {typeof(IShuffleHandMessage), new ShuffleHandHandler()}
             };
 
             return new HandlerRegistry(handlers);
@@ -57,9 +58,15 @@ namespace Ygo.Scripts.Core.Handler.Base
                 case ISelectIdleCommandMessage:
                     _handlers.TryGetValue(typeof(ISelectIdleCommandMessage), out handler);
                     break;
+                case IShuffleHandMessage:
+                    _handlers.TryGetValue(typeof(IShuffleHandMessage), out handler);
+                    break;
             }
 
             return handler;
         }
     }
 }
+
+//New card order in hand for player 0: 
+//The Fallen & The Virtuous, Albion the Shrouded Dragon, Gold Sarcophagus, Foolish Burial, 

@@ -4019,6 +4019,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 968872346}
     m_Modifications:
+    - target: {fileID: 1871446398699269384, guid: a7a17cde97a613840bf23449b3ada155, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1871446398699269384, guid: a7a17cde97a613840bf23449b3ada155, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1871446398699269384, guid: a7a17cde97a613840bf23449b3ada155, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4767479400902733549, guid: a7a17cde97a613840bf23449b3ada155, type: 3}
       propertyPath: m_Name
       value: ThumbCardController (9)
@@ -12086,6 +12098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05cfd799b5304a2091f7cd112a367ff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Scripts.Controller.GameManager
+  canvasRect: {fileID: 1712119616}
   handControllers:
   - {fileID: 677021420}
   - {fileID: 968872348}

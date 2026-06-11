@@ -60,7 +60,11 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Domain.Duel
             uint player1Draw,
             uint player2Lp,
             uint player2Hand,
-            uint player2Draw
+            uint player2Draw,
+            ulong seed0,
+            ulong seed1 = 0,
+            ulong seed2 = 0,
+            ulong seed3 = 0
         )
         {
             if (State != DuelState.NotInitiated)
@@ -71,7 +75,10 @@ namespace YgoSoul.RapTech.Lib.YgoEdo.Domain.Duel
 
             _options = new OCG_DuelOptions
             {
-                seed0 = 0x12345,
+                seed0 = seed0,
+                seed1 = seed1,
+                seed2 = seed2,
+                seed3 = seed3,
                 flags = (ulong)duelMode.FromDuelMode(),
                 team1 = new OCG_Player
                 {

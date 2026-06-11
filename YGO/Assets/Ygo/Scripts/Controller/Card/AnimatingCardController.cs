@@ -32,8 +32,8 @@ namespace Ygo.Controller.Card
         {
             await animateView.MoveCard(thisPosition, targetPosition);
         }
-
-        public async UniTask MoveCardHandX(RectTransform thisPosition, RectTransform targetPosition)
+        
+        public async UniTask MoveCardHandX(RectTransform thisPosition, float targetPosition)
         {
             await animateView.MoveCardX(thisPosition, targetPosition);
         }

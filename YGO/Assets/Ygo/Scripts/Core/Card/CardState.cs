@@ -22,6 +22,11 @@ namespace Ygo.Scripts.Core.Card
             Controller = controller;
         }
 
+        public void ChangeSequence(uint sequence)
+        {
+            Sequence = sequence;
+        }
+
         public void UpdateState(CardPosition position, Location cardLocation, byte controller)
         {
             Position = position;

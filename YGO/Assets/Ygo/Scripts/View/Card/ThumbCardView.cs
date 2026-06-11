@@ -10,6 +10,9 @@ namespace Ygo.View.Card
         private Image CardFrontImage { get; set; }
         [field: SerializeField]
         private Image CardBack { get; set; }
+        
+        public Transform FrontTransform => CardFrontImage.transform;
+        public Transform BackTransform => CardBack.transform;
 
         public void SetIllustration(Sprite illustration)
         {

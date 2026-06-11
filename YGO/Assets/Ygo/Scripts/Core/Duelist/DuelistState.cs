@@ -116,5 +116,23 @@ namespace Ygo.Scripts.Core.Duelist
             
             return card;
         }
+
+        public void ChangeHandOrder(IReadOnlyList<uint> newOrder)
+        {
+            var cards = new List<CardState>();
+            for (var i = 0; i< newOrder.Count; i++)
+            {
+                var cardState = _hand.FirstOrDefault(x => x.Data.Code == newOrder[i]);
+                if (cardState == null)
+                    throw new InvalidOperationException($"No card found {newOrder[i]}");
+                _hand.Remove(cardState);
+                cardState.ChangeSequence((uint) i);
+                cards.Add(cardState);
+            }
+            if(_hand.Count > 0)
+                throw new InvalidOperationException($"Hand should be 0, but is {_hand.Count}");
+                
+            _hand.AddRange(cards);
+        }
     }
 }

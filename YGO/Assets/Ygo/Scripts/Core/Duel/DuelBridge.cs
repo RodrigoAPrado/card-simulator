@@ -43,7 +43,8 @@ namespace Ygo.Core.Duel
                 duelData.Duelist0.Draw,
                 duelData.Duelist1.StartingLp,
                 duelData.Duelist1.StartingHand,
-                duelData.Duelist1.Draw);
+                duelData.Duelist1.Draw, 
+                (ulong) Random.Range(0, 99999));
 
             if (!result)
             {
