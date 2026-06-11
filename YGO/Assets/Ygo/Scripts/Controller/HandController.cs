@@ -9,8 +9,7 @@ using Ygo.Scripts.Core.Enum;
 using Ygo.Scripts.Core.Event;
 using Ygo.Scripts.Core.Event.Base;
 using Ygo.Scripts.Core.Model;
-using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
-using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Message.Component;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Flag;
 
 namespace Ygo.Controller
 {
@@ -28,23 +27,67 @@ namespace Ygo.Controller
         private Transform animatingLayer;
         private CardImageLibrary _library;
         private float _centerX;
+        private Action<IReadOnlyDictionary<string, Action>, Transform, PointOfView, Location> _showActionMenu;
         
         public void Init(
             float centerX,
             EventQueue eventQueue,
             CardImageLibrary library,
-            Action<CardModel, bool> onHover)
+            Action<CardModel, bool> onHover,
+            Action<IReadOnlyDictionary<string, Action>, Transform, PointOfView, Location> showActionMenu)
         {
             _library = library;
             foreach (var controller in cardControllers)
             {
-                controller.Init(onHover);
+                controller.Init(onHover, ShowActionMenu);
             }
             eventQueue.Subscribe<DrawHandEvent>(OnDrawEvent);
             eventQueue.Subscribe<ShuffleHandEvent>(OnShuffleHandEvent);
             _centerX = centerX;
+            _showActionMenu = showActionMenu;
         }
 
+        private void ShowActionMenu(IReadOnlyDictionary<string, Action> commands, Transform position)
+        {
+            _showActionMenu?.Invoke(commands, position, PointOfView, Location.Hand);
+        }
+
+        public void AddCommandToCard(CardIdleCommandModel cardCommand, Action<int> action)
+        {
+            if(cardCommand.Sequence >= cardControllers.Length)
+                throw new InvalidOperationException("The card controller sequence is out of range");
+            
+            var cardController = cardControllers[cardCommand.Sequence];
+            if(cardController.CardModel.Data.Code != cardCommand.CardCode)
+                throw new InvalidOperationException($"Card code does not match. " +
+                                                    $"Expected={cardCommand.CardCode}, " +
+                                                    $"Actual={cardController.CardModel.Data.Code}");
+            
+            if(cardCommand.NormalSummon >= 0)
+                cardController.AddCommand("Normal Summon", () => action(cardCommand.NormalSummon));
+            if(cardCommand.SpecialSummon >= 0)
+                cardController.AddCommand("Special Summon", () => action(cardCommand.SpecialSummon));
+            if(cardCommand.ChangeCardPosition >= 0)
+                cardController.AddCommand("Switch Position", () => action(cardCommand.ChangeCardPosition));
+            if(cardCommand.Set >= 0)
+                cardController.AddCommand("Set Monster", () => action(cardCommand.Set));
+            if(cardCommand.SpellOrTrapSet >= 0)
+                cardController.AddCommand("Set Spell/Trap", () => action(cardCommand.SpellOrTrapSet));
+            if(cardCommand.EffectActivation >= 0)
+                cardController.AddCommand("Activate Effect", () => action(cardCommand.EffectActivation));
+            
+            cardController.Highlight();
+        }
+
+        public void ClearAllCommands()
+        {
+            foreach (var cardController in cardControllers)
+            {
+                cardController.ClearAvailableCommands();
+                cardController.StopHighlight();
+            }
+        }
+        
         private async UniTask OnShuffleHandEvent(ShuffleHandEvent e)
         {
             if (e.PointOfView != pointOfView)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,7 +13,7 @@ using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card.Enum;
 
 namespace Ygo.Controller.Card
 {
-    public class ThumbnailCardController : MonoBehaviour, IPointerClickHandler
+    public class ThumbnailCardController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     {
         [field: SerializeField] 
         private ThumbCardView view;
@@ -28,11 +29,15 @@ namespace Ygo.Controller.Card
         public bool Enabled { get; private set; }
         private bool Hidden { get; set; }
         private Action _onClickAction;
+        private Action<IReadOnlyDictionary<string, Action>, Transform> _showActionMenu;
+        private Dictionary<string, Action> _availableCommands;
         
-        public void Init(Action<CardModel, bool> onEnter)
+        public void Init(Action<CardModel, bool> onEnter, Action<IReadOnlyDictionary<string, Action>, Transform> showActionMenu)
         {
             _onEnter = onEnter;
+            _showActionMenu = showActionMenu;
             Enabled = false;
+            _availableCommands = new Dictionary<string, Action>();
             gameObject.SetActive(false);
             hoverView.ToggleEnable(true);
             selectableView.Init();
@@ -80,6 +85,7 @@ namespace Ygo.Controller.Card
             gameObject.SetActive(false);
             Dirty = false;
             ClearAction();
+            ClearAvailableCommands();
         }
 
         public void SetAction(Action onClickAction)
@@ -90,6 +96,17 @@ namespace Ygo.Controller.Card
         public void ClearAction()
         {
             _onClickAction = null;
+        }
+
+        public void ClearAvailableCommands()
+        {
+            _availableCommands.Clear();
+        }
+
+        public void AddCommand(string commandName, Action onClickAction)
+        {
+            if(!_availableCommands.TryAdd(commandName, onClickAction))
+                throw new InvalidOperationException("There is already an action with the name: " + commandName);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -103,6 +120,11 @@ namespace Ygo.Controller.Card
         public void HideView()
         {
             view.HideAll();
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _showActionMenu?.Invoke(_availableCommands, gameObject.transform);
         }
     }
 }

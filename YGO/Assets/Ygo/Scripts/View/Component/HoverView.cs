@@ -4,7 +4,7 @@ using DG.Tweening;
 
 namespace Ygo.View.Component
 {
-    public class HoverView : MonoBehaviour
+    public class HoverView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [field: SerializeField]
         private Transform content;
@@ -37,6 +37,16 @@ namespace Ygo.View.Component
             content.DOKill();
             content.localScale = new Vector3(1.15f, 1.15f, 1.0f);
             content.DOScale(Vector3.one, 0.2f);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            OnEnter();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            OnExit();
         }
     }
 }

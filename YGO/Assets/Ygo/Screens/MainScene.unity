@@ -775,7 +775,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -783,7 +783,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -823,11 +823,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -841,6 +841,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 1444502159}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1834,6 +1838,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b71c6b184044036b3e8cbd40159abce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Field.FieldZoneController
+--- !u!114 &227900705 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 1750898214}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!224 &252731013 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 357503380972729287, guid: 6e48dfdc2557dd94687f0c424eef1079, type: 3}
@@ -2043,8 +2058,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -254, y: -205}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: -295}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &319072110
 PrefabInstance:
@@ -3487,7 +3502,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &550847059
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3514,9 +3529,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -191, y: 305}
-  m_SizeDelta: {x: 114.16, y: 300}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -191, y: 224.99997}
+  m_SizeDelta: {x: 114.16, y: 0}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &550847060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3529,6 +3544,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83b3297b3ad64c7fab91efc7ea411d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Scripts.Controller.Hand.HandController
+  anchors:
+  - Key: 0
+    Anchor:
+    - Key: 2
+      Transform: {fileID: 314367310}
   buttons:
   - {fileID: 1472580730}
   - {fileID: 125206841}
@@ -3540,9 +3560,6 @@ MonoBehaviour:
   - {fileID: 1105755193}
   - {fileID: 1767355329}
   - {fileID: 894927426}
-  handPosition: {fileID: 314367310}
-  frontRowPosition: {fileID: 2045064559}
-  backRowPosition: {fileID: 0}
 --- !u!114 &550847061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4608,6 +4625,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.Scripts.View.TextView
   text: {fileID: 0}
+--- !u!114 &694514713 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 1792497295}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &694966069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5705,6 +5733,17 @@ RectTransform:
   m_AnchoredPosition: {x: -7, y: 123}
   m_SizeDelta: {x: 270.97, y: 46.5}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &709132093 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 894927424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &714793585
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6705,6 +6744,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.TextViewUI
   text: {fileID: 1547114739}
+--- !u!114 &835825092 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 1105755191}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &845255687
 GameObject:
   m_ObjectHideFlags: 0
@@ -7597,7 +7647,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -7605,7 +7655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -7645,11 +7695,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -285
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7663,6 +7713,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 709132093}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7694,7 +7748,6 @@ GameObject:
   m_Component:
   - component: {fileID: 901763256}
   - component: {fileID: 901763255}
-  - component: {fileID: 901763254}
   - component: {fileID: 901763253}
   - component: {fileID: 901763252}
   m_Layer: 0
@@ -7734,51 +7787,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Ygo.View::Ygo.View.Component.HoverView
   content: {fileID: 1458219230}
---- !u!114 &901763254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 901763251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 901763253}
-          m_TargetAssemblyTypeName: Ygo.View.Component.HoverView, Ygo.View
-          m_MethodName: OnEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 901763253}
-          m_TargetAssemblyTypeName: Ygo.View.Component.HoverView, Ygo.View
-          m_MethodName: OnExit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!222 &901763255
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7974,7 +7982,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -7982,7 +7990,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -8022,11 +8030,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -195
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -8040,6 +8048,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 1364027220}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8516,6 +8528,17 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &983271293 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 1767355327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &986029619
 GameObject:
   m_ObjectHideFlags: 0
@@ -8966,7 +8989,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -8974,7 +8997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -9014,11 +9037,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -165
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -9032,6 +9055,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 2025627747}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9672,7 +9699,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -9680,7 +9707,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -9720,11 +9747,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -225
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -9738,6 +9765,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 835825092}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11720,6 +11751,17 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1364027220 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 923074944}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &1364725631 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
@@ -12501,6 +12543,17 @@ MonoBehaviour:
   messageText: {fileID: 686163749}
   acceptButton: {fileID: 559490290}
   declineButton: {fileID: 864655752}
+--- !u!114 &1444502159 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 125206839}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1448603461
 GameObject:
   m_ObjectHideFlags: 0
@@ -12886,7 +12939,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -12894,7 +12947,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -12934,11 +12987,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -12952,6 +13005,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 1827904750}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13367,6 +13424,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1514071871}
   m_CullTransparentMesh: 1
+--- !u!114 &1528311510 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 2001372076}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1542481721
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13870,7 +13938,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1560799817
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13884,13 +13952,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 314367310}
-  - {fileID: 2045064559}
   m_Father: {fileID: 1712119616}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &1561144515 stripped
 RectTransform:
@@ -14974,7 +15041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -14982,7 +15049,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -15022,11 +15089,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -105
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -15040,6 +15107,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 227900705}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15321,7 +15392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -15329,7 +15400,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -15369,11 +15440,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -255
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -15387,6 +15458,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 983271293}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15606,7 +15681,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -15614,7 +15689,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -15654,11 +15729,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -135
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -15672,6 +15747,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 694514713}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15870,6 +15949,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e85911da21e14c3eb8f2295446742964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Component.ButtonController
+--- !u!114 &1827904750 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 1472580728}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1878267100
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16711,7 +16801,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -16719,7 +16809,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -16759,11 +16849,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 57.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8267906621250082407, guid: 20fb938caf831d1489904358142620a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -16777,6 +16867,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8315546458711478433, guid: 20fb938caf831d1489904358142620a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 1528311510}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17048,6 +17142,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02494bc4f93d484fb40fd8e76e70e8b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Card.ThumbnailCardController
+--- !u!114 &2025627747 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841811182934833356, guid: 20fb938caf831d1489904358142620a0, type: 3}
+  m_PrefabInstance: {fileID: 1053409442}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &2038178750 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3382295255017345269, guid: 20fb938caf831d1489904358142620a0, type: 3}
@@ -17059,50 +17164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e85911da21e14c3eb8f2295446742964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Ygo.Controller::Ygo.Controller.Component.ButtonController
---- !u!1 &2045064558
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2045064559}
-  - component: {fileID: 2045064560}
-  m_Layer: 5
-  m_Name: FrontRowPosition
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &2045064559
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045064558}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1560799817}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -10, y: 62}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2045064560
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045064558}
-  m_CullTransparentMesh: 1
 --- !u!1001 &2060808394
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18021,51 +18082,6 @@ MonoBehaviour:
   - {r: 0.8773585, g: 0.50863785, b: 0, a: 1}
   - {r: 0.8207547, g: 0, b: 0.10340261, a: 1}
   - {r: 0.4885565, g: 0, b: 0.81960785, a: 1}
---- !u!114 &1923015343909855945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7578906775349572415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2814541935827239735}
-          m_TargetAssemblyTypeName: Ygo.View.Component.HoverView, Ygo.View
-          m_MethodName: OnEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2814541935827239735}
-          m_TargetAssemblyTypeName: Ygo.View.Component.HoverView, Ygo.View
-          m_MethodName: OnExit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!222 &2025591387191090890
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18555,7 +18571,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6259458615307520928}
   - component: {fileID: 8842514637495631911}
-  - component: {fileID: 1923015343909855945}
   - component: {fileID: 2814541935827239735}
   - component: {fileID: 8842514637495631912}
   m_Layer: 0

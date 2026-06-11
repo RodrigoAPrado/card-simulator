@@ -10,11 +10,11 @@ namespace Ygo.Scripts.Core.Event
         public byte Player { get; }
         public PointOfView PointOfView { get; }
         public int BattlePhaseIndex { get; }
-        public bool HasBattlePhase => BattlePhaseIndex > 0;
+        public bool HasBattlePhase => BattlePhaseIndex >= 0;
         public int EndPhaseIndex { get; }
-        public bool HasEndPhase => EndPhaseIndex > 0;
+        public bool HasEndPhase => EndPhaseIndex >= 0;
         public int ShuffleHandIndex { get; }
-        public bool HasShuffleHand => ShuffleHandIndex > 0;
+        public bool HasShuffleHand => ShuffleHandIndex >= 0;
         public IList<CardIdleCommandModel> CardCommands { get; }
 
         public SelectIdleCommandEvent(

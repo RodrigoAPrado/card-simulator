@@ -29,7 +29,7 @@ namespace Ygo.Controller.Modal
             
             okButton.Init(() => {}, "Yes");
             cancelButton.Init(() => {}, "No");
-            cardController.Init((v1, v2) => {});
+            cardController.Init((v1, v2) => {}, (v1, v2) => {});
             Hide();
         }
 

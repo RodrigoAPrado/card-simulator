@@ -33,7 +33,7 @@ namespace Ygo.Controller.Modal
             _library = library;
             foreach (var controller in cardControllers)
             {
-                controller.Init((v1, v2) => {});
+                controller.Init((v1, v2) => {}, (v1, v2) => {});
             }
             okButton.Init(() => {}, "Ok");
             cancelButton.Init(() => {}, "Cancel");

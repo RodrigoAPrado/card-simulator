@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Ygo.Application;
 using Ygo.Controller.Card;
@@ -10,6 +11,7 @@ using Ygo.Scripts.Core.Enum;
 using Ygo.Scripts.Core.Model;
 using Ygo.View;
 using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Card;
+using YgoSoul.RapTech.Lib.YgoEdo.Abstractions.Duel.Flag;
 
 namespace Ygo.Controller
 {
@@ -79,7 +81,7 @@ namespace Ygo.Controller
             
             foreach (var handController in handControllers)
             {
-                handController.Init(canvasRect.rect.width, _duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard);
+                handController.Init(canvasRect.rect.width, _duelInstance.EventQueue, _smallImageLibrary, UpdateZoomCard, ShowActionCommand);
             }
             
             foreach (var deckController in mainDeckControllers)
@@ -117,6 +119,17 @@ namespace Ygo.Controller
         private void UpdateZoomCard(CardModel cardModel, bool hidden)
         {
             zoomCard.UpdateCard(cardModel.Data);
+        }
+
+        private void ShowActionCommand(
+            IReadOnlyDictionary<string, Action> commands, 
+            Transform position, 
+            PointOfView pointOfView, 
+            Location location)
+        {
+            if (commands.Count <= 0)
+                return;
+            actionController.ShowCommands(commands, position, pointOfView, location);
         }
     }
 }
