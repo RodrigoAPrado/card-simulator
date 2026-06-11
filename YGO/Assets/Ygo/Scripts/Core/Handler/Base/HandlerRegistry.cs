@@ -54,9 +54,9 @@ namespace Ygo.Scripts.Core.Handler.Base
                 case IMoveMessage:
                     _handlers.TryGetValue(typeof(IMoveMessage), out handler);
                     break;
-                //case ISelectIdleCommandMessage:
-                    //_handlers.TryGetValue(typeof(ISelectIdleCommandMessage), out handler);
-                    //break;
+                case ISelectIdleCommandMessage:
+                    _handlers.TryGetValue(typeof(ISelectIdleCommandMessage), out handler);
+                    break;
             }
 
             return handler;
